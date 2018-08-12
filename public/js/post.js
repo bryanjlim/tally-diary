@@ -8,33 +8,14 @@ var firestore = firebase.firestore();
 const settings = { timestampsInSnapshots: true };
 firestore.settings(settings);
 
-// On Sign In
-$("#signinbutton").click((e) => {
-    e.preventDefault(); 
-    const email = $("#usernameform").val();
-    const password = $("#passwordform").val(); 
-    const promise = firebase.auth().signInWithEmailAndPassword(email, password); 
-    promise.catch(e => alert(e.message)); 
-}); 
-
-// On Sign Out
-$("#signoutbutton").click((e) => {
-    e.preventDefault(); 
-    firebase.auth().signOut();
-}); 
-
 // On Firebase Authentication State Change
 firebase.auth().onAuthStateChanged((user) => {
-    if (user) {
-        updatePostList(); 
-        $(".sign-in-wrapper").hide();
-        $("#signoutbutton").show();
-        $(".submission").show(); 
-    }
-    else{
-        $(".sign-in-wrapper").show();
-        $("#signoutbutton").hide();
-        $(".submission").hide(); 
+    if (!user) {
+        $(".submission").hide();
+        window.location.href="authentication.html";
+    } else {
+        $(".submission").show();
+        updatePostList();
     }
 });
 

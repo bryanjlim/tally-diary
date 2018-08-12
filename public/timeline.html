@@ -28,6 +28,9 @@
             <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
+                    <a class="nav-link" href="authentication.html">Authentication</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="post.html">Post</a>
                 </li>
                 <li class="nav-item active">
@@ -37,28 +40,29 @@
             </div>
         </nav>
     </header>
-
-    <nav class="timeline-pagination">
-        <p class="in-line">Showing: </p>
-        <button class="btn btn-outline-primary " id="sad" href="#">Sad</button>
-        <button class="btn btn-outline-primary " id="reg" href="#">Regular</button>
-        <button class="btn btn-outline-primary " id="hap" href="#">Happy</button>
-    </nav>
-    
-    <div class="container" id="timelineWrapper">
-        <!-- Contents generated in timline.js from Firebase -->
-    </div>
-
-    <footer class="text-muted">
-        <div class="container">
-            <p class="float-right">
-            <a href="https://github.com/bryanjlim/">Project Github Page</a>
-            </p>
-            <div class="float-left"> 
-                <i>Lunar Diary is a work-in-progress</i>
-            </div>
+    <div id="timeline">
+        <nav class="timeline-pagination">
+            <p class="in-line">Showing: </p>
+            <button class="btn btn-outline-primary " id="sad" href="#">Sad</button>
+            <button class="btn btn-outline-primary " id="reg" href="#">Regular</button>
+            <button class="btn btn-outline-primary " id="hap" href="#">Happy</button>
+        </nav>
+        
+        <div class="container" id="timelineWrapper">
+            <!-- Contents generated in timline.js from Firebase -->
         </div>
-    </footer>
+
+        <footer class="text-muted">
+            <div class="container">
+                <p class="float-right">
+                <a href="https://github.com/bryanjlim/">Project Github Page</a>
+                </p>
+                <div class="float-left"> 
+                    <i>Lunar Diary is a work-in-progress</i>
+                </div>
+            </div>
+        </footer>
+    </div>
 
   <!-- Bootstrap core JavaScript
     ================================================== -->

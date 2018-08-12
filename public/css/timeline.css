@@ -33,6 +33,10 @@ body{
 /*
  * Timeline posts
  */
+#timeline{
+  display:none;
+}
+
 .in-line{
   display: inline-block; 
 }

@@ -9,12 +9,12 @@ firestore.settings(settings);
 
 // On Firebase Authentication State Change
 firebase.auth().onAuthStateChanged((user) => {
-    if (user) {
-        alert(user.uid);
-        repopulateTimeline(); 
-    }
-    else{
-        alert("no user");
+    if (!user) {
+        $("#timeline").hide();
+        window.location.href="authentication.html";
+    } else {
+        repopulateTimeline();
+        $("#timeline").show();
     }
 });
 
