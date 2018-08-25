@@ -25,66 +25,75 @@ function repopulateTimeline(){
 
     firestore.collection("users")
              .doc(firebase.auth().currentUser.uid)
-             .collection("diaryEntries")
+             .collection("userData")
+             .doc("personalInformation")
              .get()
-    .then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-            console.log(`${doc.id} => ${doc.data()}`);
-            const title = doc.data().title; 
-            const date = doc.data().date; 
-            const mood = doc.data().mood;
-            const post = doc.data().post; 
-            const tags = doc.data().tags; 
-            const link = doc.data().link; 
-            timelineList.push(new TimelineEntryObject(title, date, post, mood, tags, link));  
-        });
-
-        timelineList.sort(function(a,b){
-            const aDateArray = a.date.split("-"); 
-            const aYear = aDateArray[0];
-            const aMonth = aDateArray[1];
-            const aDate = aDateArray[2]; 
-
-            const bDateArray = b.date.split("-"); 
-            const bYear = bDateArray[0];
-            const bMonth = bDateArray[1];
-            const bDate = bDateArray[2]; 
-            return new Date(bYear,bMonth,bDate) - new Date(aYear,aMonth,aDate);
-        }); 
-
-        $('#timelineWrapper').empty(); 
-
-        for(let i=0; i < timelineList.length; i++) { 
-            if(moodsToShow.includes(timelineList[i].mood)) {
-                let timelinepostmeta = '<p class="timeline-post-meta">' + timelineList[i].date + '</p>';
-                if(timelineList[i].tags != "" && timelineList[i].tags != undefined){
-                    timelinepostmeta = '<p class="timeline-post-meta">' + timelineList[i].date + '</p>';
-                } 
-                let postLines = timelineList[i].post.split(/\r\n|\r|\n/g); 
-                let addpost = ""; 
-                for(let i = 0; i < postLines.length; i++){
-                    addpost += '<p>'+postLines[i]+'</p>'; 
-                }
-                let addlink = ""; 
-                if(timelineList[i].link != "" && timelineList[i].link != undefined){
-                    addlink = '<b>Link: </b><a href="'+timelineList[i].link+'">'+timelineList[i].link+'</a>'; 
-                }
-                $('#timelineWrapper').append(
-                    '<div class="timeline-post-wrapper">' + 
-                        '<div class="timeline-post">' + 
-                            '<h2 class="timeline-post-title">' + timelineList[i].title + '</h2>' + 
-                            timelinepostmeta +
-                            '<strong class="d-inline-block mb-2 text-primary"> Mood: '+timelineList[i].mood+"</strong> "+  
-                            "<p class='tags'><strong class='tags'>Tags: "+timelineList[i].tags+"</strong></p>" + 
-                            addpost +
-                            addlink +
-                        '</div>' +
-                    '</div>'
-                )
-            } 
-        }
-    });
-
+             .then((personalInformation) => {
+                 const dateOfBirth = personalInformation.data().dateOfBirth;
+                 firestore.collection("users")
+                     .doc(firebase.auth().currentUser.uid)
+                     .collection("diaryEntries")
+                     .get()
+                     .then((querySnapshot) => {
+                         querySnapshot.forEach((doc) => {
+                             console.log(`${doc.id} => ${doc.data()}`);
+                             const date = doc.data().date; 
+                             const daysAlive = Math.round((new Date(date) - new Date(dateOfBirth)) / (1000 * 60 * 60 * 24)); 
+                             const title = doc.data().title ? doc.data().title + " (Day " + daysAlive + ")" : "Day " + daysAlive;  // Show days alive in title
+                             const mood = doc.data().mood;
+                             const post = doc.data().post; 
+                             const tags = doc.data().tags; 
+                             const link = doc.data().link; 
+                             timelineList.push(new TimelineEntryObject(title, date, post, mood, tags, link));  
+                         });
+ 
+                         timelineList.sort(function(a,b){
+                             const aDateArray = a.date.split("-"); 
+                             const aYear = aDateArray[0];
+                             const aMonth = aDateArray[1];
+                             const aDate = aDateArray[2]; 
+ 
+                             const bDateArray = b.date.split("-"); 
+                             const bYear = bDateArray[0];
+                             const bMonth = bDateArray[1];
+                             const bDate = bDateArray[2]; 
+                             return new Date(bYear,bMonth,bDate) - new Date(aYear,aMonth,aDate);
+                         }); 
+ 
+                         $('#timelineWrapper').empty(); 
+ 
+                         for(let i=0; i < timelineList.length; i++) { 
+                             if(moodsToShow.includes(timelineList[i].mood)) {
+                                 let timelinepostmeta = '<p class="timeline-post-meta">' + timelineList[i].date + '</p>';
+                                 if(timelineList[i].tags != "" && timelineList[i].tags != undefined){
+                                     timelinepostmeta = '<p class="timeline-post-meta">' + timelineList[i].date + '</p>';
+                                 } 
+                                 let postLines = timelineList[i].post.split(/\r\n|\r|\n/g); 
+                                 let addpost = ""; 
+                                 for(let i = 0; i < postLines.length; i++){
+                                     addpost += '<p>'+postLines[i]+'</p>'; 
+                                 }
+                                 let addlink = ""; 
+                                 if(timelineList[i].link != "" && timelineList[i].link != undefined){
+                                     addlink = '<b>Link: </b><a href="'+timelineList[i].link+'">'+timelineList[i].link+'</a>'; 
+                                 }
+                                 $('#timelineWrapper').append(
+                                     '<div class="timeline-post-wrapper">' + 
+                                         '<div class="timeline-post">' + 
+                                             '<h2 class="timeline-post-title">' + timelineList[i].title + '</h2>' + 
+                                             timelinepostmeta +
+                                             '<strong class="d-inline-block mb-2 text-primary"> Mood: '+timelineList[i].mood+"</strong> "+  
+                                             "<p class='tags'><strong class='tags'>Tags: "+timelineList[i].tags+"</strong></p>" + 
+                                             addpost +
+                                             addlink +
+                                         '</div>' +
+                                     '</div>'
+                                 )
+                             } 
+                         }
+                     });
+             });
+ 
     // Refine what timeline entries are shown
 
     $("#sad").click(function(e) {

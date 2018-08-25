@@ -51,8 +51,7 @@ $("#timelineentrysubmitbutton").click((e) => {
                 break;
             }
         }
-
-        alert(firebase.auth().currentUser.uid);
+        
         // Add a new document in user's collection
         firestore.collection("users")
                  .doc(firebase.auth().currentUser.uid)
