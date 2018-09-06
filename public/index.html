@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Drive API Functions</title>
+    <meta charset="utf-8" />
+    <style>
+        label[for="title"], #listFiles {
+            display: block;
+            margin-top: 20px; 
+            font-weight: bold; 
+        }
+        input {
+            display: block; 
+            margin-top: 2px; 
+        }
+    </style>
+  </head>
+  <body>
+    <p>Tally Diary / Drive API Functions - Example</p>
+    <!--USE python -m SimpleHTTPServer 8000 TO RUN-->
+    <!--Add buttons to initiate auth sequence and sign out-->
+    <button id="authorize_button" style="display: none;">Authorize</button>
+    <button id="signout_button" style="display: none;">Sign Out</button>
+
+    <pre id="logger"></pre>
+    <pre id="content"></pre>
+
+    <!--For trying the API routes-->
+    <div id="apiContainer" style="display: none;"> 
+    <form id="create">  
+        <div>
+            <label for="title">Create</label>
+            <input type="text" id="createTitle" placeholder="Post Title" required>
+            <input type="date" id="date" required>
+            <label for="daysAlive">Days Alive:</label>
+            <input type="text" id="daysAlive" placeholder="Just to show parameters.">
+            <label for="tags">Tags (optional):</label>
+            <input type="text" id="tags" placeholder="Comma-separated tags">
+            <input type="text" id="weather" placeholder="Weather - optional">
+            <input type="text" id="createBody" placeholder="Post Body" required>
+            <button id="createsubmit" type="submit">Submit</button>
+        </div>
+    </form>
+    <form id="read">  
+        <div>
+            <label for="title">Read</label>
+            <input type="text" id="readInput" placeholder="Post Title" required>
+            <button id="readsubmit" type="submit">Submit</button>
+        </div>
+    </form>
+    <form id="update">  
+        <div>
+            <label for="title">Update</label>
+            <input type="text" id="updateInput" placeholder="Post Title" required>
+            <button id="updatesubmit" type="submit">Submit</button>
+        </div>
+    </form>
+    <form id="delete">  
+        <div>
+            <label for="title">Delete</label>
+            <input type="text" id="deleteInput" placeholder="Post Title" required>
+            <button id="deletesubmit" type="submit">Submit</button>
+        </div>
+    </form>
+    <button id="listFiles" type="submit">List the files present in App Data</button>
+    </div>
+
+    <script async defer src="https://apis.google.com/js/api.js"
+      onload="this.onload=function(){};handleClientLoad()"
+      onreadystatechange="if (this.readyState === 'complete') this.onload()">
+    </script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E=" crossorigin="anonymous"></script>
+    <script src="js/drive.js"></script>
+  </body>
+</html>
