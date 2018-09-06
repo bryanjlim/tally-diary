@@ -1,4 +1,4 @@
-// USE python -m SimpleHTTPServer 8000 TO RUN
+// USE python -m http.server 8000 TO RUN
 
 // Client ID and API key from the Developer Console
 var CLIENT_ID = '791384450603-2u28kubiema57qqtc2ff5hv4jg8a8tk5.apps.googleusercontent.com';

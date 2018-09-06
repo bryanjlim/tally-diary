@@ -17,7 +17,7 @@
   </head>
   <body>
     <p>Tally Diary / Drive API Functions - Example</p>
-    <!--USE python -m SimpleHTTPServer 8000 TO RUN-->
+    <!--USE python -m http.server 8000 TO RUN-->
     <!--Add buttons to initiate auth sequence and sign out-->
     <button id="authorize_button" style="display: none;">Authorize</button>
     <button id="signout_button" style="display: none;">Sign Out</button>
@@ -65,11 +65,11 @@
     <button id="listFiles" type="submit">List the files present in App Data</button>
     </div>
 
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E=" crossorigin="anonymous"></script>
+    <script src="js/drive.js"></script>
     <script async defer src="https://apis.google.com/js/api.js"
       onload="this.onload=function(){};handleClientLoad()"
       onreadystatechange="if (this.readyState === 'complete') this.onload()">
     </script>
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E=" crossorigin="anonymous"></script>
-    <script src="js/drive.js"></script>
   </body>
 </html>
