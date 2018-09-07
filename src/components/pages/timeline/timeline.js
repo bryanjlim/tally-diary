@@ -3,7 +3,7 @@ import DriveHelper from '../../helpers/driveHelper';
 export class Timeline extends Component {
 
     componentDidMount() {
-        DriveHelper.getFilesInAppData();
+        DriveHelper.listFilesInAppData();
     }
 
     render() {

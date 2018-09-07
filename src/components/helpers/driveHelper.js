@@ -5,38 +5,55 @@ export default class DriveHelper {
     static delimiter = "\r\n--" + this.boundary + "\r\n";
     static end_request = "\r\n--" + this.boundary + "--";
     
+    static postEntry(fileData) {
+        const fileName = 1; // TODO: set file name to entry number
+        this.postFile(fileName, fileData);
+    }
+
     /**
-     * Gets all files in the app data folder
+     * Get the data from a file given the name of the file as a parameter. 
      * 
-     * @returns {Promise} Array of all files
+     * @param {string} fileName Name of the file to be read
+     * @return {promise} 
      */
-    static getFilesInAppData() {
+    static readFile(fileName) {
         return new Promise((resolve, reject) => {
-            gapi.client.drive.files.list({
-                'spaces': 'appDataFolder',
-                'fields': "nextPageToken, files(id, name)",
-                'pageSize': 25
-                }).then((response) => {
-                    console.log(response); 
-                    const files = response.result.files;
-                    resolve(files);
-                }).error((err) => {
-                    reject(err);
-                })
-        });   
+            this.getFileId(fileName)
+            .then((fileId) => {
+                gapi.client.request({
+                    'path': 'https://www.googleapis.com/drive/v3/files/' + fileId,
+                    'method': 'GET', 
+                    'params': {
+                        // could use fields to improve performance + reduce connection load
+                        //'fields': 'body'
+
+                        // returns full response 
+                        'alt': 'media'
+                    }
+                }).execute(((resp) => {
+                    console.log("METADATA"); 
+                    console.log(resp); 
+                    console.log("DIARY ENTRY"); 
+                    console.log(resp.body); 
+                    resolve(resp.body);
+                })); 
+            }).error(err => reject(err));
+        });
     }
 
     /**
      * Create a new diary entry file in the user's Google Drive under 
      * the name given as a parameter. 
      * 
-     * @param {string} fileName Name of the file to be edited. 
-     * @param {Object} fileData Data of the file to be updated
+     * @param {string} fileName Name of the file to be posted
+     * @param {Object} fileData Data of the file to be posted
      */
     static postFile(fileName, fileData) {
+        alert(fileName);
+        alert(JSON.stringify(fileData));
         const contentType = 'application/json';
         const metadata = {
-            'name': fileName,
+            'name': "Test",
             'mimeType': contentType,
             'parents': ['appDataFolder']
         };
@@ -61,9 +78,10 @@ export default class DriveHelper {
               'Content-Type': 'multipart/mixed; boundary="' + this.boundary + '"'
             },
             'body': multipartRequest});
-        request.execute(function(arg) {
-            // arg returns false when an error occured 
-            console.log(arg);
+        request.execute(function(jsonResponse, rawResponse) {
+            // jsonResponse returns false when an error occured 
+            console.log(jsonResponse);
+            console.log(rawResponse);
         });
     }
 
@@ -143,6 +161,30 @@ export default class DriveHelper {
             const files = response.result.files;
             if (files && files.length > 0) {
                 return files[0].id;
+            }
+        });
+    }
+
+    /**
+     * Print the files present in the App Data folder in the logger. 
+     */
+    static listFilesInAppData() {
+        gapi.client.drive.files.list({
+            'spaces': 'appDataFolder',
+            'fields': "nextPageToken, files(id, name)",
+            'pageSize': 25
+        }).then((response) => {
+            console.log('Files present in App Data:');
+            console.log(response); 
+            var files = response.result.files;
+            if (files && files.length > 0) {
+                for (var i = 0; i < files.length; i++) {
+                var file = files[i];
+                console.log(file.name + ' (' + file.id + ')');
+                }
+                console.log("\n")
+            } else {
+                console.log('No files found in App Data.');
             }
         });
     }

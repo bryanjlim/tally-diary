@@ -147,7 +147,7 @@ export class AddEntry extends Component {
                         name="bodyText"
                         type="text"
                         required
-                        value={this.state.body}
+                        value={this.state.bodyText}
                         onChange={this.handleInputChange} />
                     <button>Submit Diary Entry</button>
                 </form>
