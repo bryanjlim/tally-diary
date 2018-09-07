@@ -13,7 +13,7 @@ export default class DriveHelper {
 
     static postEntry(fileData) {
         DriveHelper.getFileCount().then((count) => {
-            const fileName = count;
+            const fileName = count+1; // TODO: Remove +1 when user data creation implemented
             DriveHelper.postFile(fileName, fileData);
         });
         
