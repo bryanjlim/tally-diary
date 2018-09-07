@@ -1,10 +1,9 @@
-/* global gapi */
 import React, { Component } from 'react';
-import Drive from '../../helpers/drive';
+import DriveHelper from '../../helpers/driveHelper';
 export class Timeline extends Component {
 
     componentDidMount() {
-        Drive.getFilesInAppData();
+        DriveHelper.getFilesInAppData();
     }
 
     render() {

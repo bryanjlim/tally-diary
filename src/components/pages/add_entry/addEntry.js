@@ -1,6 +1,5 @@
-/* global gapi */
 import React, { Component } from 'react';
-import Drive from '../../helpers/drive';
+import DriveHelper from '../../helpers/driveHelper';
 import Mood from '../../objects/mood/mood'; 
 import Weather from '../../objects/weather/weather'; 
 import Todo from '../../objects/todos/todo'; 
@@ -16,8 +15,8 @@ export class AddEntry extends Component {
             bodyText: '',
             mood: new Mood(Mood.moodEnum.MEH), // TODO: Add dropdown menu for mood in main submission form
             weather: new Weather("Cloudy", 60, 80, 34), // TODO: Add fields for weather in main submission form
-            tallies: new Array(),
-            todos: new Array(),
+            tallies: [],
+            todos: [],
 
             // New Tally Mark
             newTallyMarkType: TallyMark.tallyTypeEnum.FOOD,
@@ -53,7 +52,7 @@ export class AddEntry extends Component {
 
     addNewEntry(e) {
         e.preventDefault();
-        Drive.postEntry({
+        DriveHelper.postEntry({
             "title": this.state.title, 
             "date": this.state.date,
             "bodyText": this.state.bodyText,
@@ -68,8 +67,8 @@ export class AddEntry extends Component {
             bodyText: '',
             mood: new Mood(Mood.moodEnum.MEH), // TODO: Add dropdown menu for mood in main submission form
             weather: new Weather("Cloudy", 60, 80, 34), // TODO: Add fields for weather in main submission form
-            tallies: new Array(),
-            todos: new Array(),
+            tallies: [],
+            todos: [],
             newTallyMarkType: TallyMark.tallyTypeEnum.FOOD,
             newTallyMarkText: '',
             newTodoStatus: false,
