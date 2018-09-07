@@ -6,12 +6,15 @@ export class Timeline extends Component {
     constructor(props) {
         super(props); 
         this.state = {
+            fileCount: 0,
             diaryEntryObjects: [],
         }
+        this.eachDiaryEntryObject = this.eachDiaryEntryObject.bind(this);
     }
 
     componentDidMount() {
         DriveHelper.getFileCount().then((count) => {
+            this.setState({fileCount: count}); 
             for(let i = count; i > 0; i--) {
                 DriveHelper.readFile(i).then((entry) => {
                     console.log(entry);
@@ -28,7 +31,6 @@ export class Timeline extends Component {
 
     eachDiaryEntryObject(diaryEntry, i) {
         const entry = diaryEntry.entry;
-        alert(JSON.stringify(entry));
         return (
             <TimelineListItem 
                 title={entry.title}
@@ -45,7 +47,7 @@ export class Timeline extends Component {
     render() {
         return (
             <div className="timeline">
-                {this.state.diaryEntryObjects.map(this.eachDiaryEntryObject)}
+            { this.state.fileCount == 0 ? <p>Loading... </p> : this.state.diaryEntryObjects.map(this.eachDiaryEntryObject) }
             </div>
         );
     }
