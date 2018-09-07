@@ -1,3 +1,13 @@
-import React, { PropTypes } from 'react';
+/* global gapi */
+import React, { Component, PropTypes } from 'react';
+export class AddEntry extends Component {
+  render() {
+      return (
+        <div>
+            <h1>New Entry</h1>
+        </div>
+      );
+  }
+}
 
-export const addEntry
+export default AddEntry;

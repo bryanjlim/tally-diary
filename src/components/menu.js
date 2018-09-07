@@ -5,9 +5,6 @@ import './menu.scss';
 export const Menu = () =>
     <nav className="menu">
         <Link to="/">
-            Sign In
-        </Link>
-        <Link to="/add-entry">
             New Entry
         </Link>
         <Link to="/timeline">

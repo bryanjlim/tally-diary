@@ -9,6 +9,8 @@ ReactDOM.render(
     <Router>
         <Switch>
         <Route exact path="/" component={App}/>
+        <Route path="/timeline" component={App}/>
+        <Route path="/settings" component={App}/>
         <Route path="*" component={NotFound404}/>
         </Switch>
     </Router>, document.getElementById('root')
