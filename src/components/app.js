@@ -9,13 +9,12 @@ import { Timeline } from './pages/timeline/timeline';
 export class App extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      isSignedIn: false,
-    };
+    this.state = { isSignedIn: false, };
+    this.loadClientWhenGapiReady = this.loadClientWhenGapiReady.bind(this);
     this.initClient = this.initClient.bind(this);
     this.updateSignInStatus = this.updateSignInStatus.bind(this);
-    this.loadClientWhenGapiReady = this.loadClientWhenGapiReady.bind(this);
     this.signIn = this.signIn.bind(this);
+    this.signOut = this.signOut.bind(this);
   }
 
   componentDidMount() {
@@ -34,7 +33,7 @@ export class App extends Component {
           <Menu />
           { 
             (this.props.location.pathname === "/") ? <AddEntry /> : 
-            (this.props.location.pathname === "/settings") ? <Settings /> : 
+            (this.props.location.pathname === "/settings") ? <Settings signOut={this.signOut}/> : 
             <Timeline /> 
           }
         </div>
@@ -42,29 +41,19 @@ export class App extends Component {
     } else {
       return (
         <div className="App">
-          <Home onSubmit = {this.signIn}/> {/* If user not signed in, display home page */}
+          <Home signIn = {this.signIn}/> { /* If user not signed in, display home page */ }
         </div>
       );
     }      
   } 
 
 
-  /* Methods for Google Drive */
+  /* GAPI */
 
   loadClientWhenGapiReady = (script) => {
-    console.log('Loading client...');
-    console.log(script)
     if(script.getAttribute('gapi_processed')){
-      console.log('Gapi is ready');
       if(window.location.hostname==='localhost'){
         gapi.client.load("http://localhost:8080/_ah/api/discovery/v1/apis/metafields/v1/rest")
-        .then((response) => {
-          console.log("Connected to metafields API locally.");
-          },
-          function (err) {
-            console.log("Error connecting to metafields API locally.");
-          }
-        );
       }
       gapi.load('client:auth2', this.initClient);
     } else{
@@ -82,12 +71,9 @@ export class App extends Component {
     }).then(() => {
       that.updateSignInStatus(); 
       that.forceUpdate();
+    }).catch((error) => {
+      console.log(error);
     });
-  };
-
-  updateSignInStatus = () => {
-    this.state.isSignedIn = gapi.auth2.getAuthInstance().isSignedIn.get(); 
-    this.forceUpdate(); 
   };
 
   signIn() {
@@ -98,10 +84,18 @@ export class App extends Component {
     })
   }
 
-  // For API calls (create + update)
-  // const boundary = '-------314159265358979323846264';
-  // const delimiter = "\r\n--" + boundary + "\r\n";
-  // const end_request = "\r\n--" + boundary + "--";
+  signOut() {
+    gapi.auth2.getAuthInstance().signOut().then(()=> {
+      window.location.href = '/';
+      this.updateSignInStatus();
+    }).catch((error)=> {
+      console.log(error);
+    })
+  }
+
+  updateSignInStatus = () => {
+    this.setState({isSignedIn: gapi.auth2.getAuthInstance().isSignedIn.get()}); 
+  };
 }
 
 export default App;
