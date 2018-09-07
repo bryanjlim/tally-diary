@@ -94,8 +94,7 @@ export class App extends Component {
   }
 
   updateSignInStatus = () => {
-    this.state.isSignedIn = gapi.auth2.getAuthInstance().isSignedIn.get(); 
-    this.forceUpdate(); 
+    this.setState({isSignedIn: gapi.auth2.getAuthInstance().isSignedIn.get()}); 
   };
 }
 
