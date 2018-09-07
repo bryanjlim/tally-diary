@@ -1,75 +1,40 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <title>Drive API Functions</title>
-    <meta charset="utf-8" />
-    <style>
-        label[for="title"], #listFiles {
-            display: block;
-            margin-top: 20px; 
-            font-weight: bold; 
-        }
-        input {
-            display: block; 
-            margin-top: 2px; 
-        }
-    </style>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="theme-color" content="#000000">
+    <!--
+      manifest.json provides metadata used when your web app is added to the
+      homescreen on Android. See https://developers.google.com/web/fundamentals/engage-and-retain/web-app-manifest/
+    -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json">
+    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
+    <!--
+      Notice the use of %PUBLIC_URL% in the tags above.
+      It will be replaced with the URL of the `public` folder during the build.
+      Only files inside the `public` folder can be referenced from the HTML.
+
+      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+      work correctly both with client-side routing and a non-root public URL.
+      Learn how to configure a non-root public URL by running `npm run build`.
+    -->
+    <title>React App</title>
   </head>
   <body>
-    <p>Tally Diary / Drive API Functions - Example</p>
-    <!--USE python -m http.server 8000 TO RUN-->
-    <!--Add buttons to initiate auth sequence and sign out-->
-    <button id="authorize_button" style="display: none;">Authorize</button>
-    <button id="signout_button" style="display: none;">Sign Out</button>
+    <noscript>
+      You need to enable JavaScript to run this app.
+    </noscript>
+    <div id="root"></div>
+    <!--
+      This HTML file is a template.
+      If you open it directly in the browser, you will see an empty page.
 
-    <pre id="logger"></pre>
-    <pre id="content"></pre>
+      You can add webfonts, meta tags, or analytics to this file.
+      The build step will place the bundled scripts into the <body> tag.
 
-    <!--For trying the API routes-->
-    <div id="apiContainer" style="display: none;"> 
-    <form id="create">  
-        <div>
-            <label for="title">Create</label>
-            <input type="text" id="createTitle" placeholder="Post Title" required>
-            <input type="date" id="date" required>
-            <label for="daysAlive">Days Alive:</label>
-            <input type="text" id="daysAlive" placeholder="Just to show parameters.">
-            <label for="tags">Tags (optional):</label>
-            <input type="text" id="tags" placeholder="Comma-separated tags">
-            <input type="text" id="weather" placeholder="Weather - optional">
-            <input type="text" id="createBody" placeholder="Post Body" required>
-            <button id="createsubmit" type="submit">Submit</button>
-        </div>
-    </form>
-    <form id="read">  
-        <div>
-            <label for="title">Read</label>
-            <input type="text" id="readInput" placeholder="Post Title" required>
-            <button id="readsubmit" type="submit">Submit</button>
-        </div>
-    </form>
-    <form id="update">  
-        <div>
-            <label for="title">Update</label>
-            <input type="text" id="updateInput" placeholder="Post Title" required>
-            <button id="updatesubmit" type="submit">Submit</button>
-        </div>
-    </form>
-    <form id="delete">  
-        <div>
-            <label for="title">Delete</label>
-            <input type="text" id="deleteInput" placeholder="Post Title" required>
-            <button id="deletesubmit" type="submit">Submit</button>
-        </div>
-    </form>
-    <button id="listFiles" type="submit">List the files present in App Data</button>
-    </div>
-
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E=" crossorigin="anonymous"></script>
-    <script src="js/drive.js"></script>
-    <script async defer src="https://apis.google.com/js/api.js"
-      onload="this.onload=function(){};handleClientLoad()"
-      onreadystatechange="if (this.readyState === 'complete') this.onload()">
-    </script>
+      To begin the development, run `npm start` or `yarn start`.
+      To create a production bundle, use `npm run build` or `yarn build`.
+    -->
   </body>
 </html>
