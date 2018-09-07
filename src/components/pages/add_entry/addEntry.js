@@ -1,5 +1,5 @@
-/* global gapi */
 import React, { Component } from 'react';
+import DriveHelper from '../../helpers/driveHelper';
 import Mood from '../../objects/mood/mood'; 
 import Weather from '../../objects/weather/weather'; 
 import Todo from '../../objects/todos/todo'; 
@@ -15,8 +15,8 @@ export class AddEntry extends Component {
             bodyText: '',
             mood: new Mood(Mood.moodEnum.MEH), // TODO: Add dropdown menu for mood in main submission form
             weather: new Weather("Cloudy", 60, 80, 34), // TODO: Add fields for weather in main submission form
-            tallies: new Array(),
-            todos: new Array(),
+            tallies: [],
+            todos: [],
 
             // New Tally Mark
             newTallyMarkType: TallyMark.tallyTypeEnum.FOOD,
@@ -51,61 +51,24 @@ export class AddEntry extends Component {
     }
 
     addNewEntry(e) {
-        const boundary = '-------314159265358979323846264';
-        const delimiter = "\r\n--" + boundary + "\r\n";
-        const end_request = "\r\n--" + boundary + "--";
-
         e.preventDefault();
-
-        const entryData = {
-            "title": this.state.title, 
+        DriveHelper.postEntry({
+            "title": this.state.customTitle, 
             "date": this.state.date,
             "bodyText": this.state.bodyText,
             "tallies": this.state.tallies, 
             "weather": this.state.weather, 
             "todos": this.state.todos,
             "mood": this.state.mood
-        };
-        const contentType = 'application/json';
-        const metadata = {
-            'name': this.state.title, // TODO: make file name the diary entry number
-            'mimeType': contentType,
-            'parents': ['appDataFolder']
-        };
-        const base64Data = btoa(JSON.stringify(entryData));
-        const multipartRequest =
-            // metadata request 
-            delimiter +
-            'Content-Type: application/json\r\n\r\n' +
-            JSON.stringify(metadata) +
-            delimiter +
-            // body content request 
-            'Content-Type: ' + contentType + '\r\n' +
-            'Content-Transfer-Encoding: base64\r\n' +
-            '\r\n' +
-            base64Data +
-            end_request;
-        const request = gapi.client.request({
-            'path': 'https://www.googleapis.com/upload/drive/v3/files',
-            'method': 'POST',
-            'params': {'uploadType': 'multipart'},
-            'headers': {
-              'Content-Type': 'multipart/mixed; boundary="' + boundary + '"'
-            },
-            'body': multipartRequest});
-        request.execute(function(arg) {
-            // arg returns false when an error occured 
-            console.log(arg);
         });
-
         this.setState({
             customTitle: '',
             date: new Date(),
             bodyText: '',
             mood: new Mood(Mood.moodEnum.MEH), // TODO: Add dropdown menu for mood in main submission form
             weather: new Weather("Cloudy", 60, 80, 34), // TODO: Add fields for weather in main submission form
-            tallies: new Array(),
-            todos: new Array(),
+            tallies: [],
+            todos: [],
             newTallyMarkType: TallyMark.tallyTypeEnum.FOOD,
             newTallyMarkText: '',
             newTodoStatus: false,
@@ -184,7 +147,7 @@ export class AddEntry extends Component {
                         name="bodyText"
                         type="text"
                         required
-                        value={this.state.body}
+                        value={this.state.bodyText}
                         onChange={this.handleInputChange} />
                     <button>Submit Diary Entry</button>
                 </form>
