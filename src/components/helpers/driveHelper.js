@@ -8,12 +8,15 @@ export default class DriveHelper {
     
     static postUserData(fileData) {
         const fileName = 0; // 0 is reserved for user data, diary entries start at 1
-        this.postFile(fileName, fileData);
+        DriveHelper.postFile(fileName, fileData);
     }
 
     static postEntry(fileData) {
-        const fileName = 1; // TODO: set file name to entry number
-        this.postFile(fileName, fileData);
+        DriveHelper.getFileCount().then((count) => {
+            const fileName = count;
+            DriveHelper.postFile(fileName, fileData);
+        });
+        
     }
 
     /**
@@ -24,7 +27,7 @@ export default class DriveHelper {
      */
     static readFile(fileName) {
         return new Promise((resolve, reject) => {
-            this.getFileId(fileName)
+            DriveHelper.getFileId(fileName)
             .then((fileId) => {
                 gapi.client.request({
                     'path': 'https://www.googleapis.com/drive/v3/files/' + fileId,
@@ -63,22 +66,22 @@ export default class DriveHelper {
         const base64Data = btoa(JSON.stringify(fileData));
         const multipartRequest =
             // metadata request 
-            this.delimiter +
+            DriveHelper.delimiter +
             'Content-Type: application/json\r\n\r\n' +
             JSON.stringify(metadata) +
-            this.delimiter +
+            DriveHelper.delimiter +
             // body content request 
             'Content-Type: ' + contentType + '\r\n' +
             'Content-Transfer-Encoding: base64\r\n' +
             '\r\n' +
             base64Data +
-            this.end_request;
+            DriveHelper.end_request;
         const request = gapi.client.request({
             'path': 'https://www.googleapis.com/upload/drive/v3/files',
             'method': 'POST',
             'params': {'uploadType': 'multipart'},
             'headers': {
-              'Content-Type': 'multipart/mixed; boundary="' + this.boundary + '"'
+              'Content-Type': 'multipart/mixed; boundary="' + DriveHelper.boundary + '"'
             },
             'body': multipartRequest});
         request.execute(function(arg) {
@@ -104,17 +107,17 @@ export default class DriveHelper {
         const base64Data = btoa(JSON.stringify(fileData));
         const multipartRequest =
             // metadata request
-            this.delimiter +
+            DriveHelper.delimiter +
             'Content-Type: application/json\r\n\r\n' +
             JSON.stringify(metadata) +
-            this.delimiter +
+            DriveHelper.delimiter +
             // body content request 
             'Content-Type: ' + contentType + '\r\n' +
             'Content-Transfer-Encoding: base64\r\n' +
             '\r\n' +
             base64Data +
-            this.end_request;
-            this.getFileId(fileName)
+            DriveHelper.end_request;
+            DriveHelper.getFileId(fileName)
             .then((fileId) => {
                 gapi.client.request({
                     'path': 'https://www.googleapis.com/upload/drive/v3/files/' + fileId,
@@ -123,7 +126,7 @@ export default class DriveHelper {
                         'uploadType': 'multipart'
                     },
                     'headers': {
-                        'Content-Type': 'multipart/mixed; boundary="' + this.boundary + '"'
+                        'Content-Type': 'multipart/mixed; boundary="' + DriveHelper.boundary + '"'
                     }, 
                     'body': multipartRequest
                 }).execute(); 
@@ -136,7 +139,8 @@ export default class DriveHelper {
      * @param {string} fileName Name of the file to be deleted. 
      */
     static deleteFile(fileName) {
-        this.getFileId(fileName)
+        console.log("Deleting file: " + fileName); 
+        DriveHelper.getFileId(fileName)
             .then((fileId) => {
                 gapi.client.request({
                     'path': 'https://www.googleapis.com/drive/v3/files/' + fileId,
@@ -165,6 +169,26 @@ export default class DriveHelper {
                 return files[0].id;
             }
         });
+    }
+
+    /**
+     * Deletes all files
+     * 
+     */
+    static deleteAllFiles() {
+        gapi.client.drive.files.list({
+            'spaces': 'appDataFolder',
+            'fields': "nextPageToken, files(id, name)",
+            'pageSize': 25
+        }).then((response) => {
+            const files = response.result.files;
+            console.log("Files: " + JSON.stringify(files));
+            for(let i=0; i< files.length; i++) {
+                console.log("Index " + i);
+                console.log("File Name: " + files[i].name);
+                DriveHelper.deleteFile(files[i].name)
+            }
+        }).catch(err => console.log("Error deleting all files: " + err));
     }
 
     /**

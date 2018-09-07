@@ -1,5 +1,6 @@
 /* global gapi */
 import React, { Component } from 'react';
+import DriveHelper from '../../helpers/driveHelper';
 export class Settings extends Component {
     
     handleSubmit = () => {
@@ -15,6 +16,7 @@ export class Settings extends Component {
                 <form ref="form" onSubmit={evt => {evt.preventDefault(); this.props.signOut();}}>
                     <button type="submit">Sign Out</button>
                 </form>
+                <button onClick={DriveHelper.deleteAllFiles}>Delete All Files</button>
             </div>
         );
     }

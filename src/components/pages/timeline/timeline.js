@@ -28,6 +28,7 @@ export class Timeline extends Component {
 
     eachDiaryEntryObject(diaryEntry, i) {
         const entry = diaryEntry.entry;
+        alert(JSON.stringify(entry));
         return (
             <TimelineListItem 
                 title={entry.title}
