@@ -1,5 +1,5 @@
 
-![Tally Diary Logo](https://bn1303files.storage.live.com/y4mqujQXhzvWUpQql8VCzF0gF2OaWbT-6HTcuDG_tDZNMEiFAvuPoaTo8yHWWkz6IkSOb7siv7NMt__2lmeQEteiIxZAseWZYGFXK5-MED94pHtLXz5rwHfklo99tA_LGfVKpDQJKTMQ7Gh--eHpCBiS3Ciyn8qBKLYao9-5fHMDAGOT3eCdnrVMzhuYwNiggE0BvmcUNopkK5OCApZxt1k6Q/TallyDiaryLogo.png?psid=1&width=514&height=231)
+![Tally Diary Logo](https://bn1303files.storage.live.com/y4mqujQXhzvWUpQql8VCzF0gF2OaWbT-6HTcuDG_tDZNMEiFAvuPoaTo8yHWWkz6IkSOb7siv7NMt__2lmeQEteiIxZAseWZYGFXK5-MED94pHtLXz5rwHfklo99tA_LGfVKpDQJKTMQ7Gh--eHpCBiS3Ciyn8qBKLYao9-5fHMDAGOT3eCdnrVMzhuYwNiggE0BvmcUNopkK5OCApZxt1k6Q/TallyDiaryLogo.png?psid=1&width=257&height=116)
 
 # Tally Diary
 
