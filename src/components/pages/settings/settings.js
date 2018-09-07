@@ -16,7 +16,12 @@ export class Settings extends Component {
                 <form ref="form" onSubmit={evt => {evt.preventDefault(); this.props.signOut();}}>
                     <button type="submit">Sign Out</button>
                 </form>
-                <button onClick={DriveHelper.deleteAllFiles}>Delete All Files</button>
+                <button onClick={
+                    //TODO: proper confirmation prompt
+                    //eslint-disable-next-line 
+                    () => {if(confirm("Delete All Files?")){DriveHelper.deleteAllFiles();}}
+                    }>Delete All Files
+                </button>
             </div>
         );
     }
