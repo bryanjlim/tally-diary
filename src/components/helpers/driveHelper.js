@@ -1,9 +1,10 @@
 /* global gapi */
 
 export default class DriveHelper { 
+
     static boundary = '-------314159265358979323846264';
-    static delimiter = "\r\n--" + this.boundary + "\r\n";
-    static end_request = "\r\n--" + this.boundary + "--";
+    static delimiter = "\r\n---------314159265358979323846264\r\n";
+    static end_request = "\r\n---------314159265358979323846264--";
     
     static postEntry(fileData) {
         const fileName = 1; // TODO: set file name to entry number
@@ -49,11 +50,9 @@ export default class DriveHelper {
      * @param {Object} fileData Data of the file to be posted
      */
     static postFile(fileName, fileData) {
-        alert(fileName);
-        alert(JSON.stringify(fileData));
         const contentType = 'application/json';
         const metadata = {
-            'name': "Test",
+            'name': fileName, // TODO: make file name the diary entry number
             'mimeType': contentType,
             'parents': ['appDataFolder']
         };
@@ -78,10 +77,9 @@ export default class DriveHelper {
               'Content-Type': 'multipart/mixed; boundary="' + this.boundary + '"'
             },
             'body': multipartRequest});
-        request.execute(function(jsonResponse, rawResponse) {
-            // jsonResponse returns false when an error occured 
-            console.log(jsonResponse);
-            console.log(rawResponse);
+        request.execute(function(arg) {
+            // arg returns false when an error occured 
+            console.log(arg);
         });
     }
 
