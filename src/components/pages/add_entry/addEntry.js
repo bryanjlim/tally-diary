@@ -53,7 +53,7 @@ export class AddEntry extends Component {
     addNewEntry(e) {
         e.preventDefault();
         DriveHelper.postEntry({
-            "title": this.state.title, 
+            "title": this.state.customTitle, 
             "date": this.state.date,
             "bodyText": this.state.bodyText,
             "tallies": this.state.tallies, 
