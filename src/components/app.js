@@ -15,19 +15,41 @@ export class App extends Component {
     this.initClient = this.initClient.bind(this);
     this.updateSignInStatus = this.updateSignInStatus.bind(this);
     this.loadClientWhenGapiReady = this.loadClientWhenGapiReady.bind(this);
+    this.signIn = this.signIn.bind(this);
   }
 
   componentDidMount() {
-    console.log('Initializing GAPI...');
     const script = document.createElement("script");
     script.onload = () => {
-      console.log('Loaded script, now loading our api...')
-      // Gapi isn't available immediately so we have to wait until it is to use gapi.
       this.loadClientWhenGapiReady(script);
     };
     script.src = "https://apis.google.com/js/client.js";    
     document.body.appendChild(script);
   }
+
+  render() {
+    if(this.state.isSignedIn) {
+      return (
+        <div className="App">
+          <Menu />
+          { 
+            (this.props.location.pathname === "/") ? <AddEntry /> : 
+            (this.props.location.pathname === "/settings") ? <Settings /> : 
+            <Timeline /> 
+          }
+        </div>
+      );
+    } else {
+      return (
+        <div className="App">
+          <Home onSubmit = {this.signIn}/> {/* If user not signed in, display home page */}
+        </div>
+      );
+    }      
+  } 
+
+
+  /* Google Drive API Methods*/
 
   loadClientWhenGapiReady = (script) => {
     console.log('Loading client...');
@@ -65,40 +87,21 @@ export class App extends Component {
 
   updateSignInStatus = () => {
     this.state.isSignedIn = gapi.auth2.getAuthInstance().isSignedIn.get(); 
+    this.forceUpdate(); 
   };
+
+  signIn() {
+    gapi.auth2.getAuthInstance().signIn().then(()=> {
+      this.updateSignInStatus();
+    }).catch((error)=> {
+      console.log(error);
+    })
+  }
 
   // For API calls (create + update)
   // const boundary = '-------314159265358979323846264';
   // const delimiter = "\r\n--" + boundary + "\r\n";
   // const end_request = "\r\n--" + boundary + "--";
-
-  render() {
-    if(typeof gapi != "undefined") {
-      this.updateSignInStatus();
-      if(this.state.isSignedIn) {
-        return (
-          <div className="App">
-            <Menu />
-            { 
-              (this.props.location.pathname === "/") ? <AddEntry /> : 
-              (this.props.location.pathname === "/settings") ? <Settings /> : 
-              <Timeline /> 
-            }
-          </div>
-        );
-      } else {
-        return (
-          <div className="App">
-            <Home /> {/* If user not signed in, display home page */}
-          </div>
-        );
-      }      
-    } 
-    // Display nothing while loading
-    return (
-      <div className="App"></div>
-    );
-  }
 }
 
 export default App;
