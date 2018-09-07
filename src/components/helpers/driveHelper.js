@@ -6,6 +6,11 @@ export default class DriveHelper {
     static delimiter = "\r\n---------314159265358979323846264\r\n";
     static end_request = "\r\n---------314159265358979323846264--";
     
+    static postUserData(fileData) {
+        const fileName = 0; // 0 is reserved for user data, diary entries start at 1
+        this.postFile(fileName, fileData);
+    }
+
     static postEntry(fileData) {
         const fileName = 1; // TODO: set file name to entry number
         this.postFile(fileName, fileData);
@@ -32,13 +37,12 @@ export default class DriveHelper {
                         'alt': 'media'
                     }
                 }).execute(((resp) => {
-                    console.log("METADATA"); 
-                    console.log(resp); 
-                    console.log("DIARY ENTRY"); 
-                    console.log(resp.body); 
-                    resolve(resp.body);
+                    if(!resp) {
+                        reject("Error reading file");
+                    } 
+                    resolve(resp);
                 })); 
-            }).error(err => reject(err));
+            });
         });
     }
 
@@ -146,7 +150,7 @@ export default class DriveHelper {
      * Design flaw: could have more than one file with a certain name. 
      * As of right now, it just takes the first file that's returned. 
      * 
-     * @param {string} name Name of the file to be searched for 
+     * @param {string} fileName Name of the file to be searched for 
      * @returns {Object} Thenable function (like a promise) holding the file id (string) data
      */
     static getFileId(fileName) {
@@ -164,26 +168,22 @@ export default class DriveHelper {
     }
 
     /**
-     * Print the files present in the App Data folder in the logger. 
+     * Gets the number of files in the app folder
+     * 
+     * @returns {promise} Holds integer of the number of files in the application folder
      */
-    static listFilesInAppData() {
-        gapi.client.drive.files.list({
-            'spaces': 'appDataFolder',
-            'fields': "nextPageToken, files(id, name)",
-            'pageSize': 25
-        }).then((response) => {
-            console.log('Files present in App Data:');
-            console.log(response); 
-            var files = response.result.files;
-            if (files && files.length > 0) {
-                for (var i = 0; i < files.length; i++) {
-                var file = files[i];
-                console.log(file.name + ' (' + file.id + ')');
-                }
-                console.log("\n")
-            } else {
-                console.log('No files found in App Data.');
-            }
-        });
+    static getFileCount() {
+        return new Promise((resolve, reject) => {
+            gapi.client.drive.files.list({
+                'spaces': 'appDataFolder',
+                'fields': "nextPageToken, files(id, name)",
+                'pageSize': 25
+            }).then((response) => {
+                // console.log('Files present in App Data:');
+                // console.log(response); 
+                const files = response.result.files;
+                resolve(files.length);
+            }).catch(err => reject(err));
+        }); 
     }
 }
