@@ -49,7 +49,7 @@ export class App extends Component {
   } 
 
 
-  /* Google Drive API Methods*/
+  /* Methods for Google Drive */
 
   loadClientWhenGapiReady = (script) => {
     console.log('Loading client...');
