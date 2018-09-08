@@ -89,6 +89,8 @@ export class App extends Component {
           }
           that.setState({isInitialized: true});
         });
+      } else {
+        that.setState({isInitialized: true});
       }
     }).catch((error) => {
       console.log(error);
