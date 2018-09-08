@@ -7,6 +7,7 @@ export class Timeline extends Component {
         super(props); 
         this.state = {
             fileCount: 0,
+            isFileCountDone: false,
             diaryEntryObjects: [],
         }
         this.eachDiaryEntryObject = this.eachDiaryEntryObject.bind(this);
@@ -14,17 +15,24 @@ export class Timeline extends Component {
 
     componentDidMount() {
         DriveHelper.getFileCount().then((count) => {
-            for(let i = count - 1; i > 0; i--) {
-                DriveHelper.readFile(i).then((entry) => {
-                    console.log(entry);
-                    this.setState(prevState => ({
-                        diaryEntryObjects: [
-                            ...prevState.diaryEntryObjects,
-                            {entry}
-                        ],
-                        fileCount: count, 
-                    }))
-                }).catch(err => console.log(err))
+            if(count > 1) {
+                for(let i = count - 1 ; i > 0; i--) {
+                    DriveHelper.readFile(i).then((entry) => {
+                        console.log(entry);
+                        this.setState(prevState => ({
+                            diaryEntryObjects: [
+                                ...prevState.diaryEntryObjects,
+                                {entry}
+                            ],
+                            fileCount: count,
+                            isFileCountDone: true, 
+                        }))
+                    }).catch(err => console.log(err))
+                }
+            } else {
+                this.setState({
+                    isFileCountDone: true,
+                });
             }
         })
     }
@@ -47,7 +55,8 @@ export class Timeline extends Component {
     render() {
         return (
             <div className="timeline">
-            { this.state.fileCount == 0 ? <p>Loading... </p> : this.state.diaryEntryObjects.map(this.eachDiaryEntryObject) }
+            { this.state.fileCount > 0 ? this.state.diaryEntryObjects.map(this.eachDiaryEntryObject) : this.state.isFileCountDone ? 
+                <p>There are no diary entries to show</p> : <p>Loading... </p> }
             </div>
         );
     }
