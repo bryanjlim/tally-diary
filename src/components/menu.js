@@ -10,6 +10,9 @@ export const Menu = () =>
         <Link to="/timeline">
             My Entries
         </Link>
+        <Link to="/insights">
+            Insights
+        </Link>
         <Link to="/settings">
             Settings
         </Link>

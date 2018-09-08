@@ -5,6 +5,7 @@ import { Home } from './pages/home/home';
 import { AddEntry } from './pages/add_entry/addEntry';
 import { Settings } from './pages/settings/settings';
 import { Timeline } from './pages/timeline/timeline';
+import { Insights } from './pages/insights/insights';
 
 export class App extends Component {
   constructor(props) {
@@ -34,6 +35,7 @@ export class App extends Component {
           { 
             (this.props.location.pathname === "/") ? <AddEntry /> : 
             (this.props.location.pathname === "/settings") ? <Settings signOut={this.signOut}/> : 
+            (this.props.location.pathname === "/insights") ? <Insights /> : 
             <Timeline /> 
           }
         </div>
