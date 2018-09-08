@@ -14,7 +14,7 @@ export class Timeline extends Component {
 
     componentDidMount() {
         DriveHelper.getFileCount().then((count) => {
-            for(let i = count; i > 0; i--) {
+            for(let i = count - 1; i > 0; i--) {
                 DriveHelper.readFile(i).then((entry) => {
                     console.log(entry);
                     this.setState(prevState => ({
