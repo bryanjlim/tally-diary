@@ -99,7 +99,7 @@ export class App extends Component {
 
   signIn() {
     gapi.auth2.getAuthInstance().signIn().then(()=> {
-      DriveHelper.getFileCount.then((count) => {
+      DriveHelper.getFileCount().then((count) => {
         if(count === 0) {
           this.setState({newUserSetup: true});
         }
@@ -121,6 +121,7 @@ export class App extends Component {
 
   updateSignInStatus = () => {
     this.setState({isSignedIn: gapi.auth2.getAuthInstance().isSignedIn.get()}); 
+    this.forceUpdate();
   };
 }
 
