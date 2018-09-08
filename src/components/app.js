@@ -1,5 +1,7 @@
 /* global gapi */
 import React, { Component } from 'react';
+import DriveHelper from './helpers/driveHelper';
+import { NewUserSetup } from './pages/new_user_setup/newUserSetup';
 import { Menu } from './menu';
 import { Home } from './pages/home/home';
 import { AddEntry } from './pages/add_entry/addEntry';
@@ -9,7 +11,11 @@ import { Timeline } from './pages/timeline/timeline';
 export class App extends Component {
   constructor(props) {
     super(props);
-    this.state = { isSignedIn: false, };
+    this.state = { 
+      isInitialized: false,
+      isSignedIn: false, 
+      newUserSetup: false,
+    };
     this.loadClientWhenGapiReady = this.loadClientWhenGapiReady.bind(this);
     this.initClient = this.initClient.bind(this);
     this.updateSignInStatus = this.updateSignInStatus.bind(this);
@@ -27,6 +33,12 @@ export class App extends Component {
   }
 
   render() {
+    if(!this.state.isInitialized) return null;
+    if(this.state.newUserSetup) {
+      return (
+        <NewUserSetup doneWithSetup={() => this.setState({newUserSetup: false})}/> 
+      ); 
+    }
     if(this.state.isSignedIn) {
       return (
         <div className="App">
@@ -44,9 +56,9 @@ export class App extends Component {
           <Home signIn = {this.signIn}/> { /* If user not signed in, display home page */ }
         </div>
       );
-    }      
-  } 
+    }
 
+  }       
 
   /* GAPI */
 
@@ -70,15 +82,27 @@ export class App extends Component {
       scope: 'https://www.googleapis.com/auth/drive.appdata'
     }).then(() => {
       that.updateSignInStatus(); 
-      that.forceUpdate();
+      if(that.state.isSignedIn) {
+        DriveHelper.getFileCount().then((count) => {
+          if(count === 0) {
+            that.setState({newUserSetup: true});
+          }
+          that.setState({isInitialized: true});
+        });
+      }
     }).catch((error) => {
       console.log(error);
     });
-  };
+  }
 
   signIn() {
     gapi.auth2.getAuthInstance().signIn().then(()=> {
-      this.updateSignInStatus();
+      DriveHelper.getFileCount.then((count) => {
+        if(count === 0) {
+          this.setState({newUserSetup: true});
+        }
+        this.updateSignInStatus();
+      }); 
     }).catch((error)=> {
       console.log(error);
     })
