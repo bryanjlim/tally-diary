@@ -16,7 +16,6 @@ export default class DriveHelper {
             const fileName = count+1; // TODO: Remove +1 when user data creation implemented
             DriveHelper.postFile(fileName, fileData);
         });
-        
     }
 
     /**
@@ -139,14 +138,16 @@ export default class DriveHelper {
      * @param {string} fileName Name of the file to be deleted. 
      */
     static deleteFile(fileName) {
-        console.log("Deleting file: " + fileName); 
-        DriveHelper.getFileId(fileName)
-            .then((fileId) => {
-                gapi.client.request({
-                    'path': 'https://www.googleapis.com/drive/v3/files/' + fileId,
-                    'method': 'DELETE'
-                }).execute(); 
-            }); 
+        return new Promise((resolve, reject) => {
+            DriveHelper.getFileId(fileName)
+                .then((fileId) => {
+                    gapi.client.request({
+                        'path': 'https://www.googleapis.com/drive/v3/files/' + fileId,
+                        'method': 'DELETE'
+                    }).execute();
+                    resolve();
+                }).catch((err) => reject(err));
+        });
     }
 
     /**
@@ -186,7 +187,9 @@ export default class DriveHelper {
             for(let i=0; i< files.length; i++) {
                 console.log("Index " + i);
                 console.log("File Name: " + files[i].name);
-                DriveHelper.deleteFile(files[i].name)
+                DriveHelper.deleteFile(files[i].name).then(() => {
+                    if(i === files.length - 1) window.location.reload();
+                });
             }
         }).catch(err => console.log("Error deleting all files: " + err));
     }
@@ -207,6 +210,26 @@ export default class DriveHelper {
                 // console.log(response); 
                 const files = response.result.files;
                 resolve(files.length);
+            }).catch(err => reject(err));
+        }); 
+    }
+
+    /**
+     * Gets the number of files in the app folder
+     * 
+     * @returns {promise} Holds list of file objects with names and ids
+     */
+    static getFileList() {
+        return new Promise((resolve, reject) => {
+            gapi.client.drive.files.list({
+                'spaces': 'appDataFolder',
+                'fields': "nextPageToken, files(id, name)",
+                'pageSize': 25
+            }).then((response) => {
+                // console.log('Files present in App Data:');
+                // console.log(response); 
+                const files = response.result.files;
+                resolve(files);
             }).catch(err => reject(err));
         }); 
     }
