@@ -13,8 +13,11 @@ export class AddEntry extends Component {
             customTitle: '',
             date: new Date(),
             bodyText: '',
-            mood: new Mood(Mood.moodEnum.MEH), // TODO: Add dropdown menu for mood in main submission form
-            weather: new Weather("Cloudy", 60, 80, 34), // TODO: Add fields for weather in main submission form
+            mood: Mood.moodEnum.MEH,
+            weather: 'Cloudy',
+            lowTemperature: 60,
+            highTemperature: 80, 
+            humidity: 34,
             tallies: [],
             todos: [],
 
@@ -57,16 +60,19 @@ export class AddEntry extends Component {
             "date": this.state.date,
             "bodyText": this.state.bodyText,
             "tallies": this.state.tallies, 
-            "weather": this.state.weather, 
+            "weather": new Weather(this.state.weather, this.state.lowTemperature, this.state.highTemperature, this.state.humidity), 
             "todos": this.state.todos,
-            "mood": this.state.mood
+            "mood": new Mood(this.state.mood)
         });
         this.setState({
             customTitle: '',
             date: new Date(),
             bodyText: '',
-            mood: new Mood(Mood.moodEnum.MEH), // TODO: Add dropdown menu for mood in main submission form
-            weather: new Weather("Cloudy", 60, 80, 34), // TODO: Add fields for weather in main submission form
+            mood: Mood.moodEnum.MEH,
+            weather: 'Cloudy',
+            lowTemperature: 60,
+            highTemperature: 80, 
+            humidity: 34,
             tallies: [],
             todos: [],
             newTallyMarkType: TallyMark.tallyTypeEnum.FOOD,
@@ -148,6 +154,40 @@ export class AddEntry extends Component {
                         type="text"
                         required
                         value={this.state.bodyText}
+                        onChange={this.handleInputChange} />
+                    <label htmlFor="mood">Mood</label>
+                    <select id="mood" name="mood" value={this.state.mood} onChange={this.handleInputChange}>
+                        <option value={Mood.moodEnum.MEH}>Meh</option>
+                        <option value={Mood.moodEnum.SAD}>Sad</option>
+                        <option value={Mood.moodEnum.HAPPY}>Happy</option>
+                    </select>
+                    <label htmlFor="weather">Weather Type</label>
+                    <input id="weather"
+                        name="weather"
+                        type="text"
+                        required
+                        value={this.state.weather}
+                        onChange={this.handleInputChange} />
+                    <label htmlFor="lowTemperature">Low Temperature</label>
+                    <input id="lowTemperature"
+                        name="lowTemperature"
+                        type="number"
+                        required
+                        value={this.state.lowTemperature}
+                        onChange={this.handleInputChange} />
+                    <label htmlFor="highTemperature">High Temperature</label>
+                    <input id="highTemperature"
+                        name="highTemperature"
+                        type="number"
+                        required
+                        value={this.state.highTemperature}
+                        onChange={this.handleInputChange} />
+                    <label htmlFor="humidity">Humidity</label>
+                    <input id="humidity"
+                        name="humidity"
+                        type="number"
+                        required
+                        value={this.state.humidity}
                         onChange={this.handleInputChange} />
                     <button>Submit Diary Entry</button>
                 </form>
