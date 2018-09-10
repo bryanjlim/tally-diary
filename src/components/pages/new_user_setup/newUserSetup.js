@@ -6,7 +6,6 @@ export class NewUserSetup extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            // New Diary Entry
             firstName: '',
             lastName: '',
             dateOfBirth: new Date(),
