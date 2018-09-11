@@ -4,7 +4,7 @@ export class AboutUs extends Component {
     render() {
         return (
             <div className="container">
-                About Us
+                <h1>About Us</h1>
             </div>
         );
     }
