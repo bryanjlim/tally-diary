@@ -1,0 +1,12 @@
+.homeNav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+  font-size: 1em;
+  display: flex;
+  background-color: black; }
+
+.homeNav > * {
+  margin: 0.35em; }

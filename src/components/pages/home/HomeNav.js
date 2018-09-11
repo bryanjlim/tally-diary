@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import './HomeNav.scss';
+import './HomeNav.css';
 
 export const HomeNav = () =>
     <nav className="homeNav">

@@ -1,16 +1,15 @@
 .homeNav {
     position: fixed;
-    bottom: 0;
+    top: 0;
     left: 0;
-    width: calc(100% - 1em);
-    height:5em;
-    font-size: 4em;
+    width: 100%;
+    height:auto;
+    font-size: 1em;
     display: flex;
-    justify-content: space-around;
     background-color: black;
   }
   
   .homeNav > * {
-    margin: 2em;
+    margin: 0.35em;
   }
   
