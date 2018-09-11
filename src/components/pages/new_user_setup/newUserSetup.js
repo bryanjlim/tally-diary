@@ -6,7 +6,6 @@ export class NewUserSetup extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            // New Diary Entry
             firstName: '',
             lastName: '',
             dateOfBirth: new Date(),
@@ -64,7 +63,7 @@ export class NewUserSetup extends Component {
                         name="dateOfBirth"
                         type="date"
                         required
-                        value={this.state.date}
+                        value={this.state.dateOfBirth}
                         onChange={this.handleInputChange} />
 
                     <label htmlFor="usePin">Use Pin?</label>

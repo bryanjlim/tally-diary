@@ -97,39 +97,42 @@ export default class DriveHelper {
      * @param {Object} fileData Data of the file to be updated
      */
     static updateFile(fileName, fileData) {
-        // File content + metadata 
-        const contentType = 'application/json';
-        const metadata = {
-          'name': fileName,
-          'mimeType': contentType
-        };
-        const base64Data = btoa(JSON.stringify(fileData));
-        const multipartRequest =
-            // metadata request
-            DriveHelper.delimiter +
-            'Content-Type: application/json\r\n\r\n' +
-            JSON.stringify(metadata) +
-            DriveHelper.delimiter +
-            // body content request 
-            'Content-Type: ' + contentType + '\r\n' +
-            'Content-Transfer-Encoding: base64\r\n' +
-            '\r\n' +
-            base64Data +
-            DriveHelper.end_request;
-            DriveHelper.getFileId(fileName)
-            .then((fileId) => {
-                gapi.client.request({
-                    'path': 'https://www.googleapis.com/upload/drive/v3/files/' + fileId,
-                    'method': 'PATCH', 
-                    'params': {
-                        'uploadType': 'multipart'
-                    },
-                    'headers': {
-                        'Content-Type': 'multipart/mixed; boundary="' + DriveHelper.boundary + '"'
-                    }, 
-                    'body': multipartRequest
-                }).execute(); 
-            }); 
+        return new Promise((resolve, reject) => {
+            // File content + metadata 
+            const contentType = 'application/json';
+            const metadata = {
+            'name': fileName,
+            'mimeType': contentType
+            };
+            const base64Data = btoa(JSON.stringify(fileData));
+            const multipartRequest =
+                // metadata request
+                DriveHelper.delimiter +
+                'Content-Type: application/json\r\n\r\n' +
+                JSON.stringify(metadata) +
+                DriveHelper.delimiter +
+                // body content request 
+                'Content-Type: ' + contentType + '\r\n' +
+                'Content-Transfer-Encoding: base64\r\n' +
+                '\r\n' +
+                base64Data +
+                DriveHelper.end_request;
+                DriveHelper.getFileId(fileName)
+                .then((fileId) => {
+                    gapi.client.request({
+                        'path': 'https://www.googleapis.com/upload/drive/v3/files/' + fileId,
+                        'method': 'PATCH', 
+                        'params': {
+                            'uploadType': 'multipart'
+                        },
+                        'headers': {
+                            'Content-Type': 'multipart/mixed; boundary="' + DriveHelper.boundary + '"'
+                        }, 
+                        'body': multipartRequest
+                    }).execute();
+                    resolve();
+                }).catch(err => reject(err)); 
+        });   
     }
 
     /**
