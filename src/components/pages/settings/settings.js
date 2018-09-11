@@ -120,7 +120,7 @@ export class Settings extends Component {
                         <button>Save</button>
                     </form>
 
-                    {this.state.showSuccessfulSave ? <p>Save Successful!</p> : this.state.showErrorSaving ? <p>Error saving file. Check console.</p> : null // TODO: Better-looking notifications}                    
+                    {this.state.showSuccessfulSave ? <p>Save Successful!</p> : this.state.showErrorSaving ? <p>Error saving file. Check console.</p> : null /* TODO: Better-looking notifications */}               
 
                     <h2>Account</h2>
                     <form ref="form" onSubmit={evt => {evt.preventDefault(); this.props.signOut();}}>
