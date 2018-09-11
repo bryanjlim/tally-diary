@@ -1,0 +1,25 @@
+@import "src/styles.scss";
+
+
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+  font-size: 1.25em;
+  display: flex;
+  background-color: $PrimaryBlack;
+}
+
+nav > * {
+  color: white;
+  text-decoration: none;
+  margin: 0.35em 0.35em 0em 0.35em;
+
+  border-bottom: 0.35em solid $PrimaryBlack;
+}
+
+nav a.active {
+  border-bottom: 0.25em solid $PrimaryColor;
+}

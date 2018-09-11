@@ -4,15 +4,17 @@ import registerServiceWorker from './registerServiceWorker';
 import { App } from './components/app'
 import { NotFound404 } from './components/pages/not_found_404/notFound404'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
-
+import './index.css';
 ReactDOM.render(
     <Router>
         <Switch>
-        <Route exact path="/" component={App}/>
-        <Route path="/timeline" component={App}/>
-        <Route path="/insights" component={App}/>
-        <Route path="/settings" component={App}/>
-        <Route path="*" component={NotFound404}/>
+            <Route exact path="/" component={App} />
+            <Route path="/timeline" component={App} />
+            <Route path="/insights" component={App} />
+            <Route path="/settings" component={App} />
+            <Route path="/aboutus" component={App} />
+            <Route path="/contact" component={App} />
+            <Route path="*" component={NotFound404} />
         </Switch>
     </Router>, document.getElementById('root')
 );
