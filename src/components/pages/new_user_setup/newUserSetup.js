@@ -63,7 +63,7 @@ export class NewUserSetup extends Component {
                         name="dateOfBirth"
                         type="date"
                         required
-                        value={this.state.date}
+                        value={this.state.dateOfBirth}
                         onChange={this.handleInputChange} />
 
                     <label htmlFor="usePin">Use Pin?</label>
