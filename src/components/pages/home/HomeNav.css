@@ -4,9 +4,15 @@
   left: 0;
   width: 100%;
   height: auto;
-  font-size: 1em;
+  font-size: 1.25em;
   display: flex;
-  background-color: black; }
+  background-color: #222233; }
 
 .homeNav > * {
-  margin: 0.35em; }
+  color: white;
+  text-decoration: none;
+  margin: .35em .35em .0em .35em;
+  border-bottom: 0.35em solid #222233; }
+
+a.active {
+  border-bottom: 0.35em solid #00a2ff; }

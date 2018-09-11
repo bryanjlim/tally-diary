@@ -1,15 +1,24 @@
+$navColor: #222233;
+
 .homeNav {
+
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height:auto;
-    font-size: 1em;
+    font-size: 1.25em;
     display: flex;
-    background-color: black;
+    background-color: $navColor;
   }
   
   .homeNav > * {
-    margin: 0.35em;
+    color:white;
+    text-decoration: none;
+    margin: .35em .35em .0em .35em;
+    border-bottom: .35em solid $navColor;
   }
-  
+
+  a.active{
+    border-bottom:.35em solid rgb(0, 162, 255);
+  }

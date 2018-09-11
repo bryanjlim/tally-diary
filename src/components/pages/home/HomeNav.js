@@ -1,19 +1,19 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import './HomeNav.css';
+import { Link, NavLink } from 'react-router-dom';
+import './homeNav.css';
 
 export const HomeNav = () =>
     <nav className="homeNav">
         <Link to="/">
             LOGO HERE
         </Link>
-        <Link to="/">
+        <NavLink exact to="/">
             Get Started
-        </Link>
-        <Link to="/aboutus">
+        </NavLink>
+        <NavLink to="/aboutus">
             About Us
-        </Link>
-        <Link to="/contact">
+        </NavLink>
+        <NavLink to="/contact">
             Contact
-        </Link>
+        </NavLink>
     </nav>

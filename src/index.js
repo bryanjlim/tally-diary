@@ -8,11 +8,13 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 ReactDOM.render(
     <Router>
         <Switch>
-        <Route exact path="/" component={App}/>
-        <Route path="/timeline" component={App}/>
-        <Route path="/insights" component={App}/>
-        <Route path="/settings" component={App}/>
-        <Route path="*" component={NotFound404}/>
+            <Route exact path="/" component={App} />
+            <Route path="/timeline" component={App} />
+            <Route path="/insights" component={App} />
+            <Route path="/settings" component={App} />
+            <Route path="/aboutus" component={App} />
+            <Route path="/contact" component={App} />
+            <Route path="*" component={NotFound404} />
         </Switch>
     </Router>, document.getElementById('root')
 );
