@@ -11,7 +11,7 @@ import { AddEntry } from './pages/add_entry/addEntry';
 import { Settings } from './pages/settings/settings';
 import { Timeline } from './pages/timeline/timeline';
 import { Insights } from './pages/insights/insights';
-
+import '../styles.css';
 export class App extends Component {
   constructor(props) {
     super(props);
@@ -47,24 +47,27 @@ export class App extends Component {
       return (
         <div className="App">
           <Menu />
-          {
-            (this.props.location.pathname === "/") ? <AddEntry /> :
-              (this.props.location.pathname === "/settings") ? <Settings signOut={this.signOut} /> :
-                (this.props.location.pathname === "/insights") ? <Insights /> :
-                  <Timeline />
-          }
+          <div className="container">
+            {
+              (this.props.location.pathname === "/") ? <AddEntry /> :
+                (this.props.location.pathname === "/settings") ? <Settings signOut={this.signOut} /> :
+                  (this.props.location.pathname === "/insights") ? <Insights /> :
+                    <Timeline />
+            }
+          </div>
         </div>
       );
     } else {
       return (
         <div className="App">
           <HomeNav />
-          {
-            (this.props.location.pathname === "/aboutus") ? <AboutUs /> :
-              (this.props.location.pathname === "/contact") ? <Contact /> :
-                <Home signIn={this.signIn} />
-          }
-
+          <div className="container">
+            {
+              (this.props.location.pathname === "/aboutus") ? <AboutUs /> :
+                (this.props.location.pathname === "/contact") ? <Contact /> :
+                  <Home signIn={this.signIn} />
+            }
+          </div>
         </div>
       );
     }

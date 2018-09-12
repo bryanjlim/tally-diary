@@ -23,9 +23,9 @@ export class Settings extends Component {
 
     componentDidMount() {
         // TODO: use global state to get user settings once implemented
-
+        var self = this;
         DriveHelper.readFile('0').then((res) => {
-            this.setState({
+            self.setState({
                 fistName: res.firstName,
                 lastName: res.lastName,
                 dateOfBirth: res.dateOfBirth,
