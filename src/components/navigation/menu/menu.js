@@ -1,19 +1,19 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import './menu.css';
 
 export const Menu = () =>
     <nav className="menu">
-        <Link to="/">
+        <NavLink exact to="/">
             New Entry
-        </Link>
-        <Link to="/timeline">
+        </NavLink>
+        <NavLink to="/timeline">
             My Entries
-        </Link>
-        <Link to="/insights">
+        </NavLink>
+        <NavLink to="/insights">
             Insights
-        </Link>
-        <Link to="/settings">
+        </NavLink>
+        <NavLink to="/settings">
             Settings
-        </Link>
+        </NavLink>
     </nav>

@@ -4,13 +4,11 @@ import './home.css';
 export class Home extends Component {
     render() {
         return (
-            <div>
-                <div className="container">
-                    <h1 className="homeTitle">Tally - A Diary that Tallies Your Life</h1>
-                    <form ref="form" onSubmit={evt => { evt.preventDefault(); this.props.signIn(); }}>
-                        <button className="getStartedButton" type="submit">Get Started</button>
-                    </form>
-                </div>
+            <div className="centered">
+                <h1 className="homeTitle">Tally - A Diary that Tallies Your Life</h1>
+                <form ref="form" onSubmit={evt => { evt.preventDefault(); this.props.signIn(); }}>
+                    <button className="getStartedButton" type="submit">Get Started</button>
+                </form>
             </div>
         );
     }
