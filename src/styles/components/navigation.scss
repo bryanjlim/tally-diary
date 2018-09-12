@@ -1,6 +1,5 @@
 @import "src/styles.scss";
 
-
 nav {
   position: fixed;
   top: 0;
@@ -16,7 +15,10 @@ nav > * {
   color: white;
   text-decoration: none;
   margin: 0.35em 0.35em 0em 0.35em;
-
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE10+/Edge */
+  user-select: none; /* Standard */
   border-bottom: 0.35em solid $PrimaryBlack;
 }
 

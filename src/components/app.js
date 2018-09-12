@@ -2,9 +2,9 @@
 import React, { Component } from 'react';
 import DriveHelper from './helpers/driveHelper';
 import { NewUserSetup } from './pages/new_user_setup/newUserSetup';
-import { Menu } from './menu';
+import { Menu } from './navigation/menu/menu.js';
 import { Home } from './pages/home/home';
-import { HomeNav } from './pages/home/homeNav';
+import { HomeNav } from './navigation/home/homeNav';
 import { Contact } from './pages/contact/contact';
 import { AboutUs } from './pages/about_us/aboutUs';
 import { AddEntry } from './pages/add_entry/addEntry';
