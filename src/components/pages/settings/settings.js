@@ -34,9 +34,9 @@ export class Settings extends Component {
                 usePin: res.usePin,
                 pin: res.pin,
                 isLoading: false,
-            }).catch((err) => {
-                console.log(err);
-            })
+            });
+        }).catch((err) => {
+            console.log(err);
         });
     }
 
