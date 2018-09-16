@@ -12,6 +12,8 @@ import { Settings } from './pages/settings/settings';
 import { Timeline } from './pages/timeline/timeline';
 import { Insights } from './pages/insights/insights';
 import '../styles.css';
+import userPreferenceStore from '../stores/userPreferenceStore';
+
 export class App extends Component {
   constructor(props) {
     super(props);
@@ -25,6 +27,7 @@ export class App extends Component {
     this.updateSignInStatus = this.updateSignInStatus.bind(this);
     this.signIn = this.signIn.bind(this);
     this.signOut = this.signOut.bind(this);
+    this.loadUserPreferencesStore = this.loadUserPreferencesStore.bind(this);
   }
 
   componentDidMount() {
@@ -40,7 +43,8 @@ export class App extends Component {
     if (!this.state.isInitialized) return null;
     if (this.state.newUserSetup) {
       return (
-        <NewUserSetup doneWithSetup={() => this.setState({ newUserSetup: false })} />
+        <NewUserSetup doneWithSetup={() => {this.setState({ newUserSetup: false }); 
+          userPreferenceStore.store = this.loadUserPreferencesStore();}} />
       );
     }
     if (this.state.isSignedIn) {
@@ -50,9 +54,9 @@ export class App extends Component {
           <div className="container">
             {
               (this.props.location.pathname === "/") ? <AddEntry /> :
-                (this.props.location.pathname === "/settings") ? <Settings signOut={this.signOut} /> :
+                (this.props.location.pathname === "/settings") ? <Settings signOut={this.signOut} store={userPreferenceStore} /> :
                   (this.props.location.pathname === "/insights") ? <Insights /> :
-                    <Timeline />
+                    <Timeline store={userPreferenceStore} />
             }
           </div>
         </div>
@@ -100,6 +104,8 @@ export class App extends Component {
         DriveHelper.getFileCount().then((count) => {
           if (count === 0) {
             that.setState({ newUserSetup: true });
+          } else {
+            userPreferenceStore.store = this.loadUserPreferencesStore();
           }
           that.setState({ isInitialized: true });
         });
@@ -116,6 +122,8 @@ export class App extends Component {
       DriveHelper.getFileCount().then((count) => {
         if (count === 0) {
           this.setState({ newUserSetup: true });
+        } else {
+          userPreferenceStore.store = this.loadUserPreferencesStore();
         }
         this.updateSignInStatus();
       });
@@ -136,6 +144,22 @@ export class App extends Component {
   updateSignInStatus = () => {
     this.setState({ isSignedIn: gapi.auth2.getAuthInstance().isSignedIn.get() });
     this.forceUpdate();
+  };
+
+  loadUserPreferencesStore = () => {
+    DriveHelper.readFile('0').then((res) => {
+      return {
+          fistName: res.firstName,
+          lastName: res.lastName,
+          dateOfBirth: res.dateOfBirth,
+          primaryTheme: res.primaryTheme,
+          secondaryColor: res.secondaryColor,
+          usePin: res.usePin,
+          pin: res.pin,
+      };
+  }).catch((err) => {
+      console.log(err);
+  });
   };
 }
 

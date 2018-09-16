@@ -22,21 +22,9 @@ export class Settings extends Component {
     }
 
     componentDidMount() {
-        // TODO: use global state to get user settings once implemented
-
-        DriveHelper.readFile('0').then((res) => {
-            this.setState({
-                fistName: res.firstName,
-                lastName: res.lastName,
-                dateOfBirth: res.dateOfBirth,
-                primaryTheme: res.primaryTheme,
-                secondaryColor: res.secondaryColor,
-                usePin: res.usePin,
-                pin: res.pin,
-                isLoading: false,
-            });
-        }).catch((err) => {
-            console.log(err);
+        this.setState({
+            ...this.props.store, 
+            isLoading: false,
         });
     }
 
@@ -65,6 +53,7 @@ export class Settings extends Component {
         DriveHelper.updateFile("0", updatedProperties).then(() => {
             console.log("successfully updated");
             this.setState({ showSuccessfulSave: true, showErrorSaving: false });
+            this.props.store.preferences = updatedProperties;
         }).catch((err) => {
             console.log("error saving: " + err);
             this.setState({ showErrorSaving: true, showSuccessfulSave: false});
