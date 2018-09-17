@@ -43,8 +43,7 @@ export class App extends Component {
     if (!this.state.isInitialized) return null;
     if (this.state.newUserSetup) {
       return (
-        <NewUserSetup doneWithSetup={() => {this.setState({ newUserSetup: false }); 
-          userPreferenceStore.store = this.loadUserPreferencesStore();}} />
+        <NewUserSetup doneWithSetup={(userData) => {this.setState({ newUserSetup: false }); userPreferenceStore.preferences = userData; }} />
       );
     }
     if (this.state.isSignedIn) {
@@ -103,11 +102,15 @@ export class App extends Component {
       if (that.state.isSignedIn) {
         DriveHelper.getFileCount().then((count) => {
           if (count === 0) {
-            that.setState({ newUserSetup: true });
+            that.setState({ 
+              newUserSetup: true, 
+              isInitialized: true,
+            });
           } else {
-            userPreferenceStore.store = this.loadUserPreferencesStore();
+            this.loadUserPreferencesStore().then(() => {
+              that.setState({ isInitialized: true });
+            });
           }
-          that.setState({ isInitialized: true });
         });
       } else {
         that.setState({ isInitialized: true });
@@ -123,7 +126,9 @@ export class App extends Component {
         if (count === 0) {
           this.setState({ newUserSetup: true });
         } else {
-          userPreferenceStore.store = this.loadUserPreferencesStore();
+          this.loadUserPreferencesStore().then(() => {
+            this.setState({ isInitialized: true });
+          });
         }
         this.updateSignInStatus();
       });
@@ -147,8 +152,9 @@ export class App extends Component {
   };
 
   loadUserPreferencesStore = () => {
-    DriveHelper.readFile('0').then((res) => {
-      return {
+    return new Promise((resolve, reject) => {
+      DriveHelper.readFile('0').then((res) => {
+        const userData = {
           fistName: res.firstName,
           lastName: res.lastName,
           dateOfBirth: res.dateOfBirth,
@@ -156,10 +162,13 @@ export class App extends Component {
           secondaryColor: res.secondaryColor,
           usePin: res.usePin,
           pin: res.pin,
-      };
-  }).catch((err) => {
-      console.log(err);
-  });
+        };
+        userPreferenceStore.preferences = userData;
+        resolve();
+      }).catch((err) => {
+          reject(err);
+      });
+    });
   };
 }
 

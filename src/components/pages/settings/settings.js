@@ -23,7 +23,7 @@ export class Settings extends Component {
 
     componentDidMount() {
         this.setState({
-            ...this.props.store, 
+            ...this.props.store.preferences, 
             isLoading: false,
         });
     }
