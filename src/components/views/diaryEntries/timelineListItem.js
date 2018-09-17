@@ -9,6 +9,7 @@ export class TimelineListItem extends Component {
                 <p>Body: {this.props.bodyText}</p>
                 <p>Tallies: {JSON.stringify(this.props.tallies)}</p>
                 <p>Weather: {JSON.stringify(this.props.weather)}</p>
+                <p>Days Alive: {Math.round((new Date(this.props.date) - new Date(this.props.birthDate)) / (1000 * 60 * 60 * 24))}</p>
                 <span> </span>
             </div>
         );

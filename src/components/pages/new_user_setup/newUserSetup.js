@@ -28,7 +28,7 @@ export class NewUserSetup extends Component {
 
     addUserProperties(e) {
         e.preventDefault();
-        DriveHelper.postUserData({
+        const userData = {
             "firstName": this.state.firstName, 
             "lastName": this.state.lastName,
             "dateOfBirth": this.state.dateOfBirth,
@@ -36,8 +36,9 @@ export class NewUserSetup extends Component {
             "secondaryColor": this.state.secondaryColor, 
             "usePin": this.state.usePin,
             "pin": this.state.pin
-        });
-        this.props.doneWithSetup();
+        };
+        DriveHelper.postUserData(userData);
+        this.props.doneWithSetup(userData);
     }
 
     handleInputChange(event) {

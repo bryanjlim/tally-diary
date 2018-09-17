@@ -48,6 +48,7 @@ export class Timeline extends Component {
                 bodyText={entry.bodyText}
                 todos={entry.todos}
                 tallies={entry.tallies}
+                birthDate={this.props.store.preferences.dateOfBirth}
             />
         );
     }
