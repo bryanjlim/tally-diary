@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import DriveHelper from './helpers/driveHelper';
 import { NewUserSetup } from './pages/new_user_setup/newUserSetup';
-import { Menu } from './navigation/menu/menu.js';
 import { Home } from './pages/home/home';
 import { HomeNav } from './navigation/home/homeNav';
 import { Contact } from './pages/contact/contact';
@@ -11,6 +10,7 @@ import { AddEntry } from './pages/add_entry/addEntry';
 import { Settings } from './pages/settings/settings';
 import { Timeline } from './pages/timeline/timeline';
 import { Insights } from './pages/insights/insights';
+import Layout from './layout';
 import '../styles.css';
 import userPreferenceStore from '../stores/userPreferenceStore';
 
@@ -48,17 +48,16 @@ export class App extends Component {
     }
     if (this.state.isSignedIn) {
       return (
-        <div className="App">
-          <Menu />
-          <div className="container">
-            {
-              (this.props.location.pathname === "/") ? <AddEntry /> :
-                (this.props.location.pathname === "/settings") ? <Settings signOut={this.signOut} store={userPreferenceStore} /> :
-                  (this.props.location.pathname === "/insights") ? <Insights /> :
-                    <Timeline store={userPreferenceStore} />
-            }
+        <Layout>
+          <div className="App">
+              {
+                (this.props.location.pathname === "/") ? <AddEntry /> :
+                  (this.props.location.pathname === "/settings") ? <Settings signOut={this.signOut} store={userPreferenceStore} /> :
+                    (this.props.location.pathname === "/insights") ? <Insights /> :
+                      <Timeline store={userPreferenceStore} />
+              }
           </div>
-        </div>
+        </Layout>
       );
     } else {
       return (
