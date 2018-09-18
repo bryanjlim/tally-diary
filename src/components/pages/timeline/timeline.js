@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import DriveHelper from '../../helpers/driveHelper';
-import { TimelineListItem } from '../../views/diaryEntries/timelineListItem';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import { TimelineCard } from '../../views/diaryEntries/timelineCard';
+import '../../../styles.css'
 export class Timeline extends Component {
 
     constructor(props) {
@@ -40,7 +42,8 @@ export class Timeline extends Component {
     eachDiaryEntryObject(diaryEntry, i) {
         const entry = diaryEntry.entry;
         return (
-            <TimelineListItem 
+            <div className='centered'>
+            <TimelineCard 
                 title={entry.title}
                 date={entry.date}
                 mood={entry.mood}
@@ -50,6 +53,7 @@ export class Timeline extends Component {
                 tallies={entry.tallies}
                 birthDate={this.props.store.preferences.dateOfBirth}
             />
+            </div>
         );
     }
 
@@ -57,7 +61,7 @@ export class Timeline extends Component {
         return (
             <div className="timeline">
             { this.state.fileCount > 0 ? this.state.diaryEntryObjects.map(this.eachDiaryEntryObject) : this.state.isFileCountDone ? 
-                <p>There are no diary entries to show</p> : <p>Loading... </p> }
+                <div className='centered'><i>There are no diary entries to show</i></div> : <div className='centered'><CircularProgress className='centered'/></div> }
             </div>
         );
     }

@@ -1,0 +1,15 @@
+@import "src/styles.scss";
+
+.timelineCard {
+    min-width: 275px;
+    max-width: 575px;
+}
+
+.timelineCardTitle {
+    margin-bottom: 16px;
+    font-size: 14px;
+}
+
+.timelineCardPos {
+    margin-bottom: 12px;
+}
