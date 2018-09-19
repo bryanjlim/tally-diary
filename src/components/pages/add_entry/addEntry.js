@@ -182,7 +182,7 @@ class Entry extends Component {
                     }
                 
                 <Divider className={classes.spaceDivider}/>
-                <Button variant="contained" aria-label="Delete" color="primary" size="large" className={classes.submitButton}>
+                <Button variant="contained" aria-label="Delete" color="primary" size="large" className={classes.submitButton} onClick={this.addNewEntry}>
                     Add Entry 
                     <Send className={classes.sendIcon}/>
                 </Button>

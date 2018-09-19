@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {Chip, withStyles} from '@material-ui/core';
-import TallyMark from '../../objects/tallies/tallyMark';
 
 const styles = theme => ({
     chipWrapper: {
@@ -42,6 +41,6 @@ class TallyMarkChip extends React.Component {
 
 TallyMarkChip.propTypes = {
     classes: PropTypes.object.isRequired,
-  };
+};
 
 export default withStyles(styles)(TallyMarkChip);

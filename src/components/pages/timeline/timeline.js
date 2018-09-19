@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import DriveHelper from '../../helpers/driveHelper';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { TimelineCard } from '../../views/diaryEntries/timelineCard';
+import TimelineCard  from '../../views/diaryEntries/timelineCard';
 import '../../../styles.css'
 export class Timeline extends Component {
 
