@@ -7,7 +7,7 @@ export default class EntryStyling {
             marginRight: 'auto',
             maxWidth: 1600,
             minWidth: '50px',
-            paddingBottom: '3em',
+            paddingBottom: '5em',
             [theme.breakpoints.down('xs')]: {
                 marginLeft: '-2em',
                 marginTop: '-2em',
@@ -92,7 +92,7 @@ export default class EntryStyling {
             display: 'inline-block'
         }, 
 
-        // Tally Marks
+        // Tally Marks and Todos
         spaceDivider: {
             marginTop: '1em',
         },
@@ -105,6 +105,17 @@ export default class EntryStyling {
             marginLeft: '1.5em',
         }, 
 
-        // Todos
+        // Submit Button
+        submitButton: {
+            marginTop: '1em',
+            marginRight: '1em',
+            marginBottom: '1em',
+            float: 'right',
+        },
+        sendIcon: {
+            marginBottom: '.1em',
+            marginLeft: '.5em',
+        }
+
       });
 }

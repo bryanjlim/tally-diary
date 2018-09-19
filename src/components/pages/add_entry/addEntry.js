@@ -11,6 +11,7 @@ import TallyMarkChip from './tallyMarkChip';
 import AddTally from './addTally';
 import AddTodo from './addTodo';
 import EntryStyling from './entryStyling';
+import Send from '@material-ui/icons/Send'
 
 const styles = EntryStyling.styles;
 
@@ -181,8 +182,9 @@ class Entry extends Component {
                     }
                 
                 <Divider className={classes.spaceDivider}/>
-                <Button variant="extendedFab" aria-label="Delete">
-                    Submit
+                <Button variant="contained" aria-label="Delete" color="primary" size="large" className={classes.submitButton}>
+                    Add Entry 
+                    <Send className={classes.sendIcon}/>
                 </Button>
             </Paper>
         );
