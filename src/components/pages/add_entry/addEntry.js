@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {TextField, MenuItem, Grid, Paper, Button, withStyles } from '@material-ui/core';
+import {TextField, MenuItem, Divider, Grid, Paper, Button, withStyles } from '@material-ui/core';
 import DriveHelper from '../../helpers/driveHelper';
 import Mood from '../../objects/mood/mood'; 
 import Weather from '../../objects/weather/weather'; 
 import Todo from '../../objects/todos/todo'; 
 import TallyMark from '../../objects/tallies/tallyMark';
+import TallyMarkChip from './tallyMarkChip';
 import AddTally from './addTally';
 import AddTodo from './addTodo';
 import EntryStyling from './entryStyling';
@@ -32,6 +33,7 @@ class Entry extends Component {
         };
         this.addNewEntry = this.addNewEntry.bind(this);
         this.addNewTallyMark = this.addNewTallyMark.bind(this);
+        this.deleteTallyMark = this.deleteTallyMark.bind(this);
         this.addTodo = this.addTodo.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
     }
@@ -158,8 +160,18 @@ class Entry extends Component {
                     </Grid>
                 </div>
 
-                <p>Tags Being Added: { this.state.tallies.map((currentValue)=> { return currentValue.type + currentValue.text}).toString() }</p>
-                <p>Todos Being Added: { this.state.todos.map((currentValue)=> { return currentValue.status + currentValue.text}).toString() }</p>
+                <Divider className={classes.spaceDivider}/>
+                    <h2 className={classes.tallyMarkHeader}>Tally Marks</h2>
+                    {
+                        this.state.tallies.length === 0 ? <i className={classes.noTallyText}>There are no tallies to show</i> :
+                        <div>{this.state.tallies.map((currentValue, index)=> 
+                            {return <TallyMarkChip type={currentValue.type} text={currentValue.text} index={index} deleteTallyMark={this.deleteTallyMark}/>})}
+                        </div> 
+                    }
+                <Divider className={classes.spaceDivider}/>
+
+                {/* <p>Tallies Being Added: { this.state.tallies.map((currentValue)=> { return <TallyMarkChip/>}).toString() }</p>
+                <p>Todos Being Added: { this.state.todos.map((currentValue)=> { return currentValue.status + currentValue.text}).toString() }</p> */}
 
                 
                 <Button variant="extendedFab" aria-label="Delete">
@@ -176,6 +188,12 @@ class Entry extends Component {
         this.setState(prevState => ({
             tallies: [...prevState.tallies, new TallyMark(newTallyMarkType, newTallyMarkText)]
           }))
+    }
+
+    deleteTallyMark(index) {
+        const array = [...this.state.tallies]; 
+        array.splice(index, 1);
+        this.setState({tallies: array});
     }
 
     addTodo(newTodoStatus, newTodoText) {

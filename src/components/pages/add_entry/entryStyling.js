@@ -91,5 +91,20 @@ export default class EntryStyling {
             marginLeft: '1em',
             display: 'inline-block'
         }, 
+
+        // Tally Marks
+        spaceDivider: {
+            marginTop: '1em',
+        },
+        tallyMarkHeader: {
+            marginLeft: '1em',
+            fontSize: '1.5em',
+            color:theme.palette.primary.main,
+        },
+        noTallyText: {
+            marginLeft: '1.5em',
+        }, 
+
+        // Todos
       });
 }
