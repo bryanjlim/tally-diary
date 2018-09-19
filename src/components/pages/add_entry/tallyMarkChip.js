@@ -20,15 +20,10 @@ class TallyMarkChip extends React.Component {
         };
 
         this.handleDelete = this.handleDelete.bind(this);
-        this.handleClick = this.handleClick.bind(this);
     }
 
     handleDelete() {
         this.props.deleteTallyMark(this.props.index);
-    }
-      
-    handleClick() {
-        alert('You clicked the Chip.'); // eslint-disable-line no-alert
     }
 
     render() {
@@ -41,6 +36,7 @@ class TallyMarkChip extends React.Component {
                 onDelete={this.handleDelete}
                 className={classes.chip}
                 color="primary"
+                variant="outlined"
                 />
             </div>
         );

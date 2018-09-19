@@ -96,12 +96,12 @@ export default class EntryStyling {
         spaceDivider: {
             marginTop: '1em',
         },
-        tallyMarkHeader: {
+        chipHeader: {
             marginLeft: '1em',
             fontSize: '1.5em',
             color:theme.palette.primary.main,
         },
-        noTallyText: {
+        noChipText: {
             marginLeft: '1.5em',
         }, 
 

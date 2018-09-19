@@ -5,6 +5,7 @@ import DriveHelper from '../../helpers/driveHelper';
 import Mood from '../../objects/mood/mood'; 
 import Weather from '../../objects/weather/weather'; 
 import Todo from '../../objects/todos/todo'; 
+import TodoChip from './todoChip';
 import TallyMark from '../../objects/tallies/tallyMark';
 import TallyMarkChip from './tallyMarkChip';
 import AddTally from './addTally';
@@ -35,6 +36,7 @@ class Entry extends Component {
         this.addNewTallyMark = this.addNewTallyMark.bind(this);
         this.deleteTallyMark = this.deleteTallyMark.bind(this);
         this.addTodo = this.addTodo.bind(this);
+        this.deleteTodo = this.deleteTodo.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
     }
 
@@ -161,19 +163,24 @@ class Entry extends Component {
                 </div>
 
                 <Divider className={classes.spaceDivider}/>
-                    <h2 className={classes.tallyMarkHeader}>Tally Marks</h2>
+                    <h2 className={classes.chipHeader}>Tally Marks</h2>
                     {
-                        this.state.tallies.length === 0 ? <i className={classes.noTallyText}>There are no tallies to show</i> :
+                        this.state.tallies.length === 0 ? <i className={classes.noChipText}>There are no tallies to show</i> :
                         <div>{this.state.tallies.map((currentValue, index)=> 
                             {return <TallyMarkChip type={currentValue.type} text={currentValue.text} index={index} deleteTallyMark={this.deleteTallyMark}/>})}
                         </div> 
                     }
+
                 <Divider className={classes.spaceDivider}/>
-
-                {/* <p>Tallies Being Added: { this.state.tallies.map((currentValue)=> { return <TallyMarkChip/>}).toString() }</p>
-                <p>Todos Being Added: { this.state.todos.map((currentValue)=> { return currentValue.status + currentValue.text}).toString() }</p> */}
-
+                    <h2 className={classes.chipHeader}>Todos</h2>
+                    {
+                        this.state.todos.length === 0 ? <i className={classes.noChipText}>There are no todos to show</i> :
+                        <div>{this.state.todos.map((currentValue, index)=> 
+                            {return <TodoChip status={currentValue.status} text={currentValue.text} index={index} deleteTodo={this.deleteTodo}/>})}
+                        </div> 
+                    }
                 
+                <Divider className={classes.spaceDivider}/>
                 <Button variant="extendedFab" aria-label="Delete">
                     Submit
                 </Button>
@@ -200,6 +207,12 @@ class Entry extends Component {
         this.setState(prevState => ({
             todos: [...prevState.todos, new Todo(newTodoStatus, newTodoText)]
           }))
+    }
+
+    deleteTodo(index) {
+        const array = [...this.state.todos]; 
+        array.splice(index, 1);
+        this.setState({todos: array});
     }
 
     addNewEntry(e) {
