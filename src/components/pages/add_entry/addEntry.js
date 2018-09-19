@@ -1,10 +1,6 @@
 import React, { Component } from 'react';
-import TextField from '@material-ui/core/TextField';
-import MenuItem from '@material-ui/core/MenuItem';
-import Divider from '@material-ui/core/Divider';
-import Paper from '@material-ui/core/Paper';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import Button from '@material-ui/core/Button';
+import PropTypes from 'prop-types';
+import {TextField, MenuItem, Divider, Paper, Button, withStyles } from '@material-ui/core';
 import NavigationIcon from '@material-ui/icons/Navigation';
 import DriveHelper from '../../helpers/driveHelper';
 import Mood from '../../objects/mood/mood'; 
@@ -13,9 +9,11 @@ import Todo from '../../objects/todos/todo';
 import TallyMark from '../../objects/tallies/tallyMark';
 import AddTally from './addTally';
 import AddTodo from './addTodo';
-import './entry.css'
+import EntryStyling from './entryStyling';
 
-export class AddEntry extends Component {
+const styles = EntryStyling.styles;
+
+class Entry extends Component {
     constructor(props) {
         super(props);
         const formattedMonth = (new Date().getMonth() + 1).toString().length === 1 ? "0" + ( new Date().getMonth() + 1 ) : new Date().getMonth() + 1;
@@ -38,6 +36,116 @@ export class AddEntry extends Component {
         this.addTodo = this.addTodo.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
     }
+
+    render() {
+        const { classes } = this.props;
+        const daysAlive = Math.round((new Date(this.state.date) - new Date(this.state.dateOfBirth)) / (1000 * 60 * 60 * 24));
+        return (
+            <Paper elevation={1} className={classes.paper}>
+
+                <div className={classes.customTitleWrapper}>
+                    <TextField
+                        label="Title"
+                        id="customTitle"
+                        name="customTitle"
+                        className={classes.customTitleInput}
+                        InputLabelProps={{
+                            style: {fontSize:"20px"},
+                        }}
+                        InputProps={{
+                            startAdornment: <div className={classes.customTitleAdornment}>{"Day " + daysAlive}</div>,
+                            style: {fontSize:"2em"},
+                        }}
+                    />
+                </div>
+
+                <div className={classes.topCluster}>
+                    <TextField
+                        id="date"
+                        name="date"
+                        type="date"
+                        value={this.state.date}
+                        onChange={this.handleInputChange}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                    /> <br className={classes.hideWhenSmall}/>
+                    <div className={classes.addTallyButton}><AddTally addNewTallyMark={this.addNewTallyMark}/></div> <br className={classes.hideWhenSmall}/>
+                    <div className={classes.addTodoButton}><AddTodo addTodo={this.addTodo}/></div>
+                </div>
+
+                <div className={classes.bodyTextWrapper}>
+                    <TextField
+                        name="bodyText"
+                        id="outlined-multiline-static"
+                        label="Your Thoughts"
+                        multiline
+                        rows="10"
+                        value={this.state.bodyText}
+                        onChange={this.handleInputChange}
+                        className={classes.bodyText}
+                        margin="normal"
+                        variant="outlined"
+                    />
+                </div>
+
+                <TextField
+                    id="outlined-select-mood"
+                    select
+                    label="Mood"
+                    className="moodSelect"
+                    value={this.state.mood}
+                    onChange={this.handleInputChange}
+                    margin="normal"
+                    variant="outlined"
+                >
+                    <MenuItem key={Mood.moodEnum.MEH} value={Mood.moodEnum.MEH}>😐</MenuItem>
+                    <MenuItem key={Mood.moodEnum.SAD} value={Mood.moodEnum.SAD}>🙂</MenuItem>
+                    <MenuItem key={Mood.moodEnum.HAPPY} value={Mood.moodEnum.HAPPY}>😔</MenuItem>
+                </TextField>
+
+                <label htmlFor="weather">Weather Type</label>
+                <input id="weather"
+                    name="weather"
+                    type="text"
+                    required
+                    value={this.state.weather}
+                    onChange={this.handleInputChange} />
+                <label htmlFor="lowTemperature">Low Temperature</label>
+                <input id="lowTemperature"
+                    name="lowTemperature"
+                    type="number"
+                    required
+                    value={this.state.lowTemperature}
+                    onChange={this.handleInputChange} />
+                <label htmlFor="highTemperature">High Temperature</label>
+                <input id="highTemperature"
+                    name="highTemperature"
+                    type="number"
+                    required
+                    value={this.state.highTemperature}
+                    onChange={this.handleInputChange} />
+                <label htmlFor="humidity">Humidity</label>
+                <input id="humidity"
+                    name="humidity"
+                    type="number"
+                    required
+                    value={this.state.humidity}
+                    onChange={this.handleInputChange} />
+
+                <p>Tags Being Added: { this.state.tallies.map((currentValue)=> { return currentValue.type + currentValue.text}).toString() }</p>
+                <p>Todos Being Added: { this.state.todos.map((currentValue)=> { return currentValue.status + currentValue.text}).toString() }</p>
+
+                
+                <Button variant="extendedFab" aria-label="Delete">
+                    Submit
+                </Button>
+            </Paper>
+        );
+    }
+
+
+    /* Methods */
 
     addNewTallyMark(newTallyMarkType, newTallyMarkText) {
         this.setState(prevState => ({
@@ -89,119 +197,10 @@ export class AddEntry extends Component {
           [name]: value
         });
     }
-
-    render() {
-        const daysAlive = Math.round((new Date(this.state.date) - new Date(this.state.dateOfBirth)) / (1000 * 60 * 60 * 24));
-        return (
-            <Paper elevation={1}>
-                <h1>New Entry</h1>
-
-                <AddTally addNewTallyMark={this.addNewTallyMark}/>
-                <AddTodo addTodo={this.addTodo}/>
-
-                <Divider />
-
-                <h2>Main Submission Form</h2>
-                <p>Tags Being Added: { this.state.tallies.map((currentValue)=> { return currentValue.type + currentValue.text}).toString() }</p>
-                <p>Todos Being Added: { this.state.todos.map((currentValue)=> { return currentValue.status + currentValue.text}).toString() }</p>
-                <form onSubmit={this.addNewEntry} className="container">
-
-                    <TextField
-                        label="Title"
-                        id="customTitle"
-                        className="customTitle"
-                        name="customTitle"
-                        InputProps={{
-                            startAdornment: <InputAdornment position="start">{"Day " + daysAlive + " "}</InputAdornment>,
-                        }}
-                    />
-
-                    <TextField
-                        id="date"
-                        name="date"
-                        label="Date"
-                        type="date"
-                        value={this.state.date}
-                        onChange={this.handleInputChange}
-                        className='textField'
-                        InputLabelProps={{
-                            shrink: true,
-                        }}
-                    />
-
-                    <Divider />
-
-                    <TextField
-                        name="bodyText"
-                        id="outlined-multiline-static"
-                        label="Your Thoughts"
-                        multiline
-                        rows="10"
-                        value={this.state.bodyText}
-                        onChange={this.handleInputChange}
-                        className='bodyText'
-                        margin="normal"
-                        variant="outlined"
-                    />
-
-                    <Divider />
-
-                    <TextField
-                        id="outlined-select-mood"
-                        select
-                        label="Mood"
-                        className="moodSelect"
-                        value={this.state.mood}
-                        onChange={this.handleInputChange}
-                        margin="normal"
-                        variant="outlined"
-                    >
-                        <MenuItem key={Mood.moodEnum.MEH} value={Mood.moodEnum.MEH}>😐</MenuItem>
-                        <MenuItem key={Mood.moodEnum.SAD} value={Mood.moodEnum.SAD}>🙂</MenuItem>
-                        <MenuItem key={Mood.moodEnum.HAPPY} value={Mood.moodEnum.HAPPY}>😔</MenuItem>
-                    </TextField>
-
-                    <Divider />
-
-                    <label htmlFor="weather">Weather Type</label>
-                    <input id="weather"
-                        name="weather"
-                        type="text"
-                        required
-                        value={this.state.weather}
-                        onChange={this.handleInputChange} />
-                    <label htmlFor="lowTemperature">Low Temperature</label>
-                    <input id="lowTemperature"
-                        name="lowTemperature"
-                        type="number"
-                        required
-                        value={this.state.lowTemperature}
-                        onChange={this.handleInputChange} />
-                    <label htmlFor="highTemperature">High Temperature</label>
-                    <input id="highTemperature"
-                        name="highTemperature"
-                        type="number"
-                        required
-                        value={this.state.highTemperature}
-                        onChange={this.handleInputChange} />
-                    <label htmlFor="humidity">Humidity</label>
-                    <input id="humidity"
-                        name="humidity"
-                        type="number"
-                        required
-                        value={this.state.humidity}
-                        onChange={this.handleInputChange} />
-
-                    <Divider />
-                    
-                    <Button variant="extendedFab" aria-label="Delete">
-                        <NavigationIcon />
-                        Submit
-                    </Button>
-                </form>
-            </Paper>
-        );
-    }
 }
 
-export default AddEntry;
+Entry.propTypes = {
+    classes: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles)(Entry)

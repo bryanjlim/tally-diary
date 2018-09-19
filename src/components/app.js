@@ -1,12 +1,12 @@
 /* global gapi */
 import React, { Component } from 'react';
 import DriveHelper from './helpers/driveHelper';
+import Entry from './pages/add_entry/addEntry';
 import { NewUserSetup } from './pages/new_user_setup/newUserSetup';
 import { Home } from './pages/home/home';
 import { HomeNav } from './navigation/home/homeNav';
 import { Contact } from './pages/contact/contact';
 import { AboutUs } from './pages/about_us/aboutUs';
-import { AddEntry } from './pages/add_entry/addEntry';
 import { Settings } from './pages/settings/settings';
 import { Timeline } from './pages/timeline/timeline';
 import { Insights } from './pages/insights/insights';
@@ -51,7 +51,7 @@ export class App extends Component {
         <Layout>
           <div className="App">
               {
-                (this.props.location.pathname === "/") ? <AddEntry store={userPreferenceStore} /> :
+                (this.props.location.pathname === "/") ? <Entry store={userPreferenceStore} /> :
                   (this.props.location.pathname === "/settings") ? <Settings signOut={this.signOut} store={userPreferenceStore} /> :
                     (this.props.location.pathname === "/insights") ? <Insights /> :
                       <Timeline store={userPreferenceStore} />
