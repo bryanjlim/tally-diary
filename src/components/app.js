@@ -51,7 +51,7 @@ export class App extends Component {
         <Layout>
           <div className="App">
               {
-                (this.props.location.pathname === "/") ? <AddEntry /> :
+                (this.props.location.pathname === "/") ? <AddEntry store={userPreferenceStore} /> :
                   (this.props.location.pathname === "/settings") ? <Settings signOut={this.signOut} store={userPreferenceStore} /> :
                     (this.props.location.pathname === "/insights") ? <Insights /> :
                       <Timeline store={userPreferenceStore} />
