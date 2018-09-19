@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {TextField, MenuItem, Divider, Paper, Button, withStyles } from '@material-ui/core';
-import NavigationIcon from '@material-ui/icons/Navigation';
+import {TextField, MenuItem, Grid, Paper, Button, withStyles } from '@material-ui/core';
 import DriveHelper from '../../helpers/driveHelper';
 import Mood from '../../objects/mood/mood'; 
 import Weather from '../../objects/weather/weather'; 
@@ -43,6 +42,7 @@ class Entry extends Component {
         return (
             <Paper elevation={1} className={classes.paper}>
 
+                {/* Title */}
                 <div className={classes.customTitleWrapper}>
                     <TextField
                         label="Title"
@@ -59,6 +59,7 @@ class Entry extends Component {
                     />
                 </div>
 
+                {/* Top Cluster (Date Selector, Add Tally Button, Add Todo Button) */}
                 <div className={classes.topCluster}>
                     <TextField
                         id="date"
@@ -69,11 +70,20 @@ class Entry extends Component {
                         InputLabelProps={{
                             shrink: true,
                         }}
-                    /> <br className={classes.hideWhenSmall}/>
-                    <div className={classes.addTallyButton}><AddTally addNewTallyMark={this.addNewTallyMark}/></div> <br className={classes.hideWhenSmall}/>
-                    <div className={classes.addTodoButton}><AddTodo addTodo={this.addTodo}/></div>
+                    /> 
+                    <div className={classes.hideWhenSmall}> 
+                        <br/>
+                        <div className={classes.addButton}><AddTally addNewTallyMark={this.addNewTallyMark}/></div> 
+                        <br/>
+                        <div className={classes.addButton}><AddTodo addTodo={this.addTodo}/></div>
+                    </div>
+                </div>
+                <div className={classes.hideWhenBig}> 
+                        <div className={classes.addButton}><AddTally addNewTallyMark={this.addNewTallyMark}/></div>
+                        <div className={classes.addButton}><AddTodo addTodo={this.addTodo}/></div>
                 </div>
 
+                {/* Body Text */}
                 <div className={classes.bodyTextWrapper}>
                     <TextField
                         name="bodyText"
@@ -88,50 +98,65 @@ class Entry extends Component {
                         variant="outlined"
                     />
                 </div>
-
-                <TextField
-                    id="outlined-select-mood"
-                    select
-                    label="Mood"
-                    className="moodSelect"
-                    value={this.state.mood}
-                    onChange={this.handleInputChange}
-                    margin="normal"
-                    variant="outlined"
-                >
-                    <MenuItem key={Mood.moodEnum.MEH} value={Mood.moodEnum.MEH}>😐</MenuItem>
-                    <MenuItem key={Mood.moodEnum.SAD} value={Mood.moodEnum.SAD}>🙂</MenuItem>
-                    <MenuItem key={Mood.moodEnum.HAPPY} value={Mood.moodEnum.HAPPY}>😔</MenuItem>
-                </TextField>
-
-                <label htmlFor="weather">Weather Type</label>
-                <input id="weather"
-                    name="weather"
-                    type="text"
-                    required
-                    value={this.state.weather}
-                    onChange={this.handleInputChange} />
-                <label htmlFor="lowTemperature">Low Temperature</label>
-                <input id="lowTemperature"
-                    name="lowTemperature"
-                    type="number"
-                    required
-                    value={this.state.lowTemperature}
-                    onChange={this.handleInputChange} />
-                <label htmlFor="highTemperature">High Temperature</label>
-                <input id="highTemperature"
-                    name="highTemperature"
-                    type="number"
-                    required
-                    value={this.state.highTemperature}
-                    onChange={this.handleInputChange} />
-                <label htmlFor="humidity">Humidity</label>
-                <input id="humidity"
-                    name="humidity"
-                    type="number"
-                    required
-                    value={this.state.humidity}
-                    onChange={this.handleInputChange} />
+                
+                {/* Bottom Cluster (Mood and Weather) */}
+                <div className={classes.bottomClusterGridContainer}>
+                    <Grid container>
+                        <Grid item className={classes.bottomClusterObject}>
+                            <TextField
+                                label="Mood"
+                                name="mood"
+                                value={this.state.mood}
+                                onChange={this.handleInputChange}
+                                variant="outlined"
+                                select
+                            >
+                                <MenuItem key={Mood.moodEnum.MEH} value={Mood.moodEnum.MEH}>😐</MenuItem>
+                                <MenuItem key={Mood.moodEnum.SAD} value={Mood.moodEnum.SAD}>😃</MenuItem>
+                                <MenuItem key={Mood.moodEnum.HAPPY} value={Mood.moodEnum.HAPPY}>😔</MenuItem>
+                            </TextField>
+                        </Grid>
+                        <Grid item className={classes.bottomClusterObject}>
+                            <TextField
+                                label="Weather"
+                                name="weather"
+                                value={this.state.weather}
+                                onChange={this.handleInputChange}
+                                variant="outlined"
+                            />
+                        </Grid>
+                        <Grid item className={classes.bottomClusterObject}>
+                            <TextField
+                                label="Low Temperature"
+                                name="lowTemperature"
+                                type="number"
+                                value={this.state.lowTemperature}
+                                onChange={this.handleInputChange}
+                                variant="outlined"
+                            />
+                        </Grid>
+                        <Grid item className={classes.bottomClusterObject}>
+                            <TextField
+                                label="High Temperature"
+                                name="highTemperature"
+                                type="number"
+                                value={this.state.highTemperature}
+                                onChange={this.handleInputChange}
+                                variant="outlined"
+                            />
+                        </Grid>
+                        <Grid item className={classes.bottomClusterObject}>
+                            <TextField
+                                label="Humidity"
+                                name="humidity"
+                                type="number"
+                                value={this.state.lowTemperature}
+                                onChange={this.humidity}
+                                variant="outlined"
+                            />
+                        </Grid>
+                    </Grid>
+                </div>
 
                 <p>Tags Being Added: { this.state.tallies.map((currentValue)=> { return currentValue.type + currentValue.text}).toString() }</p>
                 <p>Todos Being Added: { this.state.todos.map((currentValue)=> { return currentValue.status + currentValue.text}).toString() }</p>
