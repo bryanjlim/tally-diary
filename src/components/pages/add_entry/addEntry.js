@@ -11,9 +11,8 @@ import Mood from '../../objects/mood/mood';
 import Weather from '../../objects/weather/weather'; 
 import Todo from '../../objects/todos/todo'; 
 import TallyMark from '../../objects/tallies/tallyMark';
-import AddTally from './add_tally/addTally';
-
-
+import AddTally from './addTally';
+import AddTodo from './addTodo';
 import './entry.css'
 
 export class AddEntry extends Component {
@@ -33,10 +32,6 @@ export class AddEntry extends Component {
             humidity: 34,
             tallies: [],
             todos: [],
-
-            // New Todo
-            newTodoStatus: false,
-            newTodoText: '',
         };
         this.addNewEntry = this.addNewEntry.bind(this);
         this.addNewTallyMark = this.addNewTallyMark.bind(this);
@@ -50,13 +45,10 @@ export class AddEntry extends Component {
           }))
     }
 
-    addTodo(e) {
-        e.preventDefault();
-        this.state.todos.push(new Todo(this.state.newTodoStatus, this.state.newTodoText));
-        this.setState({
-            newTodoStatus: false,
-            newTodoText: '',
-        }); 
+    addTodo(newTodoStatus, newTodoText) {
+        this.setState(prevState => ({
+            todos: [...prevState.todos, new Todo(newTodoStatus, newTodoText)]
+          }))
     }
 
     addNewEntry(e) {
@@ -105,22 +97,7 @@ export class AddEntry extends Component {
                 <h1>New Entry</h1>
 
                 <AddTally addNewTallyMark={this.addNewTallyMark}/>
-        
-                <h2>Add Todo To Entry</h2>
-                <form onSubmit={this.addTodo} className="add-todo-form">
-                    <input id="newTodoStatus"
-                        name="newTodoStatus"
-                        type="checkbox"
-                        checked={this.state.newTodoStatus}
-                        onChange={this.handleInputChange} />
-                    <input id="newTodoText"
-                        name="newTodoText"
-                        type="text"
-                        required
-                        value={this.state.newTodoText}
-                        onChange={this.handleInputChange} />
-                    <button>Add Todo</button>
-                </form>
+                <AddTodo addTodo={this.addTodo}/>
 
                 <Divider />
 
