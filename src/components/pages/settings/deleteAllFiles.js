@@ -35,7 +35,7 @@ class DeleteAllFiles extends React.Component {
   render() {
     return (
       <div>
-        <Button onClick={this.handleClickOpen}>Delete All Files</Button>
+        <Button color="secondary" onClick={this.handleClickOpen}>Delete All Files</Button>
         <Dialog
           open={this.state.open}
           onClose={this.handleClose}
@@ -50,7 +50,7 @@ class DeleteAllFiles extends React.Component {
           <Button onClick={this.handleClose} color="primary">
               Cancel
             </Button>
-            <Button onClick={this.handleDelete} color="primary">
+            <Button onClick={this.handleDelete} color="secondary">
               Continue
             </Button>
           </DialogActions>

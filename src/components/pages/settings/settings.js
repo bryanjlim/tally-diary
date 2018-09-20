@@ -7,41 +7,6 @@ import DeleteAllFiles from './deleteAllFiles';
 import PropTypes from 'prop-types';
 import 'typeface-roboto';
 
-const styles = theme => ({
-    title: {
-        textAlign: 'center',
-    },
-    cardTitle: {
-        marginLeft: '1em',
-    }, 
-    card: {
-        fontFamily: 'Roboto',
-        maxWidth: 1600, 
-        minWidth: 100,
-        marginLeft: 'auto',
-        marginRight: 'auto',
-        marginTop: '2em',
-        paddingBottom: '1em',
-    },
-    grid: {
-        marginLeft: '1em',
-        marginBottom: '1em',
-    },
-    button: {
-        marginLeft: '1em',
-    },
-    accountButton: {
-        marginLeft: '1em',
-        display: 'inline-block',
-    },
-    settingsGridItem: {
-        marginLeft: '1em',
-    }, 
-    selector: {
-        width: 150,
-    },
-});
-
 class Settings extends Component {
     
     constructor(props) {
@@ -141,6 +106,7 @@ class Settings extends Component {
                                     <Checkbox
                                         label="Use Pin?"
                                         name="usePin"
+                                        color="primary"
                                         checked={this.state.usePin}
                                         onChange={this.handleInputChange}
                                     />
@@ -187,11 +153,11 @@ class Settings extends Component {
                                 </Grid>
                             </Grid>
                         
-                            <Button onClick={this.updateUserProperties} className={classes.button}>Update</Button>
+                            <Button onClick={this.updateUserProperties} color="primary" className={classes.button}>Update</Button>
                         </Card>
                         <Card className={classes.card}>
                             <h2 className={classes.cardTitle}>Account</h2>
-                            <Button className={classes.accountButton} onClick={evt => {evt.preventDefault(); this.props.signOut();}}>Sign Out</Button>
+                            <Button className={classes.accountButton} color="primary" onClick={evt => {evt.preventDefault(); this.props.signOut();}}>Sign Out</Button>
                             <div className={classes.accountButton}><DeleteAllFiles deleteAllFiles={DriveHelper.deleteAllFiles}/></div>
                         </Card>
 
@@ -237,6 +203,43 @@ class Settings extends Component {
         return null;
     }
 }
+
+const styles = theme => ({
+    title: {
+        color: theme.palette.primary.main,
+        textAlign: 'center',
+    },
+    cardTitle: {
+        color: theme.palette.primary.main, 
+        marginLeft: '1em',
+    }, 
+    card: {
+        fontFamily: 'Roboto',
+        maxWidth: 1000, 
+        minWidth: 100,
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        marginTop: '2em',
+        paddingBottom: '1em',
+    },
+    grid: {
+        marginLeft: '1em',
+        marginBottom: '1em',
+    },
+    button: {
+        marginLeft: '1em',
+    },
+    accountButton: {
+        marginLeft: '1em',
+        display: 'inline-block',
+    },
+    settingsGridItem: {
+        marginLeft: '1em',
+    }, 
+    selector: {
+        width: 150,
+    },
+});
 
 Settings.propTypes = {
     classes: PropTypes.object.isRequired,

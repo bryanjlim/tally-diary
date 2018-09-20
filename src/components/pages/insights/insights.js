@@ -4,27 +4,6 @@ import InsightsItem from '../../views/insights/insightsItem';
 import DriveHelper from '../../helpers/driveHelper';
 import PropTypes from 'prop-types';
 
-const styles = theme => ({
-    insightCard: {
-        marginLeft: 'auto',
-        marginRight: 'auto',
-        paddingTop: 50, 
-        paddingBottom: 50,
-        minWidth: 275,
-        maxWidth: 575,
-    },
-    insightsItemText: {
-        textAlign: 'center',
-        marginTop: 'auto',
-        marginBottom: 'auto',
-    },
-    circularProgress: {
-        marginLeft: 'auto',
-        marginRight: 'auto',
-        textAlign: 'center',
-    }
-});
-
 class Insights extends Component {
 
     constructor(props) {
@@ -54,6 +33,27 @@ class Insights extends Component {
         );
     }
 }
+
+const styles = theme => ({
+    insightCard: {
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        paddingTop: 50, 
+        paddingBottom: 50,
+        minWidth: 275,
+        maxWidth: 575,
+    },
+    insightsItemText: {
+        textAlign: 'center',
+        marginTop: 'auto',
+        marginBottom: 'auto',
+    },
+    circularProgress: {
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        textAlign: 'center',
+    }
+});
 
 Insights.propTypes = {
     classes: PropTypes.object.isRequired,

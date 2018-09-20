@@ -4,25 +4,6 @@ import {CircularProgress, withStyles} from '@material-ui/core';
 import TimelineCard  from '../../views/diaryEntries/timelineCard';
 import PropTypes from 'prop-types';
 
-const styles = theme => ({
-    circularProgress: {
-        marginLeft: 'auto',
-        marginRight: 'auto',
-        textAlign: 'center',
-    }, 
-    centerText: {
-        marginLeft: 'auto',
-        marginRight: 'auto',
-        textAlign: 'center',
-    }, 
-    timelineCard: {
-        marginLeft: 'auto',
-        marginRight: 'auto',
-        paddingTop: 25, 
-        minWidth: 275,
-        maxWidth: 575,
-    },
-});
 
 class Timeline extends Component {
 
@@ -86,11 +67,31 @@ class Timeline extends Component {
         return (
             <div>
             { this.state.fileCount > 0 ? this.state.diaryEntryObjects.map(this.eachDiaryEntryObject) : this.state.isFileCountDone ? 
-                <div className={classes.centerText}><i>There are no diary entries to show</i></div> : <div className={classes.circularProgress}><CircularProgress /></div> }
+                <div className={classes.centerText}><i>There are no diary entries to show. It's empty here....</i></div> : <div className={classes.circularProgress}><CircularProgress /></div> }
             </div>
         );
     }
 }
+
+const styles = theme => ({
+    circularProgress: {
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        textAlign: 'center',
+    }, 
+    centerText: {
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        textAlign: 'center',
+    }, 
+    timelineCard: {
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        paddingTop: 25, 
+        minWidth: 275,
+        maxWidth: 575,
+    },
+});
 
 Timeline.propTypes = {
     classes: PropTypes.object.isRequired,
