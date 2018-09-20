@@ -122,9 +122,9 @@ export class App extends Component {
         } else {
           this.loadUserPreferencesStore().then(() => {
             this.setState({ isInitialized: true });
+            this.updateSignInStatus();
           });
         }
-        this.updateSignInStatus();
       });
     }).catch((error) => {
       console.log(error);
