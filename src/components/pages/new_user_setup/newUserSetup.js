@@ -5,66 +5,6 @@ import DriveHelper from '../../helpers/driveHelper';
 import PropTypes from 'prop-types';
 import 'typeface-roboto';
 
-const styles = theme => ({
-    outerContainer: {
-        backgroundColor: theme.palette.background.default,
-        fontFamily: 'Roboto',
-        display: 'table',
-        position: 'absolute',
-        height: '100%',
-        width: '100%',
-    },
-    middleContainer: {
-        display: 'table-cell',
-        verticalAlign: 'middle',
-    },
-    innerContainer: {
-        marginLeft: 'auto',
-        marginRight: 'auto',
-    },
-    title: {
-        color: theme.palette.primary.main,
-        textAlign: 'center',
-    },
-    cardTitle: {
-        color: theme.palette.primary.main,
-        marginLeft: '1em',
-    }, 
-    card: {
-        maxWidth: 1000, 
-        minWidth: 100,
-        marginLeft: 'auto',
-        marginRight: 'auto',
-        marginTop: '2em',
-        paddingBottom: '1em',
-    },
-    topGrid: {
-        marginLeft: '1em',
-        marginBottom: '1em',
-    },
-    bottomGrid: {
-        marginLeft: '1.75em',
-        marginBottom: '1em',
-    },
-    button: {
-        color: theme.palette.primary.main,
-        float: 'right',
-        marginLeft: '1em',
-    },
-    settingsGridItem: {
-        marginLeft: '1em',
-    }, 
-    selector: {
-        width: 150,
-    },
-    boldNote: {
-        color: theme.palette.primary.main,
-    },
-    privacy: {
-        margin: 15,
-    }
-});
-
 class NewUserSetup extends Component {
     
     constructor(props) {
@@ -72,7 +12,8 @@ class NewUserSetup extends Component {
         this.state = {
             firstName: '',
             lastName: '',
-            dateOfBirth: new Date(),
+            dateOfBirth: '',
+            dateOfBirthError: false,
             primaryTheme: "light", //light or dark
             secondaryColor: "blue", // blue, red, orange, green, purple, or pink
             usePin: false,
@@ -80,6 +21,7 @@ class NewUserSetup extends Component {
         };
         this.handleInputChange = this.handleInputChange.bind(this);
         this.addUserProperties = this.addUserProperties.bind(this);
+        this.validate = this.validate.bind(this);
     }
 
     componentDidMount() {
@@ -100,6 +42,18 @@ class NewUserSetup extends Component {
         });
     }
 
+    validate() {
+        if(this.state.dateOfBirth === '') {
+            this.setState({dateOfBirthError: true});
+            return false;
+        } else {
+            if(new Date(this.state.dateOfBirth) < new Date()) {
+                this.setState({dateOfBirthError: false});
+                return true;
+            }
+        }
+    }
+
     addUserProperties(e) {
         e.preventDefault();
 
@@ -107,17 +61,19 @@ class NewUserSetup extends Component {
             this.setState({pin: ''});
         }
 
-        const userData = {
-            "firstName": this.state.firstName, 
-            "lastName": this.state.lastName,
-            "dateOfBirth": this.state.dateOfBirth,
-            "primaryTheme": this.state.primaryTheme, 
-            "secondaryColor": this.state.secondaryColor, 
-            "usePin": this.state.usePin,
-            "pin": this.state.pin
-        };
-        DriveHelper.postUserData(userData);
-        this.props.doneWithSetup(userData);
+        if(this.validate()){
+            const userData = {
+                "firstName": this.state.firstName, 
+                "lastName": this.state.lastName,
+                "dateOfBirth": this.state.dateOfBirth,
+                "primaryTheme": this.state.primaryTheme, 
+                "secondaryColor": this.state.secondaryColor, 
+                "usePin": this.state.usePin,
+                "pin": this.state.pin
+            };
+            DriveHelper.postUserData(userData);
+            this.props.doneWithSetup(userData);
+        }
     }
     
     render() {
@@ -138,6 +94,8 @@ class NewUserSetup extends Component {
                                     name="dateOfBirth"
                                     label="Date of Birth"
                                     type="date"
+                                    error={this.state.dateOfBirthError}
+                                    helperText={this.state.dateOfBirthError ? 'Invalid date' : ''}
                                     value={this.state.dateOfBirth}
                                     onChange={this.handleInputChange}
                                     InputLabelProps={{
@@ -202,10 +160,10 @@ class NewUserSetup extends Component {
                                 </Grid> : null } 
                         </Grid>
                     
-                        <Button onClick={this.updateUserProperties} className={classes.button}>Let's Begin</Button>
+                        <Button onClick={this.addUserProperties} className={classes.button}>Let's Begin</Button>
                     </Card>
                     <Card className={classes.card}>
-                        <div className={classes.privacy}><i><b className={classes.boldNote}>Note: </b>This information is stored in your Google Drive's reserved application folder, only accessible by the Tally Diary app. Tally Diary never and will never store your data on its own servers. And no, not even your email.</i></div>
+                        <div className={classes.privacy}><i><b className={classes.boldNote}>Note: </b>This information is stored in your Google Drive's reserved application folder, only accessible by the Tally Diary app. Tally Diary never and will never store your data on its own servers. So no, we don't even store your email.</i></div>
                     </Card>
             </div> 
             </div> 
@@ -213,6 +171,66 @@ class NewUserSetup extends Component {
         );
     }
 }
+
+const styles = theme => ({
+    outerContainer: {
+        backgroundColor: theme.palette.background.default,
+        fontFamily: 'Roboto',
+        display: 'table',
+        position: 'absolute',
+        height: '100%',
+        width: '100%',
+    },
+    middleContainer: {
+        display: 'table-cell',
+        verticalAlign: 'middle',
+    },
+    innerContainer: {
+        marginLeft: 'auto',
+        marginRight: 'auto',
+    },
+    title: {
+        color: theme.palette.primary.main,
+        textAlign: 'center',
+    },
+    cardTitle: {
+        color: theme.palette.primary.main,
+        marginLeft: '1em',
+    }, 
+    card: {
+        maxWidth: 1000, 
+        minWidth: 100,
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        marginTop: '2em',
+        paddingBottom: '1em',
+    },
+    topGrid: {
+        marginLeft: '1em',
+        marginBottom: '1em',
+    },
+    bottomGrid: {
+        marginLeft: '1.75em',
+        marginBottom: '1em',
+    },
+    button: {
+        color: theme.palette.primary.main,
+        float: 'right',
+        marginRight: '1em',
+    },
+    settingsGridItem: {
+        marginLeft: '1em',
+    }, 
+    selector: {
+        width: 150,
+    },
+    boldNote: {
+        color: theme.palette.primary.main,
+    },
+    privacy: {
+        margin: 15,
+    }
+});
 
 NewUserSetup.propTypes = {
     classes: PropTypes.object.isRequired,
