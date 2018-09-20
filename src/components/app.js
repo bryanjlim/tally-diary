@@ -87,8 +87,8 @@ export class App extends Component {
   initClient = () => {
     const that = this;
     gapi.client.init({
-      apiKey: 'AIzaSyAF5oqaI0sUfsbIOp3ss66JCT7PuvuBgRA',
-      clientId: '557447039683-srmcolp4qeuvkpvucjc06neq4d2gh1g0.apps.googleusercontent.com',
+      apiKey: 'AIzaSyAuKJs7B5EiTmFyjP8cg974vCsqS98QvYA',
+      clientId: '577206274010-9oung4hgd77fij9e50kjbc32tlviai4e.apps.googleusercontent.com',
       discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"],
       scope: 'https://www.googleapis.com/auth/drive.appdata'
     }).then(() => {
