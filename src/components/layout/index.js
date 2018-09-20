@@ -11,6 +11,9 @@ import 'typeface-roboto';
 const drawerWidth = 240;
 
 const styles = theme => ({
+    robotoFont: {
+        fontFamily: 'roboto',
+    }, 
     root: {
       fontFamily: 'roboto',
       flexGrow: 1,
@@ -71,7 +74,7 @@ class Layout extends Component {
         );
 
         return (
-            <Fragment>
+            <Fragment className={classes.robotoFont}>
                 <CssBaseline/>
                 <div className={classes.root}>
                     <AppBar position='absolute' className={classes.appBar}>
@@ -96,6 +99,7 @@ class Layout extends Component {
                         classes={{
                         paper: classes.drawerPaper,
                         }}
+                        className={classes.robotoFont}
                         ModalProps={{
                         keepMounted: true, // Better open performance on mobile.
                         }}
