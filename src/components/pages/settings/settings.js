@@ -250,6 +250,7 @@ const styles = theme => ({
         },
     },
     settingsGridItem: {
+        marginTop: '1em',
         marginLeft: '1em',
         marginRight: '1em',
         '@media (max-width: 500px)': { 
