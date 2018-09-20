@@ -79,7 +79,9 @@ class AddTodo extends React.Component {
           aria-labelledby="responsive-dialog-title"
         >
           <DialogTitle id="responsive-dialog-title">{"Add Todo"}</DialogTitle>
-          <DialogContent>
+          <DialogContent style={{
+            width: '300px',
+          }}>
             <FormControl 
               className="todoFormControl" 
               style={{
@@ -100,8 +102,8 @@ class AddTodo extends React.Component {
             
             <FormControl
               style={{
-                paddingLeft: 30,
-                paddingRight: 20,
+                paddingLeft: 50,
+                paddingRight: 30,
               }}
             >
             {this.state.newTodoTextError ? 
@@ -114,7 +116,8 @@ class AddTodo extends React.Component {
                   value={this.state.newTodoText}
                   error
                   style={{
-                    width: 175,
+                    width: 160,
+                    marginLeft: '-1em',
                     display: "inline-block",
                   }}
                   margin="normal"
@@ -130,7 +133,8 @@ class AddTodo extends React.Component {
                 onChange = {this.handleTextChange}
                 value={this.state.newTodoText}
                 style={{
-                  width: 175,
+                  width: 160,
+                  marginLeft: '-1em',
                   display: "inline-block",
                 }}
                 margin="normal"
@@ -141,6 +145,9 @@ class AddTodo extends React.Component {
             </FormControl> 
           </DialogContent>
           <DialogActions>
+            <Button onClick={this.handleClose} color="primary" autoFocus>
+              Cancel
+            </Button>
             <Button onClick={this.handleSubmit} color="primary" autoFocus>
               Add
             </Button>

@@ -172,11 +172,16 @@ class AddTally extends React.Component {
              </div>
             }
             </FormControl>
-            <DialogContentText>
-              Go to insights to view all tally marks
+            <DialogContentText style = {{
+              marginTop:'2em',
+            }}>
+              <i>Go to insights to view all tally marks</i>
             </DialogContentText>
           </DialogContent>
           <DialogActions>
+            <Button onClick={this.handleClose} color="primary" autoFocus>
+              Cancel
+            </Button>
             <Button onClick={this.handleSubmit} color="primary" autoFocus>
               Submit
             </Button>
