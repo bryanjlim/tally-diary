@@ -47,8 +47,11 @@ class Timeline extends Component {
     }
 
     viewTimeline(){
+
         DriveHelper.readFile(this.state.singleEntryFileName).then((entry) => {
             const diaryEntryObjectsCopy = this.state.diaryEntryObjects;
+            const fileName = diaryEntryObjectsCopy[this.state.singleEntryTimelineCardIndex].entry.fileName;
+            entry.fileName = fileName;
             diaryEntryObjectsCopy[this.state.singleEntryTimelineCardIndex] = {entry};
             this.setState({
                 diaryEntryObjects: diaryEntryObjectsCopy,
