@@ -7,7 +7,7 @@ import { Home } from './pages/home/home';
 import { HomeNav } from './navigation/home/homeNav';
 import { Contact } from './pages/contact/contact';
 import { AboutUs } from './pages/about_us/aboutUs';
-import { Settings } from './pages/settings/settings';
+import Settings from './pages/settings/settings';
 import { Timeline } from './pages/timeline/timeline';
 import Insights from './pages/insights/insights';
 import Layout from './layout';
