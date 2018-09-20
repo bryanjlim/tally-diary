@@ -4,18 +4,33 @@ import PropTypes from 'prop-types';
 import 'typeface-roboto';
 
 class Home extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            isImageLoaded: false,
+        }
+        this.onImageLoad = this.onImageLoad.bind(this);
+    }
+
+    onImageLoad() {
+        this.setState({isImageLoaded: true});
+    }
+
     render() {
         const { classes } = this.props;
 
         return (
+            <div className={this.state.isImageLoaded ? classes.show : classes.hide}>
             <div className={classes.outerContainer}> 
             <div className={classes.middleContainer}> 
             <div className={classes.innerContainer}> 
                 <div className={classes.home}>
-                    <div className={classes.logoWrapper}><img className={classes.logoImage} src={require('./TextLogo.png')}/></div>
+                    <div className={classes.logoWrapper}><img className={classes.logoImage} onLoad={this.onImageLoad} src={require('./TextLogo.png')}/></div>
                     <h1 className={classes.homeTitle}><i>A Diary to Tally Your Life</i></h1>
                     <div className={classes.centerButton}><button onClick={evt => { evt.preventDefault(); this.props.signIn(); }} className={classes.getStartedButton} type="submit">Get Started</button></div>
                 </div>
+            </div>
             </div>
             </div>
             </div>
@@ -24,6 +39,9 @@ class Home extends Component {
 }
 
 const styles = theme => ({
+    hide: {
+        display: 'none'
+    },
     logoImage: {
         display: 'block',
         margin: '0 auto',
