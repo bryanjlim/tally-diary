@@ -264,7 +264,8 @@ class Entry extends Component {
             "tallies": this.state.tallies, 
             "weather": new Weather(this.state.weather, this.state.lowTemperature, this.state.highTemperature, this.state.humidity), 
             "todos": this.state.todos,
-            "mood": new Mood(this.state.mood)
+            "mood": new Mood(this.state.mood),
+            "deleted": false,
         });
         this.setState({
             customTitle: '',
