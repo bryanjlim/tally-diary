@@ -1,9 +1,18 @@
 import React, { Component } from 'react';
 import DriveHelper from '../../helpers/driveHelper';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import {CircularProgress, withStyles} from '@material-ui/core';
 import TimelineCard  from '../../views/diaryEntries/timelineCard';
-import '../../../styles.css'
-export class Timeline extends Component {
+import PropTypes from 'prop-types';
+
+const styles = theme => ({
+    circularProgress: {
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        textAlign: 'center',
+    }
+});
+
+class Timeline extends Component {
 
     constructor(props) {
         super(props); 
@@ -58,13 +67,19 @@ export class Timeline extends Component {
     }
 
     render() {
+        const { classes } = this.props;
+
         return (
             <div className="timeline">
             { this.state.fileCount > 0 ? this.state.diaryEntryObjects.map(this.eachDiaryEntryObject) : this.state.isFileCountDone ? 
-                <div className='centered'><i>There are no diary entries to show</i></div> : <div className='centered'><CircularProgress className='centered'/></div> }
+                <div className='centered'><i>There are no diary entries to show</i></div> : <div className={classes.circularProgress}><CircularProgress /></div> }
             </div>
         );
     }
 }
 
-export default Timeline;
+Timeline.propTypes = {
+    classes: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles)(Timeline);
