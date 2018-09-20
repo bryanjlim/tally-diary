@@ -25,7 +25,7 @@ class Entry extends Component {
             this.state = {
                 customTitle: '',
                 date: new Date().getFullYear() + "-" + formattedMonth + "-" + new Date().getDate(),
-                dateOfBirth: this.props.store.preferences.dateOfBirth,
+                dateOfBirth: this.props.userStore.preferences.dateOfBirth,
                 bodyText: '',
                 mood: Mood.moodEnum.MEH,
                 weather: 'Cloudy',
@@ -41,7 +41,7 @@ class Entry extends Component {
             this.state = {
                 customTitle: this.props.title,
                 date: this.props.date,
-                dateOfBirth: this.props.store.preferences.dateOfBirth,
+                dateOfBirth: this.props.userStore.preferences.dateOfBirth,
                 bodyText: this.props.bodyText,
                 mood: Mood.moodEnum.MEH,
                 weather: weatherObject.weather,

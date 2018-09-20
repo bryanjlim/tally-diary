@@ -11,6 +11,7 @@ import Timeline from './pages/timeline/timeline';
 import Insights from './pages/insights/insights';
 import Layout from './layout';
 import userPreferenceStore from '../stores/userPreferenceStore';
+import diaryEntryStore from '../stores/diaryEntryStore';
 
 export class App extends Component {
   constructor(props) {
@@ -49,10 +50,10 @@ export class App extends Component {
         <Layout>
           <div>
               {
-                (this.props.location.pathname === "/") ? <Entry store={userPreferenceStore} adding={true}/> :
-                  (this.props.location.pathname === "/settings") ? <Settings signOut={this.signOut} store={userPreferenceStore} /> :
-                    (this.props.location.pathname === "/insights") ? <Insights /> :
-                      <Timeline store={userPreferenceStore} />
+                (this.props.location.pathname === "/") ? <Entry userStore={userPreferenceStore} diaryEntryStore={diaryEntryStore} adding={true}/> :
+                  (this.props.location.pathname === "/settings") ? <Settings signOut={this.signOut} userStore={userPreferenceStore} /> :
+                    (this.props.location.pathname === "/insights") ? <Insights diaryEntryStore={diaryEntryStore}/> :
+                      <Timeline userStore={userPreferenceStore} diaryEntryStore={diaryEntryStore}/>
               }
           </div>
         </Layout>

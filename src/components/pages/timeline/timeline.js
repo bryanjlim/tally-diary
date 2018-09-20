@@ -12,7 +12,6 @@ class Timeline extends Component {
         this.state = {
             fileCount: 0,
             isFileCountDone: false,
-            diaryEntryObjects: [],
 
             // View Single Diary Entry
             viewSingleEntry: false,
@@ -47,14 +46,13 @@ class Timeline extends Component {
     }
 
     viewTimeline(){
-
         DriveHelper.readFile(this.state.singleEntryFileName).then((entry) => {
-            const diaryEntryObjectsCopy = this.state.diaryEntryObjects;
-            const fileName = diaryEntryObjectsCopy[this.state.singleEntryTimelineCardIndex].entry.fileName;
+
+            const fileName = this.props.diaryEntryStore.entries[this.state.singleEntryTimelineCardIndex].fileName;
             entry.fileName = fileName;
-            diaryEntryObjectsCopy[this.state.singleEntryTimelineCardIndex] = {entry};
+            this.props.diaryEntryStore.entries[this.state.singleEntryTimelineCardIndex] = entry;
+
             this.setState({
-                diaryEntryObjects: diaryEntryObjectsCopy,
                 viewSingleEntry: false,
                 singleEntryFileName: '',
                 singleEntryTimelineCardIndex:'',
@@ -71,18 +69,22 @@ class Timeline extends Component {
 
     componentDidMount() {
         DriveHelper.getFileCount().then((count) => {
-            if(count > 1) {
+
+            if(this.props.diaryEntryStore.entries.length === count - 1 && (count - 1) > 0) {
+                // Diary entries already previously loaded and stored into diary entry store
+                this.setState({
+                    fileCount: count, 
+                    isFileCountDone: true,
+                })
+            } else if(count > 1) {
                 for(let i = count - 1 ; i > 0; i--) {
                     DriveHelper.readFile(i).then((entry) => {
                         entry.fileName=i;
-                        this.setState(prevState => ({
-                            diaryEntryObjects: [
-                                ...prevState.diaryEntryObjects,
-                                {entry}
-                            ],
+                        this.props.diaryEntryStore.entries.push(entry);
+                        this.setState({
                             fileCount: count,
                             isFileCountDone: true, 
-                        }))
+                        })
                     }).catch(err => console.log(err))
                 }
             } else {
@@ -94,7 +96,7 @@ class Timeline extends Component {
     }
 
     eachDiaryEntryObject(diaryEntry, i) {
-        const entry = diaryEntry.entry;
+        const entry = diaryEntry;
         const { classes } = this.props;
         return (
             <div className={classes.timelineCard}>
@@ -107,7 +109,7 @@ class Timeline extends Component {
                 bodyText={entry.bodyText}
                 todos={entry.todos}
                 tallies={entry.tallies}
-                birthDate={this.props.store.preferences.dateOfBirth}
+                birthDate={this.props.userStore.preferences.dateOfBirth}
                 index={i}
                 viewSingleEntry={this.viewSingleEntry}
             />
@@ -131,7 +133,7 @@ class Timeline extends Component {
                     bodyText={this.state.singleEntryBodyText}
                     todos={this.state.singleEntryTodos}
                     tallies={this.state.singleEntryTallies}
-                    store={this.props.store}
+                    userStore={this.props.userStore}
                     back={this.viewTimeline}
                 /> 
             );
@@ -140,7 +142,7 @@ class Timeline extends Component {
         } else {
             return (
                 <div>
-                { this.state.fileCount > 0 ? this.state.diaryEntryObjects.map(this.eachDiaryEntryObject) : this.state.isFileCountDone ? 
+                { this.state.fileCount > 0 ? this.props.diaryEntryStore.entries.map(this.eachDiaryEntryObject) : this.state.isFileCountDone ? 
                     <div className={classes.centerText}><i>There are no diary entries to show. It's empty here....</i></div> : <div className={classes.circularProgress}><CircularProgress /></div> }
                 </div>
             );
