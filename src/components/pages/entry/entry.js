@@ -211,7 +211,7 @@ class Entry extends Component {
                 <Divider className={classes.spaceDivider}/>
 
                 {this.props.adding ? 
-                    <Button variant="contained" color="primary" size="large" className={classes.submitButton} onClick={this.updateEntry}>
+                    <Button variant="contained" color="primary" size="large" className={classes.submitButton} onClick={this.addNewEntry}>
                         Submit
                         <Save className={classes.sendIcon}/>
                     </Button> :
