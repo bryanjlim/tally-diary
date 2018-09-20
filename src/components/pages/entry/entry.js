@@ -11,7 +11,8 @@ import TallyMarkChip from '../../views/tallyMark/tallyMarkChip';
 import AddTally from './addTally';
 import AddTodo from './addTodo';
 import EntryStyling from './entryStyling';
-import Send from '@material-ui/icons/Send'
+import Send from '@material-ui/icons/Send';
+import Save from '@material-ui/icons/Save';
 
 const styles = EntryStyling.styles;
 
@@ -56,6 +57,7 @@ class Entry extends Component {
 
         
         this.addNewEntry = this.addNewEntry.bind(this);
+        this.updateEntry = this.updateEntry.bind(this);
         this.addNewTallyMark = this.addNewTallyMark.bind(this);
         this.deleteTallyMark = this.deleteTallyMark.bind(this);
         this.addTodo = this.addTodo.bind(this);
@@ -206,10 +208,22 @@ class Entry extends Component {
                     }
                 
                 <Divider className={classes.spaceDivider}/>
-                <Button variant="contained" aria-label="Delete" color="primary" size="large" className={classes.submitButton} onClick={this.addNewEntry}>
-                    Add Entry 
-                    <Send className={classes.sendIcon}/>
-                </Button>
+
+                {this.props.adding ? 
+                    <Button variant="contained"color="primary" size="large" className={classes.submitButton} onClick={this.addNewEntry}>
+                        Add Entry 
+                        <Send className={classes.sendIcon}/>
+                    </Button> :
+                    <div>
+                    <Button variant="contained" color="primary" size="large" className={classes.backButton} onClick={this.props.back}>
+                        Back
+                    </Button>
+                    <Button variant="contained" color="primary" size="large" className={classes.submitButton} onClick={this.updateEntry}>
+                        Update
+                        <Save className={classes.sendIcon}/>
+                    </Button>
+                    </div>
+                }
             </Paper>
         );
     }
@@ -267,6 +281,20 @@ class Entry extends Component {
             newTallyMarkText: '',
             newTodoStatus: false,
             newTodoText: '',
+        });
+    }
+
+    updateEntry(e) {
+        e.preventDefault();
+        DriveHelper.updateFile(this.props.fileName,
+        {
+            "title": this.state.customTitle, 
+            "date": this.state.date,
+            "bodyText": this.state.bodyText,
+            "tallies": this.state.tallies, 
+            "weather": new Weather(this.state.weather, this.state.lowTemperature, this.state.highTemperature, this.state.humidity), 
+            "todos": this.state.todos,
+            "mood": new Mood(this.state.mood)
         });
     }
 

@@ -28,6 +28,7 @@ class Timeline extends Component {
         }
         this.eachDiaryEntryObject = this.eachDiaryEntryObject.bind(this);
         this.viewSingleEntry = this.viewSingleEntry.bind(this);
+        this.viewTimeline = this.viewTimeline.bind(this);
     }
 
     viewSingleEntry(fileName, timelineCardIndex, title, date, mood, weather, bodyText, todos, tallies) {
@@ -42,7 +43,27 @@ class Timeline extends Component {
             singleEntryBodyText: bodyText,
             singleEntryTodos: todos,
             singleEntryTallies: tallies,
-        }) 
+        });
+    }
+
+    viewTimeline(){
+        DriveHelper.readFile(this.state.singleEntryFileName).then((entry) => {
+            const diaryEntryObjectsCopy = this.state.diaryEntryObjects;
+            diaryEntryObjectsCopy[this.state.singleEntryTimelineCardIndex] = {entry};
+            this.setState({
+                diaryEntryObjects: diaryEntryObjectsCopy,
+                viewSingleEntry: false,
+                singleEntryFileName: '',
+                singleEntryTimelineCardIndex:'',
+                singleEntryTitle:'',
+                singleEntryDate:'',
+                singleEntryMood:'',
+                singleEntryWeather:'',
+                singleEntryBodyText:'',
+                singleEntryTodos: [],
+                singleEntryTallies: '',
+            }); 
+        });
     }
 
     componentDidMount() {
@@ -97,6 +118,7 @@ class Timeline extends Component {
         if(this.state.viewSingleEntry) {
             return (
                 <Entry 
+                    adding={false}
                     fileName={this.state.singleEntryFileName}
                     index={this.state.singleEntryTimelineCardIndex}
                     title={this.state.singleEntryTitle}
@@ -107,6 +129,7 @@ class Timeline extends Component {
                     todos={this.state.singleEntryTodos}
                     tallies={this.state.singleEntryTallies}
                     store={this.props.store}
+                    back={this.viewTimeline}
                 /> 
             );
 
