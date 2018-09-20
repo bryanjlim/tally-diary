@@ -102,26 +102,6 @@ class Settings extends Component {
                                     /> 
                                 </Grid>
                                 <Grid item className={classes.settingsGridItem}>
-                                    <label htmlFor="usePin">Use Pin?</label>
-                                    <Checkbox
-                                        label="Use Pin?"
-                                        name="usePin"
-                                        color="primary"
-                                        checked={this.state.usePin}
-                                        onChange={this.handleInputChange}
-                                    />
-                                </Grid>
-                                <Grid item className={classes.settingsGridItem}>
-                                    <TextField
-                                        name="pin"
-                                        label="Pin"
-                                        className={classes.textField}
-                                        type="password"
-                                        value={this.state.pin}
-                                        onChange={this.handleInputChange}
-                                    />
-                                </Grid>
-                                <Grid item className={classes.settingsGridItem}>
                                     <TextField
                                         label="Primary Theme"
                                         name="primaryTheme"
@@ -150,6 +130,26 @@ class Settings extends Component {
                                         <MenuItem value="purple">Purple</MenuItem>
                                         <MenuItem value="pink">Pink</MenuItem>
                                     </TextField>
+                                </Grid>
+                                <Grid item className={classes.settingsGridItem}>
+                                    <label htmlFor="usePin">Use Pin?</label>
+                                    <Checkbox
+                                        label="Use Pin?"
+                                        name="usePin"
+                                        color="primary"
+                                        checked={this.state.usePin}
+                                        onChange={this.handleInputChange}
+                                    />
+                                </Grid>
+                                <Grid item className={this.state.usePin ? classes.settingsGridItem : classes.hide}>
+                                    <TextField
+                                        name="pin"
+                                        label="Pin"
+                                        className={classes.textField}
+                                        type="password"
+                                        value={this.state.pin}
+                                        onChange={this.handleInputChange}
+                                    />
                                 </Grid>
                             </Grid>
                         
@@ -208,10 +208,17 @@ const styles = theme => ({
     title: {
         color: theme.palette.primary.main,
         textAlign: 'center',
+        '@media (max-width: 500px)': { 
+            fontSize: '1.7em',
+        },
     },
     cardTitle: {
         color: theme.palette.primary.main, 
         marginLeft: '1em',
+        '@media (max-width: 500px)': { 
+            fontSize: '1.3em',
+            marginLeft: '.5em',
+        },
     }, 
     card: {
         fontFamily: 'Roboto',
@@ -225,20 +232,36 @@ const styles = theme => ({
     grid: {
         marginLeft: '1em',
         marginBottom: '1em',
+        '@media (max-width: 500px)': { 
+            marginLeft: '.5em',
+        },
     },
     button: {
         marginLeft: '1em',
+        '@media (max-width: 500px)': { 
+            marginLeft: '.5em',
+        },
     },
     accountButton: {
         marginLeft: '1em',
         display: 'inline-block',
+        '@media (max-width: 500px)': { 
+            marginLeft: '.5em',
+        },
     },
     settingsGridItem: {
         marginLeft: '1em',
+        marginRight: '1em',
+        '@media (max-width: 500px)': { 
+            marginLeft: '.5em',
+        },
     }, 
     selector: {
         width: 150,
     },
+    hide: {
+        display: 'none',
+    }
 });
 
 Settings.propTypes = {
