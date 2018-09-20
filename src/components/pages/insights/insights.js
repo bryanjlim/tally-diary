@@ -45,7 +45,7 @@ class Insights extends Component {
             <div>
 
             { this.state.fileCount == 0 ? 
-                <CircularProgress className={classes.circularProgress}/> : 
+                <div className={classes.circularProgress}><CircularProgress/></div> : 
                 <Card className={classes.insightCard}><InsightsItem entryCount={this.state.fileCount - 1}/></Card> 
                 
             }
