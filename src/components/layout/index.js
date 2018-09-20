@@ -6,11 +6,13 @@ import { withStyles } from '@material-ui/core/styles';
 import { Menu } from '@material-ui/icons';
 import { Link, withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
+import 'typeface-roboto';
 
 const drawerWidth = 240;
 
 const styles = theme => ({
     root: {
+      fontFamily: 'roboto',
       flexGrow: 1,
       height: 440,
       zIndex: 1,
@@ -72,52 +74,52 @@ class Layout extends Component {
             <Fragment>
                 <CssBaseline/>
                 <div className={classes.root}>
-                <AppBar position='absolute' className={classes.appBar}>
-                <Toolbar>
-                    <IconButton
-                    color="inherit"
-                    aria-label="Open drawer"
-                    onClick={this.handleDrawerToggle}
-                    className={classes.navIconHide}
+                    <AppBar position='absolute' className={classes.appBar}>
+                    <Toolbar>
+                        <IconButton
+                        color="inherit"
+                        aria-label="Open drawer"
+                        onClick={this.handleDrawerToggle}
+                        className={classes.navIconHide}
+                        >
+                        <Menu />
+                        </IconButton>
+                        <Typography variant="title" color="inherit" noWrap>
+                        Tally Diary
+                        </Typography>
+                    </Toolbar>
+                    </AppBar>
+                    <Hidden mdUp>
+                    <Drawer
+                        variant="temporary"
+                        open={this.state.mobileOpen}
+                        classes={{
+                        paper: classes.drawerPaper,
+                        }}
+                        ModalProps={{
+                        keepMounted: true, // Better open performance on mobile.
+                        }}
                     >
-                    <Menu />
-                    </IconButton>
-                    <Typography variant="title" color="inherit" noWrap>
-                    Tally Diary
-                    </Typography>
-                </Toolbar>
-                </AppBar>
-                <Hidden mdUp>
-                <Drawer
-                    variant="temporary"
-                    open={this.state.mobileOpen}
-                    classes={{
-                    paper: classes.drawerPaper,
-                    }}
-                    ModalProps={{
-                    keepMounted: true, // Better open performance on mobile.
-                    }}
-                >
-                    {drawer}
-                </Drawer>
-                </Hidden>
-                <Hidden smDown implementation="css">
-                <Drawer
-                    variant="permanent"
-                    open
-                    classes={{
-                    paper: classes.drawerPaper,
-                    }}
-                >
-                    {drawer}
-                </Drawer>
-                </Hidden>
-                <main className={classes.content}>
-                    <div className={classes.toolbar} />
-                    {children}
-                </main>
-            </div>
-          </Fragment>
+                        {drawer}
+                    </Drawer>
+                    </Hidden>
+                    <Hidden smDown implementation="css">
+                    <Drawer
+                        variant="permanent"
+                        open
+                        classes={{
+                        paper: classes.drawerPaper,
+                        }}
+                    >
+                        {drawer}
+                    </Drawer>
+                    </Hidden>
+                    <main className={classes.content}>
+                        <div className={classes.toolbar} />
+                        {children}
+                    </main>
+                </div>
+            </Fragment>
         );
     }
 }
