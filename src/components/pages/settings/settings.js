@@ -1,9 +1,9 @@
 /* global gapi */
 import React, { Component } from 'react';
 import {TextField, MenuItem, Card, Button, Grid, Checkbox, Snackbar, IconButton, withStyles } from '@material-ui/core';
-import green from '@material-ui/core/colors/green';
 import CloseIcon from '@material-ui/icons/Close';
 import DriveHelper from '../../helpers/driveHelper';
+import DeleteAllFiles from './deleteAllFiles';
 import PropTypes from 'prop-types';
 import 'typeface-roboto';
 
@@ -29,6 +29,10 @@ const styles = theme => ({
     },
     button: {
         marginLeft: '1em',
+    },
+    accountButton: {
+        marginLeft: '1em',
+        display: 'inline-block',
     },
     settingsGridItem: {
         marginLeft: '1em',
@@ -187,13 +191,8 @@ class Settings extends Component {
                         </Card>
                         <Card className={classes.card}>
                             <h2 className={classes.cardTitle}>Account</h2>
-                            <Button className={classes.button} onClick={evt => {evt.preventDefault(); this.props.signOut();}}>Sign Out</Button>
-                            <Button className={classes.button} onclick={
-                                //TODO: proper confirmation prompt
-                                //eslint-disable-next-line 
-                                () => {if(confirm("Delete All Files?")){DriveHelper.deleteAllFiles();}}}> 
-                                Delete All Files 
-                            </Button>
+                            <Button className={classes.accountButton} onClick={evt => {evt.preventDefault(); this.props.signOut();}}>Sign Out</Button>
+                            <div className={classes.accountButton}><DeleteAllFiles deleteAllFiles={DriveHelper.deleteAllFiles}/></div>
                         </Card>
 
                         <Snackbar
@@ -214,7 +213,6 @@ class Settings extends Component {
                                 </IconButton>
                             ]}
                         />
-
                         <Snackbar
                             open={this.state.showErrorSaving}
                             ContentProps={{
@@ -236,7 +234,6 @@ class Settings extends Component {
                 </div> 
             );
         }
-
         return null;
     }
 }
