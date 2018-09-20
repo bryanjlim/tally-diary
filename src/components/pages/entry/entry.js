@@ -18,21 +18,43 @@ const styles = EntryStyling.styles;
 class Entry extends Component {
     constructor(props) {
         super(props);
-        const formattedMonth = (new Date().getMonth() + 1).toString().length === 1 ? "0" + ( new Date().getMonth() + 1 ) : new Date().getMonth() + 1;
-        this.state = {
-            // New Diary Entry
-            customTitle: '',
-            date: new Date().getFullYear() + "-" + formattedMonth + "-" + new Date().getDate(),
-            dateOfBirth: this.props.store.preferences.dateOfBirth,
-            bodyText: '',
-            mood: Mood.moodEnum.MEH,
-            weather: 'Cloudy',
-            lowTemperature: 60,
-            highTemperature: 80, 
-            humidity: 34,
-            tallies: [],
-            todos: [],
-        };
+
+        if(this.props.adding) {
+            const formattedMonth = (new Date().getMonth() + 1).toString().length === 1 ? "0" + ( new Date().getMonth() + 1 ) : new Date().getMonth() + 1;
+            this.state = {
+                customTitle: '',
+                date: new Date().getFullYear() + "-" + formattedMonth + "-" + new Date().getDate(),
+                dateOfBirth: this.props.store.preferences.dateOfBirth,
+                bodyText: '',
+                mood: Mood.moodEnum.MEH,
+                weather: 'Cloudy',
+                lowTemperature: 60,
+                highTemperature: 80, 
+                humidity: 34,
+                tallies: [],
+                todos: [],
+            };
+        } else {
+            const weatherObject = this.props.weather;
+
+            this.state = {
+                customTitle: this.props.title,
+                date: this.props.date,
+                dateOfBirth: this.props.store.preferences.dateOfBirth,
+                bodyText: this.props.bodyText,
+                mood: Mood.moodEnum.MEH,
+                weather: weatherObject.weather,
+                lowTemperature: weatherObject.lowTemperature,
+                highTemperature: weatherObject.highTemperature, 
+                humidity: weatherObject.humidity,
+                tallies: this.props.tallies,
+                todos: this.props.todos,
+                index: this.props.index,
+                fileName: this.props.fileName,
+            };
+        }
+
+        
         this.addNewEntry = this.addNewEntry.bind(this);
         this.addNewTallyMark = this.addNewTallyMark.bind(this);
         this.deleteTallyMark = this.deleteTallyMark.bind(this);
@@ -53,6 +75,8 @@ class Entry extends Component {
                         label="Title"
                         id="customTitle"
                         name="customTitle"
+                        value={this.state.customTitle}
+                        onChange={this.handleInputChange}
                         className={classes.customTitleInput}
                         InputLabelProps={{
                             style: {fontSize:"20px"},

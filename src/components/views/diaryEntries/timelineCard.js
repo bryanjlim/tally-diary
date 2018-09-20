@@ -18,6 +18,19 @@ const styles = theme => ({
 });
 
 class TimelineCard extends Component {
+
+    constructor(props) {
+        super(props);
+        this.onViewButtonClick = this.onViewButtonClick.bind(this);
+    }
+
+
+    onViewButtonClick() {
+        this.props.viewSingleEntry(this.props.fileName, this.props.index, this.props.title, this.props.date, 
+                                   this.props.mood, this.props.weather, this.props.bodyText, this.props.todos, 
+                                   this.props.tallies);
+    } 
+
     render() {
         const entryDate = new Date(this.props.date);
         const daysAlive = Math.round((entryDate - new Date(this.props.birthDate)) / (1000 * 60 * 60 * 24));
@@ -43,23 +56,10 @@ class TimelineCard extends Component {
                     </Typography>
                 </CardContent>
                 <CardActions>
-                    <Button size="small">View Entry</Button>
+                    <Button onClick={this.onViewButtonClick} size="small">View Entry</Button>
                 </CardActions>
             </Card>
         );
-
-        // return (
-        //     <div>
-        //         <h2>Title: {this.props.title}</h2>
-        //         <h2>Date: {this.props.date}</h2>
-        //         <p>Mood: {this.props.mood.mood}</p>
-        //         <p>Body: {this.props.bodyText}</p>
-        //         <p>Tallies: {JSON.stringify(this.props.tallies)}</p>
-        //         <p>Weather: {JSON.stringify(this.props.weather)}</p>
-        //         <p>Days Alive: {Math.round((new Date(this.props.date) - new Date(this.props.birthDate)) / (1000 * 60 * 60 * 24))}</p>
-        //         <span> </span>
-        //     </div>
-        // );
     }
 }
 

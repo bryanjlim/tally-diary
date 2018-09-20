@@ -4,7 +4,7 @@ import DriveHelper from './helpers/driveHelper';
 import Home from './pages/home/home';
 import { Contact } from './pages/contact/contact';
 import { AboutUs } from './pages/about_us/aboutUs';
-import Entry from './pages/add_entry/addEntry';
+import Entry from './pages/entry/entry';
 import NewUserSetup from './pages/new_user_setup/newUserSetup';
 import Settings from './pages/settings/settings';
 import Timeline from './pages/timeline/timeline';
@@ -49,7 +49,7 @@ export class App extends Component {
         <Layout>
           <div>
               {
-                (this.props.location.pathname === "/") ? <Entry store={userPreferenceStore} /> :
+                (this.props.location.pathname === "/") ? <Entry store={userPreferenceStore} adding={true}/> :
                   (this.props.location.pathname === "/settings") ? <Settings signOut={this.signOut} store={userPreferenceStore} /> :
                     (this.props.location.pathname === "/insights") ? <Insights /> :
                       <Timeline store={userPreferenceStore} />
