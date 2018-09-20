@@ -1,8 +1,7 @@
 /* global gapi */
 import React, { Component } from 'react';
 import DriveHelper from './helpers/driveHelper';
-import { Home } from './pages/home/home';
-import { HomeNav } from './navigation/home/homeNav';
+import Home from './pages/home/home';
 import { Contact } from './pages/contact/contact';
 import { AboutUs } from './pages/about_us/aboutUs';
 import Entry from './pages/add_entry/addEntry';
@@ -11,7 +10,6 @@ import Settings from './pages/settings/settings';
 import Timeline from './pages/timeline/timeline';
 import Insights from './pages/insights/insights';
 import Layout from './layout';
-import '../styles.css';
 import userPreferenceStore from '../stores/userPreferenceStore';
 
 export class App extends Component {
@@ -49,7 +47,7 @@ export class App extends Component {
     if (this.state.isSignedIn) {
       return (
         <Layout>
-          <div className="App">
+          <div>
               {
                 (this.props.location.pathname === "/") ? <Entry store={userPreferenceStore} /> :
                   (this.props.location.pathname === "/settings") ? <Settings signOut={this.signOut} store={userPreferenceStore} /> :
@@ -61,15 +59,12 @@ export class App extends Component {
       );
     } else {
       return (
-        <div className="App">
-          <HomeNav />
-          <div className="container">
+        <div>
             {
               (this.props.location.pathname === "/aboutus") ? <AboutUs /> :
                 (this.props.location.pathname === "/contact") ? <Contact /> :
                   <Home signIn={this.signIn} />
             }
-          </div>
         </div>
       );
     }
