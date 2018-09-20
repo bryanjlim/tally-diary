@@ -9,7 +9,19 @@ const styles = theme => ({
         marginLeft: 'auto',
         marginRight: 'auto',
         textAlign: 'center',
-    }
+    }, 
+    centerText: {
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        textAlign: 'center',
+    }, 
+    timelineCard: {
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        paddingTop: 25, 
+        minWidth: 275,
+        maxWidth: 575,
+    },
 });
 
 class Timeline extends Component {
@@ -50,8 +62,9 @@ class Timeline extends Component {
 
     eachDiaryEntryObject(diaryEntry, i) {
         const entry = diaryEntry.entry;
+        const { classes } = this.props;
         return (
-            <div className='centered'>
+            <div className={classes.timelineCard}>
             <TimelineCard 
                 title={entry.title}
                 date={entry.date}
@@ -61,6 +74,7 @@ class Timeline extends Component {
                 todos={entry.todos}
                 tallies={entry.tallies}
                 birthDate={this.props.store.preferences.dateOfBirth}
+                index={i}
             />
             </div>
         );
@@ -70,9 +84,9 @@ class Timeline extends Component {
         const { classes } = this.props;
 
         return (
-            <div className="timeline">
+            <div>
             { this.state.fileCount > 0 ? this.state.diaryEntryObjects.map(this.eachDiaryEntryObject) : this.state.isFileCountDone ? 
-                <div className='centered'><i>There are no diary entries to show</i></div> : <div className={classes.circularProgress}><CircularProgress /></div> }
+                <div className={classes.centerText}><i>There are no diary entries to show</i></div> : <div className={classes.circularProgress}><CircularProgress /></div> }
             </div>
         );
     }
