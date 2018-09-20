@@ -115,7 +115,13 @@ export default class EntryStyling {
         sendIcon: {
             marginBottom: '.1em',
             marginLeft: '.5em',
-        }
+        },
+        backButton: {
+            marginTop: '1em',
+            marginLeft: '1em',
+            marginBottom: '1em',
+            float: 'left',
+        },
 
       });
 }
