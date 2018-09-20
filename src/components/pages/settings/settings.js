@@ -1,6 +1,8 @@
 /* global gapi */
 import React, { Component } from 'react';
-import {TextField, MenuItem, Card, Button, Grid, Checkbox, withStyles } from '@material-ui/core';
+import {TextField, MenuItem, Card, Button, Grid, Checkbox, Snackbar, IconButton, withStyles } from '@material-ui/core';
+import green from '@material-ui/core/colors/green';
+import CloseIcon from '@material-ui/icons/Close';
 import DriveHelper from '../../helpers/driveHelper';
 import PropTypes from 'prop-types';
 import 'typeface-roboto';
@@ -33,7 +35,7 @@ const styles = theme => ({
     }, 
     selector: {
         width: 150,
-    }
+    },
 });
 
 class Settings extends Component {
@@ -54,6 +56,8 @@ class Settings extends Component {
         };
         this.handleInputChange = this.handleInputChange.bind(this);
         this.updateUserProperties = this.updateUserProperties.bind(this);
+        this.closeSuccessSnackBar = this.closeSuccessSnackBar.bind(this);
+        this.closeErrorSnackBar = this.closeErrorSnackBar.bind(this);
     }
 
     componentDidMount() {
@@ -92,7 +96,15 @@ class Settings extends Component {
         }).catch((err) => {
             console.log("error saving: " + err);
             this.setState({ showErrorSaving: true, showSuccessfulSave: false});
-    });
+        });
+    }
+
+    closeSuccessSnackBar() {
+        this.setState({showSuccessfulSave: false}); 
+    }
+
+    closeErrorSnackBar() {
+        this.setState({showErrorSaving: false}); 
     }
     
     render() {
@@ -172,7 +184,6 @@ class Settings extends Component {
                             </Grid>
                         
                             <Button onClick={this.updateUserProperties} className={classes.button}>Update</Button>
-                            {this.state.showSuccessfulSave ? <p>Save Successful!</p> : this.state.showErrorSaving ? <p>Error saving file. Check console.</p> : null /* TODO: Better-looking notifications */} 
                         </Card>
                         <Card className={classes.card}>
                             <h2 className={classes.cardTitle}>Account</h2>
@@ -184,13 +195,45 @@ class Settings extends Component {
                                 Delete All Files 
                             </Button>
                         </Card>
-                                      
 
-                            
-                    
+                        <Snackbar
+                            open={this.state.showSuccessfulSave}
+                            ContentProps={{
+                                'aria-describedby': 'message-id',
+                            }}
+                            message={<span>Settings were successfully updated!</span>}
+                            action={[
+                                <IconButton
+                                    key="close"
+                                    aria-label="Close"
+                                    color="inherit"
+                                    className={classes.close}
+                                    onClick={this.closeSuccessSnackBar}
+                                >
+                                    <CloseIcon className={classes.icon} />
+                                </IconButton>
+                            ]}
+                        />
+
+                        <Snackbar
+                            open={this.state.showErrorSaving}
+                            ContentProps={{
+                                'aria-describedby': 'message-id',
+                            }}
+                            message={<span>There was an error saving your settings. Please try again.</span>}
+                            action={[
+                                <IconButton
+                                    key="close"
+                                    aria-label="Close"
+                                    color="inherit"
+                                    className={classes.close}
+                                    onClick={this.closeErrorSnackBar}
+                                >
+                                    <CloseIcon className={classes.icon} />
+                                </IconButton>
+                            ]}
+                        />
                 </div> 
-
-               
             );
         }
 
