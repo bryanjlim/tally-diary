@@ -12,7 +12,8 @@ class Home extends Component {
             <div className={classes.middleContainer}> 
             <div className={classes.innerContainer}> 
                 <div className={classes.home}>
-                    <h1 className={classes.homeTitle}>Tally - A Diary that Tallies Your Life</h1>
+                    <div className={classes.logoWrapper}><img className={classes.logoImage} src={require('./TextLogo.png')}/></div>
+                    <h1 className={classes.homeTitle}><i>A Diary to Tally Your Life</i></h1>
                     <div className={classes.centerButton}><button onClick={evt => { evt.preventDefault(); this.props.signIn(); }} className={classes.getStartedButton} type="submit">Get Started</button></div>
                 </div>
             </div>
@@ -23,6 +24,14 @@ class Home extends Component {
 }
 
 const styles = theme => ({
+    logoImage: {
+        display: 'block',
+        margin: '0 auto',
+        width: 350,
+        [theme.breakpoints.down('sm')]: {
+            width: 250,
+        },
+    }, 
     outerContainer: {
         fontFamily: 'Roboto',
         display: 'table',
@@ -45,6 +54,10 @@ const styles = theme => ({
         color: theme.palette.primary.main,
         textAlign: 'center',
         margin: '.55em',
+        marginBottom: '1em',
+        [theme.breakpoints.down('sm')]: {
+            fontSize: 20,
+        },
     },
     centerButton: {
         marginLeft: 'auto',
