@@ -1,6 +1,6 @@
 /* global gapi */
 import React, { Component } from 'react';
-import { CircularProgress } from '@material-ui/core';
+import { CircularProgress, withStyles } from '@material-ui/core';
 import DriveHelper from './helpers/driveHelper';
 import Home from './pages/home/home';
 import { Contact } from './pages/contact/contact';
@@ -13,8 +13,10 @@ import Insights from './pages/insights/insights';
 import Layout from './layout';
 import userPreferenceStore from '../stores/userPreferenceStore';
 import diaryEntryStore from '../stores/diaryEntryStore';
+import PropTypes from 'prop-types';
 
-export class App extends Component {
+
+class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -40,11 +42,13 @@ export class App extends Component {
   }
 
   render() {
+    const { classes } = this.props;
+
     if (!this.state.isInitialized) {
       // Loading Circle
-      return (<div style={{display: 'table', position: 'absolute', height: '100%', width: '100%',}}> 
-              <div style={{display: 'table-cell', verticalAlign: 'middle',}}> 
-              <div style={{marginLeft: 'auto', marginRight: 'auto', textAlign: 'center'}}> 
+      return (<div className={classes.outerContainer}> 
+              <div className={classes.middleContainer}> 
+              <div className={classes.innerContainer}> 
               <CircularProgress/></div></div></div>); 
     }
     if (this.state.newUserSetup) {
@@ -174,4 +178,27 @@ export class App extends Component {
   };
 }
 
-export default App;
+const styles = theme => ({
+  outerContainer: {
+    backgroundColor: theme.palette.background.default,
+    fontFamily: 'Roboto',
+    display: 'table',
+    position: 'absolute',
+    height: '100%',
+    width: '100%',
+  },
+  middleContainer: {
+      display: 'table-cell',
+      verticalAlign: 'middle',
+  },
+  innerContainer: {
+      textAlign: 'center',
+  },
+});
+
+App.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+
+
+export default withStyles(styles)(App);

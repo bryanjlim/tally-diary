@@ -49,6 +49,7 @@ const styles = theme => ({
         marginBottom: 'auto',
     },
     circularProgress: {
+        marginTop: '30%',
         marginLeft: 'auto',
         marginRight: 'auto',
         textAlign: 'center',

@@ -161,6 +161,7 @@ class Timeline extends Component {
 
 const styles = theme => ({
     circularProgress: {
+        marginTop: '30%',
         marginLeft: 'auto',
         marginRight: 'auto',
         textAlign: 'center',
