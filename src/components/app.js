@@ -1,5 +1,6 @@
 /* global gapi */
 import React, { Component } from 'react';
+import { CircularProgress } from '@material-ui/core';
 import DriveHelper from './helpers/driveHelper';
 import Home from './pages/home/home';
 import { Contact } from './pages/contact/contact';
@@ -39,7 +40,13 @@ export class App extends Component {
   }
 
   render() {
-    if (!this.state.isInitialized) return null;
+    if (!this.state.isInitialized) {
+      // Loading Circle
+      return (<div style={{display: 'table', position: 'absolute', height: '100%', width: '100%',}}> 
+              <div style={{display: 'table-cell', verticalAlign: 'middle',}}> 
+              <div style={{marginLeft: 'auto', marginRight: 'auto', textAlign: 'center'}}> 
+              <CircularProgress/></div></div></div>); 
+    }
     if (this.state.newUserSetup) {
       return (
         <NewUserSetup doneWithSetup={(userData) => {this.setState({ newUserSetup: false }); userPreferenceStore.preferences = userData; }} />
