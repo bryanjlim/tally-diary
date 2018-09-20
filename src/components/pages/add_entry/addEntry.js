@@ -1,17 +1,29 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import {TextField, MenuItem, Divider, Grid, Paper, Button, withStyles } from '@material-ui/core';
 import DriveHelper from '../../helpers/driveHelper';
 import Mood from '../../objects/mood/mood'; 
 import Weather from '../../objects/weather/weather'; 
 import Todo from '../../objects/todos/todo'; 
+import TodoChip from '../../views/todo/todoChip';
 import TallyMark from '../../objects/tallies/tallyMark';
+import TallyMarkChip from '../../views/tallyMark/tallyMarkChip';
+import AddTally from './addTally';
+import AddTodo from './addTodo';
+import EntryStyling from './entryStyling';
+import Send from '@material-ui/icons/Send'
 
-export class AddEntry extends Component {
+const styles = EntryStyling.styles;
+
+class Entry extends Component {
     constructor(props) {
         super(props);
+        const formattedMonth = (new Date().getMonth() + 1).toString().length === 1 ? "0" + ( new Date().getMonth() + 1 ) : new Date().getMonth() + 1;
         this.state = {
             // New Diary Entry
             customTitle: '',
-            date: new Date(),
+            date: new Date().getFullYear() + "-" + formattedMonth + "-" + new Date().getDate(),
+            dateOfBirth: this.props.store.preferences.dateOfBirth,
             bodyText: '',
             mood: Mood.moodEnum.MEH,
             weather: 'Cloudy',
@@ -20,37 +32,189 @@ export class AddEntry extends Component {
             humidity: 34,
             tallies: [],
             todos: [],
-
-            // New Tally Mark
-            newTallyMarkType: TallyMark.tallyTypeEnum.FOOD,
-            newTallyMarkText: '',
-
-            // New Todo
-            newTodoStatus: false,
-            newTodoText: '',
         };
         this.addNewEntry = this.addNewEntry.bind(this);
         this.addNewTallyMark = this.addNewTallyMark.bind(this);
+        this.deleteTallyMark = this.deleteTallyMark.bind(this);
         this.addTodo = this.addTodo.bind(this);
+        this.deleteTodo = this.deleteTodo.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
     }
 
-    addNewTallyMark(e) {
-        e.preventDefault();
-        this.state.tallies.push(new TallyMark(this.state.newTallyMarkType, this.state.newTallyMarkText));
-        this.setState({
-            newTallyMarkType: TallyMark.tallyTypeEnum.FOOD,
-            newTallyMarkText: '',
-        }); 
+    render() {
+        const { classes } = this.props;
+        const daysAlive = Math.round((new Date(this.state.date) - new Date(this.state.dateOfBirth)) / (1000 * 60 * 60 * 24));
+        return (
+            <Paper elevation={1} className={classes.paper}>
+
+                {/* Title */}
+                <div className={classes.customTitleWrapper}>
+                    <TextField
+                        label="Title"
+                        id="customTitle"
+                        name="customTitle"
+                        className={classes.customTitleInput}
+                        InputLabelProps={{
+                            style: {fontSize:"20px"},
+                        }}
+                        InputProps={{
+                            startAdornment: <div className={classes.customTitleAdornment}>{"Day " + daysAlive}</div>,
+                            style: {fontSize:"2em"},
+                        }}
+                    />
+                </div>
+
+                {/* Top Cluster (Date Selector, Add Tally Button, Add Todo Button) */}
+                <div className={classes.topCluster}>
+                    <TextField
+                        id="date"
+                        name="date"
+                        type="date"
+                        value={this.state.date}
+                        onChange={this.handleInputChange}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                    /> 
+                    <div className={classes.hideWhenSmall}> 
+                        <br/>
+                        <div className={classes.addButton}><AddTally addNewTallyMark={this.addNewTallyMark}/></div> 
+                        <br/>
+                        <div className={classes.addButton}><AddTodo addTodo={this.addTodo}/></div>
+                    </div>
+                </div>
+                <div className={classes.hideWhenBig}> 
+                        <div className={classes.addButton}><AddTally addNewTallyMark={this.addNewTallyMark}/></div>
+                        <div className={classes.addButton}><AddTodo addTodo={this.addTodo}/></div>
+                </div>
+
+                {/* Body Text */}
+                <div className={classes.bodyTextWrapper}>
+                    <TextField
+                        name="bodyText"
+                        id="outlined-multiline-static"
+                        label="Your Thoughts"
+                        multiline
+                        rows="10"
+                        value={this.state.bodyText}
+                        onChange={this.handleInputChange}
+                        className={classes.bodyText}
+                        margin="normal"
+                        variant="outlined"
+                    />
+                </div>
+                
+                {/* Bottom Cluster (Mood and Weather) */}
+                <div className={classes.bottomClusterGridContainer}>
+                    <Grid container>
+                        <Grid item className={classes.bottomClusterObject}>
+                            <TextField
+                                label="Mood"
+                                name="mood"
+                                value={this.state.mood}
+                                onChange={this.handleInputChange}
+                                variant="outlined"
+                                select
+                            >
+                                <MenuItem key={Mood.moodEnum.MEH} value={Mood.moodEnum.MEH}>😐</MenuItem>
+                                <MenuItem key={Mood.moodEnum.SAD} value={Mood.moodEnum.SAD}>😃</MenuItem>
+                                <MenuItem key={Mood.moodEnum.HAPPY} value={Mood.moodEnum.HAPPY}>😔</MenuItem>
+                            </TextField>
+                        </Grid>
+                        <Grid item className={classes.bottomClusterObject}>
+                            <TextField
+                                label="Weather"
+                                name="weather"
+                                value={this.state.weather}
+                                onChange={this.handleInputChange}
+                                variant="outlined"
+                            />
+                        </Grid>
+                        <Grid item className={classes.bottomClusterObject}>
+                            <TextField
+                                label="Low Temperature"
+                                name="lowTemperature"
+                                type="number"
+                                value={this.state.lowTemperature}
+                                onChange={this.handleInputChange}
+                                variant="outlined"
+                            />
+                        </Grid>
+                        <Grid item className={classes.bottomClusterObject}>
+                            <TextField
+                                label="High Temperature"
+                                name="highTemperature"
+                                type="number"
+                                value={this.state.highTemperature}
+                                onChange={this.handleInputChange}
+                                variant="outlined"
+                            />
+                        </Grid>
+                        <Grid item className={classes.bottomClusterObject}>
+                            <TextField
+                                label="Humidity"
+                                name="humidity"
+                                type="number"
+                                value={this.state.lowTemperature}
+                                onChange={this.humidity}
+                                variant="outlined"
+                            />
+                        </Grid>
+                    </Grid>
+                </div>
+
+                <Divider className={classes.spaceDivider}/>
+                    <h2 className={classes.chipHeader}>Tally Marks</h2>
+                    {
+                        this.state.tallies.length === 0 ? <i className={classes.noChipText}>There are no tallies to show</i> :
+                        <div>{this.state.tallies.map((currentValue, index)=> 
+                            {return <TallyMarkChip type={currentValue.type} text={currentValue.text} index={index} deleteTallyMark={this.deleteTallyMark}/>})}
+                        </div> 
+                    }
+
+                <Divider className={classes.spaceDivider}/>
+                    <h2 className={classes.chipHeader}>Todos</h2>
+                    {
+                        this.state.todos.length === 0 ? <i className={classes.noChipText}>There are no todos to show</i> :
+                        <div>{this.state.todos.map((currentValue, index)=> 
+                            {return <TodoChip status={currentValue.status} text={currentValue.text} index={index} deleteTodo={this.deleteTodo}/>})}
+                        </div> 
+                    }
+                
+                <Divider className={classes.spaceDivider}/>
+                <Button variant="contained" aria-label="Delete" color="primary" size="large" className={classes.submitButton} onClick={this.addNewEntry}>
+                    Add Entry 
+                    <Send className={classes.sendIcon}/>
+                </Button>
+            </Paper>
+        );
     }
 
-    addTodo(e) {
-        e.preventDefault();
-        this.state.todos.push(new Todo(this.state.newTodoStatus, this.state.newTodoText));
-        this.setState({
-            newTodoStatus: false,
-            newTodoText: '',
-        }); 
+
+    /* Methods */
+
+    addNewTallyMark(newTallyMarkType, newTallyMarkText) {
+        this.setState(prevState => ({
+            tallies: [...prevState.tallies, new TallyMark(newTallyMarkType, newTallyMarkText)]
+          }))
+    }
+
+    deleteTallyMark(index) {
+        const array = [...this.state.tallies]; 
+        array.splice(index, 1);
+        this.setState({tallies: array});
+    }
+
+    addTodo(newTodoStatus, newTodoText) {
+        this.setState(prevState => ({
+            todos: [...prevState.todos, new Todo(newTodoStatus, newTodoText)]
+          }))
+    }
+
+    deleteTodo(index) {
+        const array = [...this.state.todos]; 
+        array.splice(index, 1);
+        this.setState({todos: array});
     }
 
     addNewEntry(e) {
@@ -91,109 +255,10 @@ export class AddEntry extends Component {
           [name]: value
         });
     }
-
-    render() {
-        return (
-            <div>
-                <h1>New Entry</h1>
-
-                <h2>Add Tally Mark To Entry - Left Dropdown = Tally Type - Right Textbox = Tally Mark Text</h2>
-                <form onSubmit={this.addNewTallyMark} className="add-tally-mark-form">
-                    <select name="newTallyMarkType" value={this.state.selectedTallyMarkType} onChange={this.handleInputChange}>
-                        <option value={TallyMark.tallyTypeEnum.FOOD}>Food</option>
-                        <option value={TallyMark.tallyTypeEnum.ACTIVITY}>Activity</option>
-                        <option value={TallyMark.tallyTypeEnum.LANDMARK}>Landmark</option>
-                        <option value={TallyMark.tallyTypeEnum.PERSON}>Person</option>
-                        <option value={TallyMark.tallyTypeEnum.OTHER}>Other</option>
-                    </select>
-                    <input id="newTallyMarkText"
-                        name="newTallyMarkText"
-                        type="text"
-                        required
-                        value={this.state.newTallyMarkText}
-                        onChange={this.handleInputChange} />
-                    <button>Add Tally Mark</button>
-                </form>
-
-                <h2>Add Todo To Entry - Left Checkbox = Todo Status - Right Textbox = Todo Text</h2>
-                <form onSubmit={this.addTodo} className="add-todo-form">
-                    <input id="newTodoStatus"
-                        name="newTodoStatus"
-                        type="checkbox"
-                        checked={this.state.newTodoStatus}
-                        onChange={this.handleInputChange} />
-                    <input id="newTodoText"
-                        name="newTodoText"
-                        type="text"
-                        required
-                        value={this.state.newTodoText}
-                        onChange={this.handleInputChange} />
-                    <button>Add Todo</button>
-                </form>
-
-                <h2>Main Submission Form</h2>
-                <p>Tags Being Added: { this.state.tallies.map((currentValue)=> { return currentValue.type + currentValue.text}).toString() }</p>
-                <p>Todos Being Added: { this.state.todos.map((currentValue)=> { return currentValue.status + currentValue.text}).toString() }</p>
-                <form onSubmit={this.addNewEntry} className="add-entry-form">
-                    <label htmlFor="customTitle">Title</label>
-                    <input id="customTitle"
-                        name="customTitle"
-                        type="text"
-                        value={this.state.customTitle}
-                        onChange={this.handleInputChange} />
-                    <label htmlFor="date">Date</label>
-                    <input id="date"
-                        name="date"
-                        type="date"
-                        required
-                        value={this.state.date}
-                        onChange={this.handleInputChange} />
-                    <label htmlFor="bodyText">Body</label>
-                    <input id="bodyText"
-                        name="bodyText"
-                        type="text"
-                        required
-                        value={this.state.bodyText}
-                        onChange={this.handleInputChange} />
-                    <label htmlFor="mood">Mood</label>
-                    <select id="mood" name="mood" value={this.state.mood} onChange={this.handleInputChange}>
-                        <option value={Mood.moodEnum.MEH}>Meh</option>
-                        <option value={Mood.moodEnum.SAD}>Sad</option>
-                        <option value={Mood.moodEnum.HAPPY}>Happy</option>
-                    </select>
-                    <label htmlFor="weather">Weather Type</label>
-                    <input id="weather"
-                        name="weather"
-                        type="text"
-                        required
-                        value={this.state.weather}
-                        onChange={this.handleInputChange} />
-                    <label htmlFor="lowTemperature">Low Temperature</label>
-                    <input id="lowTemperature"
-                        name="lowTemperature"
-                        type="number"
-                        required
-                        value={this.state.lowTemperature}
-                        onChange={this.handleInputChange} />
-                    <label htmlFor="highTemperature">High Temperature</label>
-                    <input id="highTemperature"
-                        name="highTemperature"
-                        type="number"
-                        required
-                        value={this.state.highTemperature}
-                        onChange={this.handleInputChange} />
-                    <label htmlFor="humidity">Humidity</label>
-                    <input id="humidity"
-                        name="humidity"
-                        type="number"
-                        required
-                        value={this.state.humidity}
-                        onChange={this.handleInputChange} />
-                    <button>Submit Diary Entry</button>
-                </form>
-            </div>
-        );
-    }
 }
 
-export default AddEntry;
+Entry.propTypes = {
+    classes: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles)(Entry)

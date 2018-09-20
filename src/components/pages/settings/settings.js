@@ -1,7 +1,13 @@
 /* global gapi */
 import React, { Component } from 'react';
+import {TextField, MenuItem, Card, Button, Grid, Checkbox, Snackbar, IconButton, withStyles } from '@material-ui/core';
+import CloseIcon from '@material-ui/icons/Close';
 import DriveHelper from '../../helpers/driveHelper';
-export class Settings extends Component {
+import DeleteAllFiles from './deleteAllFiles';
+import PropTypes from 'prop-types';
+import 'typeface-roboto';
+
+class Settings extends Component {
     
     constructor(props) {
         super(props);
@@ -19,6 +25,8 @@ export class Settings extends Component {
         };
         this.handleInputChange = this.handleInputChange.bind(this);
         this.updateUserProperties = this.updateUserProperties.bind(this);
+        this.closeSuccessSnackBar = this.closeSuccessSnackBar.bind(this);
+        this.closeErrorSnackBar = this.closeErrorSnackBar.bind(this);
     }
 
     componentDidMount() {
@@ -57,78 +65,184 @@ export class Settings extends Component {
         }).catch((err) => {
             console.log("error saving: " + err);
             this.setState({ showErrorSaving: true, showSuccessfulSave: false});
-    });
+        });
+    }
+
+    closeSuccessSnackBar() {
+        this.setState({showSuccessfulSave: false}); 
+    }
+
+    closeErrorSnackBar() {
+        this.setState({showErrorSaving: false}); 
     }
     
     render() {
+
+        const { classes } = this.props;
+
         if(this.state.isLoading === false) {
             return (
-                <div>
-                    <h1>User Settings</h1>
-                    <h2>Update Information and Preferences</h2>
-                    <form onSubmit={this.updateUserProperties} className="add-entry-form">
+                <div> 
+                    <h1 className={classes.title}>User Settings</h1>
 
-                        <label htmlFor="dateOfBirth">Date of Birth</label>
-                        <input id="dateOfBirth"
-                            name="dateOfBirth"
-                            type="date"
-                            required
-                            value={this.state.dateOfBirth}
-                            onChange={this.handleInputChange} />
-
-                        <label htmlFor="usePin">Use Pin?</label>
-                        <input id="usePin"
-                            name="usePin"
-                            type="checkbox"
-                            checked={this.state.usePin}
-                            onChange={this.handleInputChange} />
-
-                        <label htmlFor="pin">Pin</label>
-                        <input id="pin"
-                            name="pin"
-                            type="text"
-                            value={this.state.pin}
-                            onChange={this.handleInputChange} />
-
-                        <label htmlFor="primaryTheme">Theme</label>
-                        <select name="primaryTheme" value={this.state.primaryTheme} onChange={this.handleInputChange}>
-                            <option value={"light"}>Light</option>
-                            <option value={"dark"}>Dark</option>
-                        </select>
-
-                        <label htmlFor="secondaryColor">Secondary Color</label>
-                        <select name="secondaryColor" value={this.state.secondaryColor} onChange={this.handleInputChange}>
-                            <option value={"blue"}>Blue</option>
-                            <option value={"red"}>Red</option>
-                            <option value={"green"}>Green</option>
-                            <option value={"orange"}>Orange</option>
-                            <option value={"purple"}>Purple</option>
-                            <option value={"pink"}>Pink</option>
-                        </select>
-                        
-                        <button>Save</button>
-                    </form>
-
-                    {this.state.showSuccessfulSave ? <p>Save Successful!</p> : this.state.showErrorSaving ? <p>Error saving file. Check console.</p> : null /* TODO: Better-looking notifications */}               
-
-                    <h2>Account</h2>
-                    <form ref="form" onSubmit={evt => {evt.preventDefault(); this.props.signOut();}}>
-                        <button type="submit">Sign Out</button>
-                    </form>
-                    <button onClick={
-                        //TODO: proper confirmation prompt
-                        //eslint-disable-next-line 
-                        () => {if(confirm("Delete All Files?")){DriveHelper.deleteAllFiles();}}
-                        }>Delete All Files
-                    </button>
-
+                     <Card className={classes.card}>
                     
-                </div>
+                        <h2 className={classes.cardTitle}>User Information and Preferences</h2>
+                            <Grid container className={classes.grid}>
+                                <Grid item className={classes.settingsGridItem}>
+                                    <TextField
+                                        name="dateOfBirth"
+                                        label="Date of Birth"
+                                        type="date"
+                                        value={this.state.dateOfBirth}
+                                        onChange={this.handleInputChange}
+                                        InputLabelProps={{
+                                            shrink: true,
+                                        }}
+                                    /> 
+                                </Grid>
+                                <Grid item className={classes.settingsGridItem}>
+                                    <label htmlFor="usePin">Use Pin?</label>
+                                    <Checkbox
+                                        label="Use Pin?"
+                                        name="usePin"
+                                        color="primary"
+                                        checked={this.state.usePin}
+                                        onChange={this.handleInputChange}
+                                    />
+                                </Grid>
+                                <Grid item className={classes.settingsGridItem}>
+                                    <TextField
+                                        name="pin"
+                                        label="Pin"
+                                        className={classes.textField}
+                                        type="password"
+                                        value={this.state.pin}
+                                        onChange={this.handleInputChange}
+                                    />
+                                </Grid>
+                                <Grid item className={classes.settingsGridItem}>
+                                    <TextField
+                                        label="Primary Theme"
+                                        name="primaryTheme"
+                                        value={this.state.primaryTheme}
+                                        className={classes.selector}
+                                        onChange={this.handleInputChange}
+                                        select
+                                    >
+                                        <MenuItem value="light">Light</MenuItem>
+                                        <MenuItem value="dark">Dark</MenuItem>
+                                    </TextField>
+                                </Grid>
+                                <Grid item className={classes.settingsGridItem}>
+                                    <TextField
+                                        label="Secondary Color"
+                                        name="secondaryColor"
+                                        value={this.state.secondaryColor}
+                                        className={classes.selector}
+                                        onChange={this.handleInputChange}
+                                        select
+                                    >
+                                        <MenuItem value="blue">Blue</MenuItem>
+                                        <MenuItem value="red">Red</MenuItem>
+                                        <MenuItem value="green">Green</MenuItem>
+                                        <MenuItem value="orange">Orange</MenuItem>
+                                        <MenuItem value="purple">Purple</MenuItem>
+                                        <MenuItem value="pink">Pink</MenuItem>
+                                    </TextField>
+                                </Grid>
+                            </Grid>
+                        
+                            <Button onClick={this.updateUserProperties} color="primary" className={classes.button}>Update</Button>
+                        </Card>
+                        <Card className={classes.card}>
+                            <h2 className={classes.cardTitle}>Account</h2>
+                            <Button className={classes.accountButton} color="primary" onClick={evt => {evt.preventDefault(); this.props.signOut();}}>Sign Out</Button>
+                            <div className={classes.accountButton}><DeleteAllFiles deleteAllFiles={DriveHelper.deleteAllFiles}/></div>
+                        </Card>
+
+                        <Snackbar
+                            open={this.state.showSuccessfulSave}
+                            ContentProps={{
+                                'aria-describedby': 'message-id',
+                            }}
+                            message={<span>Settings were successfully updated!</span>}
+                            action={[
+                                <IconButton
+                                    key="close"
+                                    aria-label="Close"
+                                    color="inherit"
+                                    className={classes.close}
+                                    onClick={this.closeSuccessSnackBar}
+                                >
+                                    <CloseIcon className={classes.icon} />
+                                </IconButton>
+                            ]}
+                        />
+                        <Snackbar
+                            open={this.state.showErrorSaving}
+                            ContentProps={{
+                                'aria-describedby': 'message-id',
+                            }}
+                            message={<span>There was an error saving your settings. Please try again.</span>}
+                            action={[
+                                <IconButton
+                                    key="close"
+                                    aria-label="Close"
+                                    color="inherit"
+                                    className={classes.close}
+                                    onClick={this.closeErrorSnackBar}
+                                >
+                                    <CloseIcon className={classes.icon} />
+                                </IconButton>
+                            ]}
+                        />
+                </div> 
             );
         }
-
         return null;
     }
 }
 
-export default Settings;
+const styles = theme => ({
+    title: {
+        color: theme.palette.primary.main,
+        textAlign: 'center',
+    },
+    cardTitle: {
+        color: theme.palette.primary.main, 
+        marginLeft: '1em',
+    }, 
+    card: {
+        fontFamily: 'Roboto',
+        maxWidth: 1000, 
+        minWidth: 100,
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        marginTop: '2em',
+        paddingBottom: '1em',
+    },
+    grid: {
+        marginLeft: '1em',
+        marginBottom: '1em',
+    },
+    button: {
+        marginLeft: '1em',
+    },
+    accountButton: {
+        marginLeft: '1em',
+        display: 'inline-block',
+    },
+    settingsGridItem: {
+        marginLeft: '1em',
+    }, 
+    selector: {
+        width: 150,
+    },
+});
+
+Settings.propTypes = {
+    classes: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles)(Settings);
