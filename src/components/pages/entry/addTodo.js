@@ -68,7 +68,10 @@ class AddTodo extends React.Component {
 
     return (
       <div>
-        <Button variant="contained" color="primary" onClick={this.handleClickOpen}>Add Todo</Button>
+        <Button variant="contained" color="primary" onClick={this.handleClickOpen} 
+          style={{fontSize: '.8em'}}>
+        Add Todo
+        </Button>
         <Dialog
           fullScreen={fullScreen}
           open={this.state.open}
