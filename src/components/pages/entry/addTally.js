@@ -82,7 +82,10 @@ class AddTally extends React.Component {
 
     return (
       <div>
-        <Button variant="contained" color="primary" onClick={this.handleClickOpen}>Add Tally</Button>
+        <Button variant="contained" color="primary" onClick={this.handleClickOpen} 
+          style={{fontSize: '.8em'}}>
+        Add Tally
+        </Button>
         <Dialog
           fullScreen={fullScreen}
           open={this.state.open}
@@ -169,11 +172,16 @@ class AddTally extends React.Component {
              </div>
             }
             </FormControl>
-            <DialogContentText>
-              Go to insights to view all tally marks
+            <DialogContentText style = {{
+              marginTop:'2em',
+            }}>
+              <i>Go to insights to view all tally marks</i>
             </DialogContentText>
           </DialogContent>
           <DialogActions>
+            <Button onClick={this.handleClose} color="primary" autoFocus>
+              Cancel
+            </Button>
             <Button onClick={this.handleSubmit} color="primary" autoFocus>
               Submit
             </Button>

@@ -31,7 +31,7 @@ class Settings extends Component {
 
     componentDidMount() {
         this.setState({
-            ...this.props.store.preferences, 
+            ...this.props.userStore.preferences, 
             isLoading: false,
         });
     }
@@ -61,7 +61,7 @@ class Settings extends Component {
         DriveHelper.updateFile("0", updatedProperties).then(() => {
             console.log("successfully updated");
             this.setState({ showSuccessfulSave: true, showErrorSaving: false });
-            this.props.store.preferences = updatedProperties;
+            this.props.userStore.preferences = updatedProperties;
         }).catch((err) => {
             console.log("error saving: " + err);
             this.setState({ showErrorSaving: true, showSuccessfulSave: false});

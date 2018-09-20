@@ -25,7 +25,7 @@ class Entry extends Component {
             this.state = {
                 customTitle: '',
                 date: new Date().getFullYear() + "-" + formattedMonth + "-" + new Date().getDate(),
-                dateOfBirth: this.props.store.preferences.dateOfBirth,
+                dateOfBirth: this.props.userStore.preferences.dateOfBirth,
                 bodyText: '',
                 mood: Mood.moodEnum.MEH,
                 weather: 'Cloudy',
@@ -41,7 +41,7 @@ class Entry extends Component {
             this.state = {
                 customTitle: this.props.title,
                 date: this.props.date,
-                dateOfBirth: this.props.store.preferences.dateOfBirth,
+                dateOfBirth: this.props.userStore.preferences.dateOfBirth,
                 bodyText: this.props.bodyText,
                 mood: Mood.moodEnum.MEH,
                 weather: weatherObject.weather,
@@ -81,11 +81,12 @@ class Entry extends Component {
                         onChange={this.handleInputChange}
                         className={classes.customTitleInput}
                         InputLabelProps={{
+                            shrink: true,
                             style: {fontSize:"20px"},
                         }}
                         InputProps={{
+                            shrink: true,
                             startAdornment: <div className={classes.customTitleAdornment}>{"Day " + daysAlive}</div>,
-                            style: {fontSize:"2em"},
                         }}
                     />
                 </div>
@@ -102,14 +103,14 @@ class Entry extends Component {
                             shrink: true,
                         }}
                     /> 
-                    <div className={classes.hideWhenSmall}> 
+                    <div className={classes.verticalButtonCluster}> 
                         <br/>
                         <div className={classes.addButton}><AddTally addNewTallyMark={this.addNewTallyMark}/></div> 
                         <br/>
                         <div className={classes.addButton}><AddTodo addTodo={this.addTodo}/></div>
                     </div>
                 </div>
-                <div className={classes.hideWhenBig}> 
+                <div className={classes.horizontalButtonCluster}> 
                         <div className={classes.addButton}><AddTally addNewTallyMark={this.addNewTallyMark}/></div>
                         <div className={classes.addButton}><AddTodo addTodo={this.addTodo}/></div>
                 </div>
@@ -133,7 +134,7 @@ class Entry extends Component {
                 {/* Bottom Cluster (Mood and Weather) */}
                 <div className={classes.bottomClusterGridContainer}>
                     <Grid container>
-                        <Grid item className={classes.bottomClusterObject}>
+                        <Grid item className={classes.moodSelector}>
                             <TextField
                                 label="Mood"
                                 name="mood"
@@ -210,9 +211,9 @@ class Entry extends Component {
                 <Divider className={classes.spaceDivider}/>
 
                 {this.props.adding ? 
-                    <Button variant="contained"color="primary" size="large" className={classes.submitButton} onClick={this.addNewEntry}>
-                        Add Entry 
-                        <Send className={classes.sendIcon}/>
+                    <Button variant="contained" color="primary" size="large" className={classes.submitButton} onClick={this.updateEntry}>
+                        Submit
+                        <Save className={classes.sendIcon}/>
                     </Button> :
                     <div>
                     <Button variant="contained" color="primary" size="large" className={classes.backButton} onClick={this.props.back}>
@@ -264,7 +265,8 @@ class Entry extends Component {
             "tallies": this.state.tallies, 
             "weather": new Weather(this.state.weather, this.state.lowTemperature, this.state.highTemperature, this.state.humidity), 
             "todos": this.state.todos,
-            "mood": new Mood(this.state.mood)
+            "mood": new Mood(this.state.mood),
+            "deleted": false,
         });
         this.setState({
             customTitle: '',
