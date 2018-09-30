@@ -1,6 +1,6 @@
 /* global gapi */
 import React, { Component } from 'react';
-import { CircularProgress, withStyles } from '@material-ui/core';
+import { CircularProgress, withStyles, } from '@material-ui/core';
 import DriveHelper from './helpers/driveHelper';
 import Home from './pages/home/home';
 import { Contact } from './pages/contact/contact';
@@ -13,8 +13,8 @@ import Insights from './pages/insights/insights';
 import Layout from './layout';
 import userPreferenceStore from '../stores/userPreferenceStore';
 import diaryEntryStore from '../stores/diaryEntryStore';
+import PinUnlock from './views/pinUnlock/pinUnlock';
 import PropTypes from 'prop-types';
-
 
 class App extends Component {
   constructor(props) {
@@ -23,6 +23,7 @@ class App extends Component {
       isInitialized: false,
       isSignedIn: false,
       newUserSetup: false,
+      pinChecked: false,
     };
     this.loadClientWhenGapiReady = this.loadClientWhenGapiReady.bind(this);
     this.initClient = this.initClient.bind(this);
@@ -57,19 +58,28 @@ class App extends Component {
       );
     }
     if (this.state.isSignedIn) {
-      return (
-        <Layout>
-          <div>
-              {
-                (this.props.location.pathname === "/") ? <Entry userStore={userPreferenceStore} diaryEntryStore={diaryEntryStore} adding={true}/> :
-                  (this.props.location.pathname === "/settings") ? <Settings signOut={this.signOut} userStore={userPreferenceStore} /> :
-                    (this.props.location.pathname === "/insights") ? <Insights diaryEntryStore={diaryEntryStore}/> :
-                      <Timeline userStore={userPreferenceStore} diaryEntryStore={diaryEntryStore}/>
-              }
-          </div>
-        </Layout>
-      );
+      if (userPreferenceStore.preferences.usePin && !this.state.pinChecked) {
+        // User needs to enter pin
+        return (
+          <PinUnlock userStore={userPreferenceStore} onPinChecked={this.onPinChecked}/>
+        );
+      } else {
+        return (
+          // Tally Diary App
+          <Layout>
+            <div>
+                {
+                  (this.props.location.pathname === "/") ? <Entry userStore={userPreferenceStore} diaryEntryStore={diaryEntryStore} adding={true}/> :
+                    (this.props.location.pathname === "/settings") ? <Settings signOut={this.signOut} userStore={userPreferenceStore} /> :
+                      (this.props.location.pathname === "/insights") ? <Insights diaryEntryStore={diaryEntryStore}/> :
+                        <Timeline userStore={userPreferenceStore} diaryEntryStore={diaryEntryStore}/>
+                }
+            </div>
+          </Layout>
+        );
+      }
     } else {
+      // Tally Diary Info (Home) Page
       return (
         <div>
             {
@@ -176,6 +186,12 @@ class App extends Component {
       });
     });
   };
+
+  onPinChecked = () => {
+    this.setState({
+      pinChecked: true,
+    }); 
+  };
 }
 
 const styles = theme => ({
@@ -193,6 +209,14 @@ const styles = theme => ({
   },
   innerContainer: {
       textAlign: 'center',
+  },
+  card: {
+    fontFamily: 'Roboto',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    marginTop: '2em',
+    paddingBottom: '1em',
+    paddingLeft: '1em',
   },
 });
 
