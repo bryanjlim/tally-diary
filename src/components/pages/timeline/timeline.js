@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import DriveHelper from '../../helpers/driveHelper';
-import {CircularProgress, withStyles} from '@material-ui/core';
+import { withStyles } from '@material-ui/core';
 import TimelineCard  from '../../views/diaryEntries/timelineCard';
 import Entry from '../entry/entry';
 import PropTypes from 'prop-types';
@@ -10,10 +10,6 @@ class Timeline extends Component {
     constructor(props) {
         super(props); 
         this.state = {
-            fileCount: 0,
-            diaryEntryCount: 0,
-            isFileCountDone: false,
-
             // View Single Diary Entry
             viewSingleEntry: false,
             singleEntryFileName: '',
@@ -73,36 +69,6 @@ class Timeline extends Component {
         });
     }
 
-    componentDidMount() {
-        DriveHelper.getFileCount().then((count) => {
-            if(this.props.diaryEntryStore.entries.length === count - 1 && (count - 1) > 0) {
-                // Diary entries already previously loaded and stored into diary entry store
-                this.setState({
-                    fileCount: count, 
-                    isFileCountDone: true,
-                })
-            } else if(count > 1) {
-                for(let i = count - 1 ; i > 0; i--) {
-                    DriveHelper.readFile(i).then((entry) => {
-                        entry.fileName=i;
-                        if(!entry.deleted) {
-                            this.props.diaryEntryStore.entries.push(entry);
-                        }
-                        this.setState({
-                            fileCount: count,
-                            diaryEntryCount: this.props.diaryEntryStore.entries.length,
-                            isFileCountDone: true, 
-                        })
-                    }).catch(err => console.log(err))
-                }
-            } else {
-                this.setState({
-                    isFileCountDone: true,
-                });
-            }
-        })
-    }
-
     eachDiaryEntryObject(diaryEntry, i) {
         const entry = diaryEntry;
         const { classes } = this.props;
@@ -141,30 +107,21 @@ class Timeline extends Component {
                     weather={this.state.singleEntryWeather}
                     bodyText={this.state.singleEntryBodyText}
                     todos={this.state.singleEntryTodos}
-                    tallies={this.state.singleEntryTallies}
                     userStore={this.props.userStore}
                     back={this.viewTimeline}
                 /> 
             );
         } else {
-            if(this.state.fileCount > 0 && this.state.diaryEntryCount > 0) {
+            if(this.state.diaryEntryStore.entries.length > 0 && this.state.diaryEntryCount > 0) {
                 return(<div>{this.props.diaryEntryStore.entries.map(this.eachDiaryEntryObject)}</div>);
-            } else if(this.state.fileCount > 0 && this.state.diaryEntryCount === 0) {
-                return(<div className={classes.centerText}><i>There are no diary entries to show. It's empty here....</i></div>);
             } else {
-                return(<div className={classes.circularProgress}><CircularProgress /></div>);
-            }
+                return(<div className={classes.centerText}><i>There are no diary entries to show. It's empty here....</i></div>);
+            } 
         }
     }
 }
 
 const styles = theme => ({
-    circularProgress: {
-        marginTop: '30%',
-        marginLeft: 'auto',
-        marginRight: 'auto',
-        textAlign: 'center',
-    }, 
     centerText: {
         marginLeft: 'auto',
         marginRight: 'auto',
