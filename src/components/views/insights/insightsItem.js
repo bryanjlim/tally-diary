@@ -1,12 +1,29 @@
 import React, { Component } from 'react';
-export class InsightsItem extends Component {
+import {withStyles} from '@material-ui/core';
+import PropTypes from 'prop-types';
+
+const styles = theme => ({
+    insightsItemText: {
+        textAlign: 'center',
+        marginTop: 'auto',
+        marginBottom: 'auto',
+    },
+});
+class InsightsItem extends Component {
     render() {
+        const { classes } = this.props;
+
         return (
-            <div>
-                <h2>{this.props.entryCount} diary entries written</h2>
+            <div className={classes.insightsItemText}>
+                <h2>Diary Entries Written: {this.props.entryCount}</h2>
+                <i>This includes deleted diary entries</i>
             </div>
         );
     }
 }
 
-export default InsightsItem;
+InsightsItem.propTypes = {
+    classes: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles)(InsightsItem);

@@ -1,18 +1,22 @@
 /* global gapi */
 import React, { Component } from 'react';
+import { CircularProgress, withStyles } from '@material-ui/core';
 import DriveHelper from './helpers/driveHelper';
-import { NewUserSetup } from './pages/new_user_setup/newUserSetup';
-import { Menu } from './menu';
-import { Home } from './pages/home/home';
-import { HomeNav } from './pages/home/homeNav';
+import Home from './pages/home/home';
 import { Contact } from './pages/contact/contact';
 import { AboutUs } from './pages/about_us/aboutUs';
-import { AddEntry } from './pages/add_entry/addEntry';
-import { Settings } from './pages/settings/settings';
-import { Timeline } from './pages/timeline/timeline';
-import { Insights } from './pages/insights/insights';
+import Entry from './pages/entry/entry';
+import NewUserSetup from './pages/new_user_setup/newUserSetup';
+import Settings from './pages/settings/settings';
+import Timeline from './pages/timeline/timeline';
+import Insights from './pages/insights/insights';
+import Layout from './layout';
+import userPreferenceStore from '../stores/userPreferenceStore';
+import diaryEntryStore from '../stores/diaryEntryStore';
+import PropTypes from 'prop-types';
 
-export class App extends Component {
+
+class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -25,6 +29,7 @@ export class App extends Component {
     this.updateSignInStatus = this.updateSignInStatus.bind(this);
     this.signIn = this.signIn.bind(this);
     this.signOut = this.signOut.bind(this);
+    this.loadUserPreferencesStore = this.loadUserPreferencesStore.bind(this);
   }
 
   componentDidMount() {
@@ -37,34 +42,41 @@ export class App extends Component {
   }
 
   render() {
-    if (!this.state.isInitialized) return null;
+    const { classes } = this.props;
+
+    if (!this.state.isInitialized) {
+      // Loading Circle
+      return (<div className={classes.outerContainer}> 
+              <div className={classes.middleContainer}> 
+              <div className={classes.innerContainer}> 
+              <CircularProgress/></div></div></div>); 
+    }
     if (this.state.newUserSetup) {
       return (
-        <NewUserSetup doneWithSetup={() => this.setState({ newUserSetup: false })} />
+        <NewUserSetup doneWithSetup={(userData) => {this.setState({ newUserSetup: false }); userPreferenceStore.preferences = userData; }} />
       );
     }
     if (this.state.isSignedIn) {
       return (
-        <div className="App">
-          <Menu />
-          {
-            (this.props.location.pathname === "/") ? <AddEntry /> :
-              (this.props.location.pathname === "/settings") ? <Settings signOut={this.signOut} /> :
-                (this.props.location.pathname === "/insights") ? <Insights /> :
-                  <Timeline />
-          }
-        </div>
+        <Layout>
+          <div>
+              {
+                (this.props.location.pathname === "/") ? <Entry userStore={userPreferenceStore} diaryEntryStore={diaryEntryStore} adding={true}/> :
+                  (this.props.location.pathname === "/settings") ? <Settings signOut={this.signOut} userStore={userPreferenceStore} /> :
+                    (this.props.location.pathname === "/insights") ? <Insights diaryEntryStore={diaryEntryStore}/> :
+                      <Timeline userStore={userPreferenceStore} diaryEntryStore={diaryEntryStore}/>
+              }
+          </div>
+        </Layout>
       );
     } else {
       return (
-        <div className="App">
-          <HomeNav />
-          {
-            (this.props.location.pathname === "/aboutus") ? <AboutUs /> :
-              (this.props.location.pathname === "/contact") ? <Contact /> :
-                <Home signIn={this.signIn} />
-          }
-
+        <div>
+            {
+              (this.props.location.pathname === "/aboutus") ? <AboutUs /> :
+                (this.props.location.pathname === "/contact") ? <Contact /> :
+                  <Home signIn={this.signIn} />
+            }
         </div>
       );
     }
@@ -87,8 +99,8 @@ export class App extends Component {
   initClient = () => {
     const that = this;
     gapi.client.init({
-      apiKey: 'AIzaSyAF5oqaI0sUfsbIOp3ss66JCT7PuvuBgRA',
-      clientId: '557447039683-srmcolp4qeuvkpvucjc06neq4d2gh1g0.apps.googleusercontent.com',
+      apiKey: 'AIzaSyAuKJs7B5EiTmFyjP8cg974vCsqS98QvYA',
+      clientId: '577206274010-9oung4hgd77fij9e50kjbc32tlviai4e.apps.googleusercontent.com',
       discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"],
       scope: 'https://www.googleapis.com/auth/drive.appdata'
     }).then(() => {
@@ -96,9 +108,15 @@ export class App extends Component {
       if (that.state.isSignedIn) {
         DriveHelper.getFileCount().then((count) => {
           if (count === 0) {
-            that.setState({ newUserSetup: true });
+            that.setState({ 
+              newUserSetup: true, 
+              isInitialized: true,
+            });
+          } else {
+            this.loadUserPreferencesStore().then(() => {
+              that.setState({ isInitialized: true });
+            });
           }
-          that.setState({ isInitialized: true });
         });
       } else {
         that.setState({ isInitialized: true });
@@ -113,8 +131,12 @@ export class App extends Component {
       DriveHelper.getFileCount().then((count) => {
         if (count === 0) {
           this.setState({ newUserSetup: true });
+        } else {
+          this.loadUserPreferencesStore().then(() => {
+            this.setState({ isInitialized: true });
+            this.updateSignInStatus();
+          });
         }
-        this.updateSignInStatus();
       });
     }).catch((error) => {
       console.log(error);
@@ -134,6 +156,49 @@ export class App extends Component {
     this.setState({ isSignedIn: gapi.auth2.getAuthInstance().isSignedIn.get() });
     this.forceUpdate();
   };
+
+  loadUserPreferencesStore = () => {
+    return new Promise((resolve, reject) => {
+      DriveHelper.readFile('0').then((res) => {
+        const userData = {
+          fistName: res.firstName,
+          lastName: res.lastName,
+          dateOfBirth: res.dateOfBirth,
+          primaryTheme: res.primaryTheme,
+          secondaryColor: res.secondaryColor,
+          usePin: res.usePin,
+          pin: res.pin,
+        };
+        userPreferenceStore.preferences = userData;
+        resolve();
+      }).catch((err) => {
+          reject(err);
+      });
+    });
+  };
 }
 
-export default App;
+const styles = theme => ({
+  outerContainer: {
+    backgroundColor: theme.palette.background.default,
+    fontFamily: 'Roboto',
+    display: 'table',
+    position: 'absolute',
+    height: '100%',
+    width: '100%',
+  },
+  middleContainer: {
+      display: 'table-cell',
+      verticalAlign: 'middle',
+  },
+  innerContainer: {
+      textAlign: 'center',
+  },
+});
+
+App.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+
+
+export default withStyles(styles)(App);

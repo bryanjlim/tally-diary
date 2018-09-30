@@ -1,6 +1,14 @@
 export default class TallyMark {
-    constructor(type, num) {
+    static tallyTypeEnum = {
+        FOOD: 'Food',
+        ACTIVITY: 'Activity',
+        LOCATION: 'Location',
+        PERSON: 'Person',
+        OTHER: 'Other'
+    }
+
+    constructor(type, text) {
         this.type = type;
-        this.num = num; 
+        this.text = text; 
     }
 }
