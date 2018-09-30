@@ -1,6 +1,6 @@
 /* global gapi */
 import React, { Component } from 'react';
-import { CircularProgress, withStyles, Grid, TextField, Button, Card } from '@material-ui/core';
+import { CircularProgress, withStyles, } from '@material-ui/core';
 import DriveHelper from './helpers/driveHelper';
 import Home from './pages/home/home';
 import { Contact } from './pages/contact/contact';
@@ -13,8 +13,8 @@ import Insights from './pages/insights/insights';
 import Layout from './layout';
 import userPreferenceStore from '../stores/userPreferenceStore';
 import diaryEntryStore from '../stores/diaryEntryStore';
+import PinUnlock from './views/pinUnlock/pinUnlock';
 import PropTypes from 'prop-types';
-
 
 class App extends Component {
   constructor(props) {
@@ -24,17 +24,13 @@ class App extends Component {
       isSignedIn: false,
       newUserSetup: false,
       pinChecked: false,
-      pin: '',
-      incorrectPin: false,
     };
-    this.handleInputChange = this.handleInputChange.bind(this);
     this.loadClientWhenGapiReady = this.loadClientWhenGapiReady.bind(this);
     this.initClient = this.initClient.bind(this);
     this.updateSignInStatus = this.updateSignInStatus.bind(this);
     this.signIn = this.signIn.bind(this);
     this.signOut = this.signOut.bind(this);
     this.loadUserPreferencesStore = this.loadUserPreferencesStore.bind(this);
-    this.checkPin = this.checkPin.bind(this);
   }
 
   componentDidMount() {
@@ -45,17 +41,6 @@ class App extends Component {
     script.src = "https://apis.google.com/js/client.js";
     document.body.appendChild(script);
   }
-
-  handleInputChange(event) {
-    const target = event.target;
-    const value = target.value;
-    const name = target.name;
-    
-    this.setState({
-      [name]: value,
-      incorrectPin: false,
-    });
-}
 
   render() {
     const { classes } = this.props;
@@ -74,38 +59,27 @@ class App extends Component {
     }
     if (this.state.isSignedIn) {
       if (userPreferenceStore.preferences.usePin && !this.state.pinChecked) {
+        // User needs to enter pin
         return (
+          <PinUnlock userStore={userPreferenceStore} onPinChecked={this.onPinChecked}/>
+        );
+      } else {
+        return (
+          // Tally Diary App
           <Layout>
-            <Card className={classes.card}>
-            <h2>Enter PIN:</h2>
-            <Grid container>
-              <TextField
-                  name="pin"
-                  label="Pin"
-                  type="password"
-                  error={this.state.incorrectPin}
-                  value={this.state.pin}
-                  onChange={this.handleInputChange}
-              />
-              <Button onClick={this.checkPin} color="primary">Enter</Button>
-            </Grid>
-            </Card>
+            <div>
+                {
+                  (this.props.location.pathname === "/") ? <Entry userStore={userPreferenceStore} diaryEntryStore={diaryEntryStore} adding={true}/> :
+                    (this.props.location.pathname === "/settings") ? <Settings signOut={this.signOut} userStore={userPreferenceStore} /> :
+                      (this.props.location.pathname === "/insights") ? <Insights diaryEntryStore={diaryEntryStore}/> :
+                        <Timeline userStore={userPreferenceStore} diaryEntryStore={diaryEntryStore}/>
+                }
+            </div>
           </Layout>
         );
       }
-      return (
-        <Layout>
-          <div>
-              {
-                (this.props.location.pathname === "/") ? <Entry userStore={userPreferenceStore} diaryEntryStore={diaryEntryStore} adding={true}/> :
-                  (this.props.location.pathname === "/settings") ? <Settings signOut={this.signOut} userStore={userPreferenceStore} /> :
-                    (this.props.location.pathname === "/insights") ? <Insights diaryEntryStore={diaryEntryStore}/> :
-                      <Timeline userStore={userPreferenceStore} diaryEntryStore={diaryEntryStore}/>
-              }
-          </div>
-        </Layout>
-      );
     } else {
+      // Tally Diary Info (Home) Page
       return (
         <div>
             {
@@ -213,13 +187,11 @@ class App extends Component {
     });
   };
 
-  checkPin = () => {
-    if (userPreferenceStore.preferences.pin == this.state.pin) {
-      this.setState({ pinChecked: true });
-    } else {
-      this.setState({ incorrectPin: true });
-    }
-  }
+  onPinChecked = () => {
+    this.setState({
+      pinChecked: true,
+    }); 
+  };
 }
 
 const styles = theme => ({

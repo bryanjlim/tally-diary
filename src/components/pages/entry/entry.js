@@ -11,7 +11,6 @@ import TallyMarkChip from '../../views/tallyMark/tallyMarkChip';
 import AddTally from './addTally';
 import AddTodo from './addTodo';
 import EntryStyling from './entryStyling';
-import Send from '@material-ui/icons/Send';
 import Save from '@material-ui/icons/Save';
 
 const styles = EntryStyling.styles;
