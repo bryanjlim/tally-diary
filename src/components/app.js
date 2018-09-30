@@ -1,6 +1,6 @@
 /* global gapi */
 import React, { Component } from 'react';
-import { CircularProgress, withStyles } from '@material-ui/core';
+import { CircularProgress, withStyles, Grid, TextField, Button, Card } from '@material-ui/core';
 import DriveHelper from './helpers/driveHelper';
 import Home from './pages/home/home';
 import { Contact } from './pages/contact/contact';
@@ -23,13 +23,18 @@ class App extends Component {
       isInitialized: false,
       isSignedIn: false,
       newUserSetup: false,
+      pinChecked: false,
+      pin: '',
+      incorrectPin: false,
     };
+    this.handleInputChange = this.handleInputChange.bind(this);
     this.loadClientWhenGapiReady = this.loadClientWhenGapiReady.bind(this);
     this.initClient = this.initClient.bind(this);
     this.updateSignInStatus = this.updateSignInStatus.bind(this);
     this.signIn = this.signIn.bind(this);
     this.signOut = this.signOut.bind(this);
     this.loadUserPreferencesStore = this.loadUserPreferencesStore.bind(this);
+    this.checkPin = this.checkPin.bind(this);
   }
 
   componentDidMount() {
@@ -40,6 +45,17 @@ class App extends Component {
     script.src = "https://apis.google.com/js/client.js";
     document.body.appendChild(script);
   }
+
+  handleInputChange(event) {
+    const target = event.target;
+    const value = target.value;
+    const name = target.name;
+    
+    this.setState({
+      [name]: value,
+      incorrectPin: false,
+    });
+}
 
   render() {
     const { classes } = this.props;
@@ -57,6 +73,26 @@ class App extends Component {
       );
     }
     if (this.state.isSignedIn) {
+      if (userPreferenceStore.preferences.usePin && !this.state.pinChecked) {
+        return (
+          <Layout>
+            <Card className={classes.card}>
+            <h2>Enter PIN:</h2>
+            <Grid container>
+              <TextField
+                  name="pin"
+                  label="Pin"
+                  type="password"
+                  error={this.state.incorrectPin}
+                  value={this.state.pin}
+                  onChange={this.handleInputChange}
+              />
+              <Button onClick={this.checkPin} color="primary">Enter</Button>
+            </Grid>
+            </Card>
+          </Layout>
+        );
+      }
       return (
         <Layout>
           <div>
@@ -176,6 +212,14 @@ class App extends Component {
       });
     });
   };
+
+  checkPin = () => {
+    if (userPreferenceStore.preferences.pin == this.state.pin) {
+      this.setState({ pinChecked: true });
+    } else {
+      this.setState({ incorrectPin: true });
+    }
+  }
 }
 
 const styles = theme => ({
@@ -193,6 +237,14 @@ const styles = theme => ({
   },
   innerContainer: {
       textAlign: 'center',
+  },
+  card: {
+    fontFamily: 'Roboto',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    marginTop: '2em',
+    paddingBottom: '1em',
+    paddingLeft: '1em',
   },
 });
 
