@@ -159,7 +159,7 @@ class App extends Component {
 
   loadUserPreferencesStore = () => {
     return new Promise((resolve, reject) => {
-      DriveHelper.readFile('0').then((res) => {
+      DriveHelper.readFile(DriveHelper.userDataFileName).then((res) => {
         const userData = {
           fistName: res.firstName,
           lastName: res.lastName,

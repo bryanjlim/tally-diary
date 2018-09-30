@@ -58,7 +58,7 @@ class Settings extends Component {
             "usePin": this.state.usePin,
             "pin": this.state.pin,
         };
-        DriveHelper.updateFile("0", updatedProperties).then(() => {
+        DriveHelper.updateFile(DriveHelper.userDataFileName, updatedProperties).then(() => {
             console.log("successfully updated");
             this.setState({ showSuccessfulSave: true, showErrorSaving: false });
             this.props.userStore.preferences = updatedProperties;

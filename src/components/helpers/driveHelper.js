@@ -5,49 +5,26 @@ export default class DriveHelper {
     static boundary = '-------314159265358979323846264';
     static delimiter = "\r\n---------314159265358979323846264\r\n";
     static end_request = "\r\n---------314159265358979323846264--";
-    
-    static tally_file_name = "tallies";
 
-    static postUserData(fileData) {
-        const fileName = 0; // 0 is reserved for user data, diary entries start at 1
-        DriveHelper.postFile(fileName, fileData);
+    static nonEntryFiles = 2;
+    static userDataFileName = 'userData';
+    static userTalliesFilename = 'userTallies';
+
+    static postUserData(fileData) { 
+        DriveHelper.postFile(this.userDataFileName, fileData);
+    }
+
+    static postTallies(allTallies){
+        DriveHelper.postFile(this.userTalliesFilename, allTallies);
     }
 
     static postEntry(fileData) {
         DriveHelper.getFileCount().then((count) => {
-            const fileName = count; 
+            const fileName = count; // diary entries start at 1 and increment by 1 for each new diary entry
             DriveHelper.postFile(fileName, fileData);
         });
     }
-
-    /**
-     * Updates number of tallies by adding tallies to specified key (tallyName)
-     * @param {string} tallyName Key of tally.
-     * @param {int} numOfTallies Number of tallies to be added.
-     */
-    static addTallies(tallyName, numOfTallies){
-        // Search for tally file
-        DriveHelper.getFileId(DriveHelper.tally_file_name).then((id) =>{
-            // If tally file does not exist, create it
-            if(id == null){
-                var postObject = {
-                    tallyName: numOfTallies
-                }
-                DriveHelper.postFile(DriveHelper.tally_file_name, postObject);
-            } else{
-                // Read current tally number and add numOfTallies to it
-                var currentTallies = 0;
-                DriveHelper.readFile(DriveHelper.tally_file_name).then((data) => {
-                    currentTallies = data.tallyName;
-                });
-                var updateObject = {
-                    tallyName: currentTallies + numOfTallies
-                }
-                DriveHelper.updateFile(DriveHelper.tally_file_name, updateObject);
-            }
-        });
-    }
-
+    
     /**
      * Get the data from a file given the name of the file as a parameter. 
      * 
