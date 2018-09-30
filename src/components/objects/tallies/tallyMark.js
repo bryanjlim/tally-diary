@@ -7,8 +7,9 @@ export default class TallyMark {
         OTHER: 'Other'
     }
 
-    constructor(type, text) {
+    constructor(type, text, entryFileName) {
         this.type = type;
         this.text = text; 
+        this.entryFileName = entryFileName; // File name of entry this tally mark belongs to
     }
 }

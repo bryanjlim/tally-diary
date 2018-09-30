@@ -75,7 +75,6 @@ class Timeline extends Component {
 
     componentDidMount() {
         DriveHelper.getFileCount().then((count) => {
-
             if(this.props.diaryEntryStore.entries.length === count - 1 && (count - 1) > 0) {
                 // Diary entries already previously loaded and stored into diary entry store
                 this.setState({

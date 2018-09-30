@@ -11,7 +11,6 @@ import TallyMarkChip from '../../views/tallyMark/tallyMarkChip';
 import AddTally from './addTally';
 import AddTodo from './addTodo';
 import EntryStyling from './entryStyling';
-import Send from '@material-ui/icons/Send';
 import Save from '@material-ui/icons/Save';
 
 const styles = EntryStyling.styles;
@@ -34,6 +33,7 @@ class Entry extends Component {
                 humidity: 34,
                 tallies: [],
                 todos: [],
+                fileName: this.props.diaryEntryStore.entries.length,
             };
         } else {
             const weatherObject = this.props.weather;
@@ -234,7 +234,7 @@ class Entry extends Component {
 
     addNewTallyMark(newTallyMarkType, newTallyMarkText) {
         this.setState(prevState => ({
-            tallies: [...prevState.tallies, new TallyMark(newTallyMarkType, newTallyMarkText)]
+            tallies: [...prevState.tallies, new TallyMark(newTallyMarkType, newTallyMarkText, this.state.fileName)]
           }))
     }
 
@@ -258,17 +258,17 @@ class Entry extends Component {
 
     addNewEntry(e) {
         e.preventDefault();
+        DriveHelper.postTallies(this.state.tallies);
         DriveHelper.postEntry({
             "title": this.state.customTitle, 
             "date": this.state.date,
             "bodyText": this.state.bodyText,
-            "tallies": this.state.tallies, 
             "weather": new Weather(this.state.weather, this.state.lowTemperature, this.state.highTemperature, this.state.humidity), 
             "todos": this.state.todos,
             "mood": new Mood(this.state.mood),
             "deleted": false,
         });
-        this.setState({
+        this.setState(prevState => ({
             customTitle: '',
             date: new Date(),
             bodyText: '',
@@ -283,17 +283,18 @@ class Entry extends Component {
             newTallyMarkText: '',
             newTodoStatus: false,
             newTodoText: '',
-        });
+            fileName: prevState.fileName += 1,
+        }));
     }
 
     updateEntry(e) {
         e.preventDefault();
+        DriveHelper.postTallies(this.state.tallies);
         DriveHelper.updateFile(this.props.fileName,
         {
             "title": this.state.customTitle, 
             "date": this.state.date,
             "bodyText": this.state.bodyText,
-            "tallies": this.state.tallies, 
             "weather": new Weather(this.state.weather, this.state.lowTemperature, this.state.highTemperature, this.state.humidity), 
             "todos": this.state.todos,
             "mood": new Mood(this.state.mood)

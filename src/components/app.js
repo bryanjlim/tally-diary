@@ -13,6 +13,7 @@ import Insights from './pages/insights/insights';
 import Layout from './layout';
 import userPreferenceStore from '../stores/userPreferenceStore';
 import diaryEntryStore from '../stores/diaryEntryStore';
+import tallyStore from '../stores/tallyStore';
 import PropTypes from 'prop-types';
 
 
@@ -30,6 +31,8 @@ class App extends Component {
     this.signIn = this.signIn.bind(this);
     this.signOut = this.signOut.bind(this);
     this.loadUserPreferencesStore = this.loadUserPreferencesStore.bind(this);
+    this.loadTallyStore = this.loadTallyStore.bind(this);  
+    this.loadDiaryEntryStore = this.loadDiaryEntryStore.bind(this);
   }
 
   componentDidMount() {
@@ -113,8 +116,13 @@ class App extends Component {
               isInitialized: true,
             });
           } else {
+            // Loads user data and tallies before initializing
             this.loadUserPreferencesStore().then(() => {
-              that.setState({ isInitialized: true });
+              this.loadTallyStore().then(() => {
+                this.loadDiaryEntryStore().then(() => {
+                  that.setState({ isInitialized: true });
+                });
+              });
             });
           }
         });
@@ -175,6 +183,31 @@ class App extends Component {
           reject(err);
       });
     });
+  };
+
+  loadTallyStore = () => {
+    return new Promise((resolve, reject) => {
+      DriveHelper.readFile(DriveHelper.userTalliesFilename).then((res) => {
+        const tallyMarks = res.tallyMarks;
+        tallyStore.tallyMarks = tallyMarks;
+        resolve();
+      }).catch((err) => {
+          reject(err);
+      });
+    });
+  };
+
+  loadDiaryEntryStore = () => {
+    DriveHelper.getFileCount().then((count) => {
+      for(let i = count - 1 ; i > 0; i--) {
+          DriveHelper.readFile(i).then((entry) => {
+              entry.fileName=i;
+              if(!entry.deleted) {
+                diaryEntryStore.entries.push(entry);
+              }
+          }).catch(err => console.log(err))
+      }
+    })
   };
 }
 

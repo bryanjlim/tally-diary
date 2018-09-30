@@ -18,7 +18,7 @@ export default class DriveHelper {
         DriveHelper.postFile(this.userTalliesFilename, allTallies);
     }
 
-    static postEntry(fileData) {
+    static postEntry(fileData, fileName) {
         DriveHelper.getFileCount().then((count) => {
             const fileName = count; // diary entries start at 1 and increment by 1 for each new diary entry
             DriveHelper.postFile(fileName, fileData);
