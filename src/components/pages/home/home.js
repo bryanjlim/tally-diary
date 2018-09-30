@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { HomeNav } from './homeNav';
 import './home.css';
 
 export class Home extends Component {
