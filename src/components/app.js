@@ -125,7 +125,9 @@ class App extends Component {
             });
           } else {
             this.loadUserPreferencesStore().then(() => {
-              that.setState({ isInitialized: true });
+              this.loadDiaryEntryStore().then(() => {
+                that.setState({ isInitialized: true });
+              });
             });
           }
         });

@@ -81,11 +81,9 @@ class Entry extends Component {
                         onChange={this.handleInputChange}
                         className={classes.customTitleInput}
                         InputLabelProps={{
-                            shrink: true,
                             style: {fontSize:"20px"},
                         }}
                         InputProps={{
-                            shrink: true,
                             startAdornment: <div className={classes.customTitleAdornment}>{"Day " + daysAlive}</div>,
                         }}
                     />
@@ -100,18 +98,17 @@ class Entry extends Component {
                         value={this.state.date}
                         onChange={this.handleInputChange}
                         InputLabelProps={{
-                            shrink: true,
                         }}
                     /> 
                     <div className={classes.verticalButtonCluster}> 
                         <br/>
-                        <div className={classes.addButton}><AddTally addNewTallyMark={this.addNewTallyMark}/></div> 
+                        <div className={classes.addButton}><AddTally diaryEntryStore={this.props.diaryEntryStore} addNewTallyMark={this.addNewTallyMark}/></div> 
                         <br/>
                         <div className={classes.addButton}><AddTodo addTodo={this.addTodo}/></div>
                     </div>
                 </div>
                 <div className={classes.horizontalButtonCluster}> 
-                        <div className={classes.addButton}><AddTally addNewTallyMark={this.addNewTallyMark}/></div>
+                        <div className={classes.addButton}><AddTally diaryEntryStore={this.props.diaryEntryStore} addNewTallyMark={this.addNewTallyMark}/></div>
                         <div className={classes.addButton}><AddTodo addTodo={this.addTodo}/></div>
                 </div>
 
@@ -258,6 +255,7 @@ class Entry extends Component {
 
     addNewEntry(e) {
         e.preventDefault();
+        alert(this.state.fileName);
         DriveHelper.postEntry({
             "title": this.state.customTitle, 
             "date": this.state.date,
@@ -267,7 +265,7 @@ class Entry extends Component {
             "todos": this.state.todos,
             "mood": new Mood(this.state.mood),
             "deleted": false,
-        });
+        }, this.state.fileName);
         this.setState({
             customTitle: '',
             date: new Date(),

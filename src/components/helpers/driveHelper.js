@@ -11,11 +11,8 @@ export default class DriveHelper {
         DriveHelper.postFile(fileName, fileData);
     }
 
-    static postEntry(fileData) {
-        DriveHelper.getFileCount().then((count) => {
-            const fileName = count; 
-            DriveHelper.postFile(fileName, fileData);
-        });
+    static postEntry(fileData, fileName) {
+        DriveHelper.postFile(fileName, fileData);
     }
 
     /**

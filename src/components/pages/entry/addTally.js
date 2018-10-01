@@ -14,7 +14,7 @@ import Select from '@material-ui/core/Select'
 import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
 import TallyMark from '../../objects/tallies/tallyMark';
-import TalliesViewer from '../../views/tallies/talliesView';
+import TalliesView from '../../views/tallies/talliesView';
 
 class AddTally extends React.Component {
 
@@ -94,7 +94,7 @@ class AddTally extends React.Component {
           aria-labelledby="responsive-dialog-title"
         >
           <DialogTitle id="responsive-dialog-title">{"Tallies"}</DialogTitle>
-          <TalliesViewer diaryEntryStore={this.props.diaryEntryStore}/>
+          <TalliesView diaryEntryStore={this.props.diaryEntryStore}/>
           <DialogContent>
             <FormControl className="tallyFormControl">
               {this.state.newTallyMarkTypeError ? 
