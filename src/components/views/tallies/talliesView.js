@@ -4,7 +4,10 @@ import {withStyles} from '@material-ui/core';
 import Tally from '../../objects/tallies/tally';
 
 const styles = theme => ({
-
+    wrapper: {
+        marginLeft: '.5em',
+        fontFamily: 'roboto',
+    }
 });
 
 class TalliesView extends React.Component {
