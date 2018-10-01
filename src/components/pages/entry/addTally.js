@@ -52,7 +52,6 @@ class AddTally extends React.Component {
       } else {
         this.props.addNewTallyMark(this.state.newTallyMarkType, this.state.newTallyMarkText);
         this.setState({
-          open: false,
           newTallyMarkType: "",
           newTallyMarkTypeError: false,
           newTallyMarkText: "",
@@ -94,7 +93,7 @@ class AddTally extends React.Component {
           aria-labelledby="responsive-dialog-title"
         >
           <DialogTitle id="responsive-dialog-title">{"Tallies"}</DialogTitle>
-          <TalliesView diaryEntryStore={this.props.diaryEntryStore}/>
+          <TalliesView currentFileName={this.props.currentFileName} currentEntryTallyMarks={this.props.tallyMarks} diaryEntryStore={this.props.diaryEntryStore}/>
           <DialogContent>
             <FormControl className="tallyFormControl">
               {this.state.newTallyMarkTypeError ? 

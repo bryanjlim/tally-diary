@@ -102,13 +102,13 @@ class Entry extends Component {
                     /> 
                     <div className={classes.verticalButtonCluster}> 
                         <br/>
-                        <div className={classes.addButton}><AddTally diaryEntryStore={this.props.diaryEntryStore} addNewTallyMark={this.addNewTallyMark}/></div> 
+                        <div className={classes.addButton}><AddTally currentFileName={this.state.fileName} tallyMarks={this.state.tallies} diaryEntryStore={this.props.diaryEntryStore} addNewTallyMark={this.addNewTallyMark}/></div> 
                         <br/>
                         <div className={classes.addButton}><AddTodo addTodo={this.addTodo}/></div>
                     </div>
                 </div>
                 <div className={classes.horizontalButtonCluster}> 
-                        <div className={classes.addButton}><AddTally diaryEntryStore={this.props.diaryEntryStore} addNewTallyMark={this.addNewTallyMark}/></div>
+                        <div className={classes.addButton}><AddTally currentFileName={this.state.fileName} tallyMarks={this.state.tallies} diaryEntryStore={this.props.diaryEntryStore} addNewTallyMark={this.addNewTallyMark}/></div>
                         <div className={classes.addButton}><AddTodo addTodo={this.addTodo}/></div>
                 </div>
 
