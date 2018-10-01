@@ -26,9 +26,12 @@ class Timeline extends Component {
         this.deleteEntry = this.deleteEntry.bind(this);
         this.viewTimeline = this.viewTimeline.bind(this);
         this.eachDiaryEntryObject = this.eachDiaryEntryObject.bind(this);
+        this.getTalliesForEntry = this.getTalliesForEntry.bind(this);
     }
 
-    viewSingleEntry(fileName, timelineCardIndex, title, date, mood, weather, bodyText, todos, tallies) {
+    viewSingleEntry(fileName, timelineCardIndex, title, date, mood, weather, bodyText, todos) {
+        const tallies = this.getTalliesForEntry(fileName);
+
         this.setState({
             viewSingleEntry: true,
             singleEntryFileName: fileName,
@@ -41,6 +44,16 @@ class Timeline extends Component {
             singleEntryTodos: todos,
             singleEntryTallies: tallies,
         });
+    }
+
+    getTalliesForEntry(fileName) {
+        const tallies = [];
+        for(let i = 0; i < this.props.tallyStore.tallyMarks.length; i++) {
+            if(this.props.tallyStore.tallyMarks[i].fileName == fileName) {
+                tallies.push(this.props.tallyStore.tallyMarks[i]);
+            }
+        }
+        return tallies; 
     }
 
     deleteEntry(fileName, timelineCardIndex) {
@@ -82,7 +95,6 @@ class Timeline extends Component {
                 weather={entry.weather}
                 bodyText={entry.bodyText}
                 todos={entry.todos}
-                tallies={entry.tallies}
                 birthDate={this.props.userStore.preferences.dateOfBirth}
                 index={i}
                 viewSingleEntry={this.viewSingleEntry}
@@ -108,11 +120,12 @@ class Timeline extends Component {
                     bodyText={this.state.singleEntryBodyText}
                     todos={this.state.singleEntryTodos}
                     userStore={this.props.userStore}
+                    tallyStore={this.props.tallyStore}
                     back={this.viewTimeline}
                 /> 
             );
         } else {
-            if(this.state.diaryEntryStore.entries.length > 0 && this.state.diaryEntryCount > 0) {
+            if(this.props.diaryEntryStore.entries.length > 0) {
                 return(<div>{this.props.diaryEntryStore.entries.map(this.eachDiaryEntryObject)}</div>);
             } else {
                 return(<div className={classes.centerText}><i>There are no diary entries to show. It's empty here....</i></div>);

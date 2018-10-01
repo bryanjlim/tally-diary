@@ -25,8 +25,7 @@ class Insights extends Component {
 
             { this.state.fileCount == 0 ? 
                 <div className={classes.circularProgress}><CircularProgress/></div> : 
-                <Card className={classes.insightCard}><InsightsItem entryCount={this.state.fileCount - 1}/></Card> 
-                
+                <Card className={classes.insightCard}><InsightsItem tallyStore={this.props.tallyStore} diaryEntryStore={this.props.diaryEntryStore}/></Card> 
             }
             
             </div>

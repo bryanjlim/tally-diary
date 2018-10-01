@@ -235,7 +235,7 @@ class Entry extends Component {
     addNewTallyMark(newTallyMarkType, newTallyMarkText) {
         this.setState(prevState => ({
             tallies: [...prevState.tallies, new TallyMark(newTallyMarkType, newTallyMarkText, this.state.fileName)]
-          }))
+        }));
     }
 
     deleteTallyMark(index) {
@@ -258,7 +258,10 @@ class Entry extends Component {
 
     addNewEntry(e) {
         e.preventDefault();
-        DriveHelper.postTallies(this.state.tallies);
+        for(let i = 0; i < this.state.tallies.length; i++) {
+            this.props.tallyStore.tallyMarks.push(this.state.tallies[i]);
+        }
+        DriveHelper.postTallies(this.props.tallyStore.tallyMarks);
         DriveHelper.postEntry({
             "title": this.state.customTitle, 
             "date": this.state.date,
@@ -289,7 +292,10 @@ class Entry extends Component {
 
     updateEntry(e) {
         e.preventDefault();
-        DriveHelper.postTallies(this.state.tallies);
+        for(let i = 0; i < this.state.tallies.length; i++) {
+            this.props.tallyStore.tallyMarks.push(this.state.tallies[i]);
+        }
+        DriveHelper.postTallies(this.props.tallyStore.tallyMarks);
         DriveHelper.updateFile(this.props.fileName,
         {
             "title": this.state.customTitle, 

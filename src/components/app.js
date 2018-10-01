@@ -64,9 +64,9 @@ class App extends Component {
         <Layout>
           <div>
               {
-                (this.props.location.pathname === "/") ? <Entry userStore={userPreferenceStore} diaryEntryStore={diaryEntryStore} adding={true}/> :
+                (this.props.location.pathname === "/") ? <Entry userStore={userPreferenceStore} diaryEntryStore={diaryEntryStore} tallyStore={tallyStore} adding={true}/> :
                   (this.props.location.pathname === "/settings") ? <Settings signOut={this.signOut} userStore={userPreferenceStore} /> :
-                    (this.props.location.pathname === "/insights") ? <Insights diaryEntryStore={diaryEntryStore}/> :
+                    (this.props.location.pathname === "/insights") ? <Insights tallyStore={tallyStore} diaryEntryStore={diaryEntryStore}/> :
                       <Timeline userStore={userPreferenceStore} diaryEntryStore={diaryEntryStore}/>
               }
           </div>
@@ -189,7 +189,7 @@ class App extends Component {
     return new Promise((resolve, reject) => {
       DriveHelper.readFile(DriveHelper.userTalliesFilename).then((res) => {
         const tallyMarks = res.tallyMarks;
-        tallyStore.tallyMarks = tallyMarks;
+        tallyStore.tallyMarks = tallyMarks ? tallyMarks : [];
         resolve();
       }).catch((err) => {
           reject(err);
@@ -198,16 +198,22 @@ class App extends Component {
   };
 
   loadDiaryEntryStore = () => {
-    DriveHelper.getFileCount().then((count) => {
-      for(let i = count - 1 ; i > 0; i--) {
-          DriveHelper.readFile(i).then((entry) => {
-              entry.fileName=i;
-              if(!entry.deleted) {
-                diaryEntryStore.entries.push(entry);
-              }
-          }).catch(err => console.log(err))
-      }
-    })
+    return new Promise((resolve, reject) => {
+      DriveHelper.getFileCount().then((count) => {
+        for(let i = count - DriveHelper.nonEntryFiles ; i > 0; i--) {
+            DriveHelper.readFile(i).then((entry) => {
+                entry.fileName=i;
+                if(!entry.deleted) {
+                  diaryEntryStore.entries.push(entry);
+                }
+                if(i === 1) {
+                  resolve();
+                }
+            }).catch(err => reject(err))
+        }
+      });
+    });
+    
   };
 }
 

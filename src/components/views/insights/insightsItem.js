@@ -15,7 +15,7 @@ class InsightsItem extends Component {
 
         return (
             <div className={classes.insightsItemText}>
-                <h2>Diary Entries Written: {this.props.entryCount}</h2>
+                <h2>Diary Entries Written: {this.props.diaryEntryStore.entries.length}</h2>
                 <i>This includes deleted diary entries</i>
             </div>
         );
