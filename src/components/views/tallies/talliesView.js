@@ -44,7 +44,7 @@ class TalliesView extends React.Component {
                 }
                 if(!existsInTallies) {
                     // If not currently in the tallies field, add to array
-                    stateArrayToUse.push(new Tally(tallyMarkType, tallyMarkText, 1));
+                    stateArrayToUse.push(new Tally(tallyMarkText, 1));
                 }
             }
         }
