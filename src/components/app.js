@@ -31,6 +31,7 @@ class App extends Component {
     this.signIn = this.signIn.bind(this);
     this.signOut = this.signOut.bind(this);
     this.loadUserPreferencesStore = this.loadUserPreferencesStore.bind(this);
+    this.loadDiaryEntryStore = this.loadDiaryEntryStore.bind(this); 
   }
 
   componentDidMount() {
@@ -186,6 +187,27 @@ class App extends Component {
       });
     });
   };
+
+  loadDiaryEntryStore = () => {
+    return new Promise((resolve, reject) => {
+      DriveHelper.getFileCount().then((count) => {
+        if(count <= 1) {
+          resolve();
+        }
+        for(let i = count - 1; i > 0; i--) {
+            DriveHelper.readFile(i).then((entry) => {
+                entry.fileName=i;
+                if(!entry.deleted) {
+                  diaryEntryStore.entries.push(entry);
+                }
+                if(i === 1) {
+                  resolve();
+                }
+            }).catch(err => reject(err))
+        }
+      });
+    });
+  }
 
   onPinChecked = () => {
     this.setState({

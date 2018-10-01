@@ -33,6 +33,7 @@ class Entry extends Component {
                 humidity: 34,
                 tallies: [],
                 todos: [],
+                fileName: this.props.diaryEntryStore.entries.length + 1,
             };
         } else {
             const weatherObject = this.props.weather;

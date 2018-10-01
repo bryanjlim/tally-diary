@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import {Card, CircularProgress, withStyles} from '@material-ui/core';
+import {Card, withStyles} from '@material-ui/core';
 import InsightsItem from '../../views/insights/insightsItem';
-import DriveHelper from '../../helpers/driveHelper';
 import PropTypes from 'prop-types';
 
 class Insights extends Component {
@@ -11,24 +10,12 @@ class Insights extends Component {
         this.state = { fileCount: 0 }
     }
 
-    componentDidMount() {
-        DriveHelper.getFileCount().then((count) => {
-            this.setState({fileCount: count}); 
-        })
-    }
-
     render() { 
         const { classes } = this.props;
 
         return (
             <div>
-
-            { this.state.fileCount == 0 ? 
-                <div className={classes.circularProgress}><CircularProgress/></div> : 
-                <Card className={classes.insightCard}><InsightsItem entryCount={this.state.fileCount - 1}/></Card> 
-                
-            }
-            
+                <Card className={classes.insightCard}><InsightsItem entryCount={this.props.diaryEntryStore.entries.length}/></Card>   
             </div>
         );
     }
@@ -47,12 +34,6 @@ const styles = theme => ({
         textAlign: 'center',
         marginTop: 'auto',
         marginBottom: 'auto',
-    },
-    circularProgress: {
-        marginTop: '30%',
-        marginLeft: 'auto',
-        marginRight: 'auto',
-        textAlign: 'center',
     }
 });
 
