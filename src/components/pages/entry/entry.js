@@ -266,6 +266,17 @@ class Entry extends Component {
             "mood": new Mood(this.state.mood),
             "deleted": false,
         }, this.state.fileName);
+        this.props.diaryEntryStore.entries.push({
+            "title": this.state.customTitle, 
+            "date": this.state.date,
+            "bodyText": this.state.bodyText,
+            "tallies": this.state.tallies, 
+            "weather": new Weather(this.state.weather, this.state.lowTemperature, this.state.highTemperature, this.state.humidity), 
+            "todos": this.state.todos,
+            "mood": new Mood(this.state.mood),
+            "deleted": false,
+            "fileName": this.state.fileName,
+        });
         this.setState({
             customTitle: '',
             date: new Date(),
