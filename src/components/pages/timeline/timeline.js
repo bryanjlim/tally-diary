@@ -49,7 +49,7 @@ class Timeline extends Component {
     getTalliesForEntry(fileName) {
         const tallies = [];
         for(let i = 0; i < this.props.tallyStore.tallyMarks.length; i++) {
-            if(this.props.tallyStore.tallyMarks[i].fileName == fileName) {
+            if(this.props.tallyStore.tallyMarks[i].entryFileName == fileName) {
                 tallies.push(this.props.tallyStore.tallyMarks[i]);
             }
         }
@@ -119,6 +119,7 @@ class Timeline extends Component {
                     weather={this.state.singleEntryWeather}
                     bodyText={this.state.singleEntryBodyText}
                     todos={this.state.singleEntryTodos}
+                    tallies={this.state.singleEntryTallies}
                     userStore={this.props.userStore}
                     tallyStore={this.props.tallyStore}
                     back={this.viewTimeline}

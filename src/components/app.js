@@ -67,7 +67,7 @@ class App extends Component {
                 (this.props.location.pathname === "/") ? <Entry userStore={userPreferenceStore} diaryEntryStore={diaryEntryStore} tallyStore={tallyStore} adding={true}/> :
                   (this.props.location.pathname === "/settings") ? <Settings signOut={this.signOut} userStore={userPreferenceStore} /> :
                     (this.props.location.pathname === "/insights") ? <Insights tallyStore={tallyStore} diaryEntryStore={diaryEntryStore}/> :
-                      <Timeline userStore={userPreferenceStore} diaryEntryStore={diaryEntryStore}/>
+                      <Timeline userStore={userPreferenceStore} tallyStore={tallyStore} diaryEntryStore={diaryEntryStore}/>
               }
           </div>
         </Layout>
@@ -200,7 +200,11 @@ class App extends Component {
   loadDiaryEntryStore = () => {
     return new Promise((resolve, reject) => {
       DriveHelper.getFileCount().then((count) => {
-        for(let i = count - DriveHelper.nonEntryFiles ; i > 0; i--) {
+        if(count <= DriveHelper.nonEntryFiles) {
+          resolve();
+        }
+        const subtractionCount = tallyStore.tallyMarks.length == 0 ? DriveHelper.nonEntryFiles - 1 : DriveHelper.nonEntryFiles;
+        for(let i = count - subtractionCount; i > 0; i--) {
             DriveHelper.readFile(i).then((entry) => {
                 entry.fileName=i;
                 if(!entry.deleted) {

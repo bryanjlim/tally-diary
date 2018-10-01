@@ -33,7 +33,7 @@ class Entry extends Component {
                 humidity: 34,
                 tallies: [],
                 todos: [],
-                fileName: this.props.diaryEntryStore.entries.length,
+                fileName: this.props.diaryEntryStore.entries.length + 1,
             };
         } else {
             const weatherObject = this.props.weather;
@@ -55,7 +55,6 @@ class Entry extends Component {
             };
         }
 
-        
         this.addNewEntry = this.addNewEntry.bind(this);
         this.updateEntry = this.updateEntry.bind(this);
         this.addNewTallyMark = this.addNewTallyMark.bind(this);
@@ -258,9 +257,19 @@ class Entry extends Component {
 
     addNewEntry(e) {
         e.preventDefault();
+
+        for(let i = 0; i < this.props.tallyStore.tallyMarks.length; i++){
+            // Remove all tallies in the tallyStore associated with this entry
+            if(this.props.tallyStore.tallyMarks[i].entryFileName == this.state.fileName) {
+                this.props.tallyStore.tallyMarks.splice(i,1);
+            }
+        }
         for(let i = 0; i < this.state.tallies.length; i++) {
+            // Add entries associated with this entry to the tallyStore
             this.props.tallyStore.tallyMarks.push(this.state.tallies[i]);
         }
+
+        // Post to Google Drive
         DriveHelper.postTallies(this.props.tallyStore.tallyMarks);
         DriveHelper.postEntry({
             "title": this.state.customTitle, 
@@ -270,10 +279,24 @@ class Entry extends Component {
             "todos": this.state.todos,
             "mood": new Mood(this.state.mood),
             "deleted": false,
+        }, this.state.fileName);
+
+        // Add entry to the diaryEntryStore
+        this.props.diaryEntryStore.entries.push({
+            "title": this.state.customTitle, 
+            "date": this.state.date,
+            "bodyText": this.state.bodyText,
+            "weather": new Weather(this.state.weather, this.state.lowTemperature, this.state.highTemperature, this.state.humidity), 
+            "todos": this.state.todos,
+            "mood": new Mood(this.state.mood),
+            "deleted": false,
+            "fileName": this.state.fileName,
         });
+
+        const formattedMonth = (new Date().getMonth() + 1).toString().length === 1 ? "0" + ( new Date().getMonth() + 1 ) : new Date().getMonth() + 1;
         this.setState(prevState => ({
             customTitle: '',
-            date: new Date(),
+            date: new Date().getFullYear() + "-" + formattedMonth + "-" + new Date().getDate(),
             bodyText: '',
             mood: Mood.moodEnum.MEH,
             weather: 'Cloudy',
