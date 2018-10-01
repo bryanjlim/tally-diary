@@ -109,6 +109,7 @@ class Timeline extends Component {
                     todos={this.state.singleEntryTodos}
                     tallies={this.state.singleEntryTallies}
                     userStore={this.props.userStore}
+                    diaryEntryStore={this.props.diaryEntryStore}
                     back={this.viewTimeline}
                 /> 
             );
