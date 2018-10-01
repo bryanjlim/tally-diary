@@ -14,6 +14,7 @@ import Select from '@material-ui/core/Select'
 import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
 import TallyMark from '../../objects/tallies/tallyMark';
+import TalliesViewer from '../../views/tallies/talliesView';
 
 class AddTally extends React.Component {
 
@@ -84,7 +85,7 @@ class AddTally extends React.Component {
       <div>
         <Button variant="contained" color="primary" onClick={this.handleClickOpen} 
           style={{fontSize: '.8em'}}>
-        Add Tally
+        Tallies
         </Button>
         <Dialog
           fullScreen={fullScreen}
@@ -92,7 +93,8 @@ class AddTally extends React.Component {
           onClose={this.handleClose}
           aria-labelledby="responsive-dialog-title"
         >
-          <DialogTitle id="responsive-dialog-title">{"Add Tally"}</DialogTitle>
+          <DialogTitle id="responsive-dialog-title">{"Tallies"}</DialogTitle>
+          <TalliesViewer diaryEntryStore={this.props.diaryEntryStore}/>
           <DialogContent>
             <FormControl className="tallyFormControl">
               {this.state.newTallyMarkTypeError ? 
@@ -171,19 +173,14 @@ class AddTally extends React.Component {
                />
              </div>
             }
+            <Button onClick={this.handleSubmit} color="primary" autoFocus>
+              Add
+            </Button>
             </FormControl>
-            <DialogContentText style = {{
-              marginTop:'2em',
-            }}>
-              <i>Go to insights to view all tally marks</i>
-            </DialogContentText>
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleClose} color="primary" autoFocus>
-              Cancel
-            </Button>
-            <Button onClick={this.handleSubmit} color="primary" autoFocus>
-              Submit
+              Done
             </Button>
           </DialogActions>
         </Dialog>
