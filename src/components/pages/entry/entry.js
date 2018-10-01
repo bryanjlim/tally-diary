@@ -255,7 +255,6 @@ class Entry extends Component {
 
     addNewEntry(e) {
         e.preventDefault();
-        alert(this.state.fileName);
         DriveHelper.postEntry({
             "title": this.state.customTitle, 
             "date": this.state.date,

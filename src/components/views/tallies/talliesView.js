@@ -16,6 +16,11 @@ class TalliesView extends React.Component {
         super(props);
 
         this.state ={
+            storeFoodTallies: [],
+            storePeopleTallies: [],
+            storeActivityTallies: [],
+            storeLocationTallies: [],
+            storeOtherTallies: [],
             foodTallies: [],
             peopleTallies: [],
             activityTallies: [],
@@ -24,22 +29,25 @@ class TalliesView extends React.Component {
         };
 
         this.eachTallyObject = this.eachTallyObject.bind(this);
+        this.updateTalliesWithCurrentEntry = this.updateTalliesWithCurrentEntry.bind(this);
     }
 
     componentDidMount() {
+        // Iterate through diary entry store to determine tallies
         for(let i = 0; i < this.props.diaryEntryStore.entries.length; i++) {
             for(let j = 0; j < this.props.diaryEntryStore.entries[i].tallies.length; j++) {
-                if(!this.props.diaryEntryStore.entries[i].fileName === this.props.currentFileName) {
+                if(!(this.props.diaryEntryStore.entries[i].fileName == this.props.currentFileName)) {
                     // Do not add if tally from current file
                     const tallyMark = this.props.diaryEntryStore.entries[i].tallies[j];
 
                     let existsInTallies = false;
                     const tallyMarkText = tallyMark.text;
                     const tallyMarkType = tallyMark.type;
-                    const stateArrayToUse = tallyMarkType === "Food" ? this.state.foodTallies : tallyMarkType === "People" ? this.state.peopleTallies : 
-                                            tallyMarkType === "Activity" ? this.state.activityTallies : tallyMarkType === "Location" ? this.state.locationTallies : this.state.otherTallies;
+                    const stateArrayToUse = tallyMarkType === "Food" ? this.state.storeFoodTallies : tallyMarkType === "People" ? this.state.storePeopleTallies : 
+                                            tallyMarkType === "Activity" ? this.state.storeActivityTallies : tallyMarkType === "Location" ? this.state.storeLocationTallies : this.state.storeOtherTallies;
     
-                    for(let j = 0; j < stateArrayToUse.length; j++) {
+                    const stateArrayToUseLength = stateArrayToUse.length;
+                    for(let j = 0; j < stateArrayToUseLength; j++) {
                         if(!existsInTallies) {
                             if(stateArrayToUse[j].text === tallyMarkText) {
                                 stateArrayToUse[j].count++;
@@ -54,28 +62,30 @@ class TalliesView extends React.Component {
                 }                
             }
         }
+        this.updateTalliesWithCurrentEntry();
     }
 
-    render() {
-        const { classes } = this.props;
+    updateTalliesWithCurrentEntry() {
+        this.setState({
+            foodTallies: this.state.storeFoodTallies, 
+            peopleTallies: this.state.storePeopleTallies,
+            activityTallies: this.state.storeActivityTallies,
+            locationTallies: this.state.storeLocationTallies,
+            otherTallies: this.state.storeOtherTallies,
+        })
 
-        // Handle tallies from current file
-        const foodTalliesToUse = this.state.foodTallies;
-        const peopleTalliesToUse = this.state.peopleTallies;
-        const activityTalliesToUse = this.state.activityTallies;
-        const locationTalliesToUse = this.state.locationTallies;
-        const otherTalliesToUse = this.state.otherTallies;
-
+        // Iterate through current file's tallies to add to calculated tallies from the diary entry store
         for(let i = 0; i < this.props.currentEntryTallyMarks.length; i++) {
             const tallyMark = this.props.currentEntryTallyMarks[i];
 
             let existsInTallies = false;
             const tallyMarkText = tallyMark.text;
             const tallyMarkType = tallyMark.type;
-            const stateArrayToUse = tallyMarkType === "Food" ? foodTalliesToUse : tallyMarkType === "People" ? peopleTalliesToUse : 
-                                    tallyMarkType === "Activity" ? activityTalliesToUse : tallyMarkType === "Location" ? locationTalliesToUse : otherTalliesToUse;
+            const stateArrayToUse = tallyMarkType === "Food" ? this.state.foodTallies : tallyMarkType === "People" ? this.state.peopleTallies : 
+                                    tallyMarkType === "Activity" ? this.state.activityTallies : tallyMarkType === "Location" ? this.state.locationTallies : this.state.otherTallies;
 
-            for(let j = 0; j < stateArrayToUse.length; j++) {
+            const stateArrayToUseLength = stateArrayToUse.length;
+            for(let j = 0; j < stateArrayToUseLength; j++) {
                 if(!existsInTallies) {
                     if(stateArrayToUse[j].text === tallyMarkText) {
                         stateArrayToUse[j].count++;
@@ -88,26 +98,30 @@ class TalliesView extends React.Component {
                 stateArrayToUse.push(new Tally(tallyMarkText, 1));
             }
         }
+    }
 
-
+    render() {
+        const { classes } = this.props;
+        alert(this.state.foodTallies.length);
         return (
             <div className={classes.wrapper}>
                 <h3><u>Food</u></h3>
-                <div>{foodTalliesToUse.map(this.eachTallyObject)}</div>
-                <h3><u>People</u></h3>
-                <div>{peopleTalliesToUse.map(this.eachTallyObject)}</div>
+                <div>{this.state.foodTallies.map(this.eachTallyObject)}</div>
+                {/* <h3><u>People</u></h3>
+                <div>{this.state.peopleTallies.map(this.eachTallyObject)}</div>
                 <h3><u>Activity</u></h3>
-                <div>{activityTalliesToUse.map(this.eachTallyObject)}</div>
+                <div>{this.state.activityTallies.map(this.eachTallyObject)}</div>
                 <h3><u>Location</u></h3>
-                <div>{locationTalliesToUse.map(this.eachTallyObject)}</div>
+                <div>{this.state.locationTallies.map(this.eachTallyObject)}</div>
                 <h3><u>Other</u></h3>
-                <div>{otherTalliesToUse.map(this.eachTallyObject)}</div>
+                <div>{this.state.otherTallies.map(this.eachTallyObject)}</div> */}
             </div>
         );
     }
 
     eachTallyObject(tally) {
         const { classes } = this.props;
+        alert(tally);
         return (
             <div>
                 <p>{tally.text}: {tally.count}</p> 
