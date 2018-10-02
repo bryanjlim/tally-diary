@@ -79,7 +79,6 @@ class AddTally extends React.Component {
 
   render() {
     const { fullScreen } = this.props;
-
     return (
       <div>
         <Button variant="contained" color="primary" onClick={this.handleClickOpen} 
