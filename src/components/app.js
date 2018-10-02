@@ -193,16 +193,18 @@ class App extends Component {
   loadDiaryEntryStore = () => {
     return new Promise((resolve, reject) => {
       DriveHelper.getFileCount().then((count) => {
+        let entriesProcessed = 0;
         if(count <= 1) {
           resolve();
         }
-        for(let i = count - 1; i > 0; i--) {
+        for(let i = count - DriveHelper.nonEntryFileCount; i > 0; i--) {
             DriveHelper.readFile(i).then((entry) => {
                 entry.fileName=i;
                 if(!entry.deleted) {
                   diaryEntryStore.entries.push(entry);
                 }
-                if(i === 1) {
+                entriesProcessed++;
+                if(entriesProcessed === count - DriveHelper.nonEntryFileCount) {
                   resolve();
                 }
             }).catch(err => reject(err))
