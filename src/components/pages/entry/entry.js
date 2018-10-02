@@ -33,6 +33,7 @@ class Entry extends Component {
                 humidity: 34,
                 tallies: [],
                 todos: [],
+                fileName: this.props.diaryEntryStore.entries.length + 1,
             };
         } else {
             const weatherObject = this.props.weather;
@@ -80,11 +81,9 @@ class Entry extends Component {
                         onChange={this.handleInputChange}
                         className={classes.customTitleInput}
                         InputLabelProps={{
-                            shrink: true,
                             style: {fontSize:"20px"},
                         }}
                         InputProps={{
-                            shrink: true,
                             startAdornment: <div className={classes.customTitleAdornment}>{"Day " + daysAlive}</div>,
                         }}
                     />
@@ -99,18 +98,17 @@ class Entry extends Component {
                         value={this.state.date}
                         onChange={this.handleInputChange}
                         InputLabelProps={{
-                            shrink: true,
                         }}
                     /> 
                     <div className={classes.verticalButtonCluster}> 
                         <br/>
-                        <div className={classes.addButton}><AddTally addNewTallyMark={this.addNewTallyMark}/></div> 
+                        <div className={classes.addButton}><AddTally currentFileName={this.state.fileName} tallyMarks={this.state.tallies} diaryEntryStore={this.props.diaryEntryStore} addNewTallyMark={this.addNewTallyMark}/></div> 
                         <br/>
                         <div className={classes.addButton}><AddTodo addTodo={this.addTodo}/></div>
                     </div>
                 </div>
                 <div className={classes.horizontalButtonCluster}> 
-                        <div className={classes.addButton}><AddTally addNewTallyMark={this.addNewTallyMark}/></div>
+                        <div className={classes.addButton}><AddTally currentFileName={this.state.fileName} tallyMarks={this.state.tallies} diaryEntryStore={this.props.diaryEntryStore} addNewTallyMark={this.addNewTallyMark}/></div>
                         <div className={classes.addButton}><AddTodo addTodo={this.addTodo}/></div>
                 </div>
 
@@ -266,6 +264,17 @@ class Entry extends Component {
             "todos": this.state.todos,
             "mood": new Mood(this.state.mood),
             "deleted": false,
+        }, this.state.fileName);
+        this.props.diaryEntryStore.entries.push({
+            "title": this.state.customTitle, 
+            "date": this.state.date,
+            "bodyText": this.state.bodyText,
+            "tallies": this.state.tallies, 
+            "weather": new Weather(this.state.weather, this.state.lowTemperature, this.state.highTemperature, this.state.humidity), 
+            "todos": this.state.todos,
+            "mood": new Mood(this.state.mood),
+            "deleted": false,
+            "fileName": this.state.fileName,
         });
         this.setState({
             customTitle: '',

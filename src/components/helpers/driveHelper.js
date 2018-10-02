@@ -5,17 +5,16 @@ export default class DriveHelper {
     static boundary = '-------314159265358979323846264';
     static delimiter = "\r\n---------314159265358979323846264\r\n";
     static end_request = "\r\n---------314159265358979323846264--";
+
+    static nonEntryFileCount = 1;
     
     static postUserData(fileData) {
         const fileName = 0; // 0 is reserved for user data, diary entries start at 1
         DriveHelper.postFile(fileName, fileData);
     }
 
-    static postEntry(fileData) {
-        DriveHelper.getFileCount().then((count) => {
-            const fileName = count; 
-            DriveHelper.postFile(fileName, fileData);
-        });
+    static postEntry(fileData, fileName) {
+        DriveHelper.postFile(fileName, fileData);
     }
 
     /**

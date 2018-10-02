@@ -11,9 +11,6 @@ import 'typeface-roboto';
 const drawerWidth = 240;
 
 const styles = theme => ({
-    robotoFont: {
-        fontFamily: 'roboto',
-    }, 
     root: {
       fontFamily: 'roboto',
       flexGrow: 1,
@@ -74,7 +71,7 @@ class Layout extends Component {
         );
 
         return (
-            <Fragment className={classes.robotoFont}>
+            <Fragment>
                 <CssBaseline/>
                 <div className={classes.root}>
                     <AppBar position='absolute' className={classes.appBar}>
