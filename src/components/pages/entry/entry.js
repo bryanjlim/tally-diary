@@ -27,10 +27,10 @@ class Entry extends Component {
                 dateOfBirth: this.props.userStore.preferences.dateOfBirth,
                 bodyText: '',
                 mood: Mood.moodEnum.MEH,
-                weather: 'Cloudy',
-                lowTemperature: 60,
-                highTemperature: 80, 
-                humidity: 34,
+                weather: null,
+                lowTemperature: null,
+                highTemperature: null, 
+                humidity: null,
                 tallies: [],
                 todos: [],
                 fileName: this.props.diaryEntryStore.entries.length + 1,
@@ -179,7 +179,7 @@ class Entry extends Component {
                                 label="Humidity"
                                 name="humidity"
                                 type="number"
-                                value={this.state.lowTemperature}
+                                value={this.state.humidity}
                                 onChange={this.humidity}
                                 variant="outlined"
                             />
@@ -284,10 +284,10 @@ class Entry extends Component {
                 date: new Date().getFullYear() + "-" + formattedMonth + "-" + new Date().getDate(),
                 bodyText: '',
                 mood: Mood.moodEnum.MEH,
-                weather: 'Cloudy',
-                lowTemperature: 60,
-                highTemperature: 80, 
-                humidity: 34,
+                weather: null,
+                lowTemperature: null,
+                highTemperature: null, 
+                humidity: null,
                 tallies: [],
                 todos: [],
                 newTallyMarkType: TallyMark.tallyTypeEnum.FOOD,
