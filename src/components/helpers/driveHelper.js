@@ -179,21 +179,41 @@ export default class DriveHelper {
      * 
      */
     static deleteAllFiles() {
-        gapi.client.drive.files.list({
-            'spaces': 'appDataFolder',
-            'fields': "nextPageToken, files(id, name)",
-            'pageSize': 25
-        }).then((response) => {
-            const files = response.result.files;
-            console.log("Files: " + JSON.stringify(files));
-            for(let i=0; i< files.length; i++) {
-                console.log("Index " + i);
-                console.log("File Name: " + files[i].name);
-                DriveHelper.deleteFile(files[i].name).then(() => {
-                    if(i === files.length - 1) window.location.reload();
-                });
-            }
-        }).catch(err => console.log("Error deleting all files: " + err));
+            alert("deleting all files");
+            DriveHelper.attemptFileRemovals().then((areFilesRemaining) => {
+                alert(areFilesRemaining);
+                if(areFilesRemaining) {
+                    DriveHelper.deleteAllFiles();
+                } else {
+                    window.location.reload();
+                }
+            });
+    }
+
+    static attemptFileRemovals() {
+        return new Promise((resolve, reject) => {
+            DriveHelper.getFileList().then((files) => {
+                console.log("Files: " + JSON.stringify(files));
+                
+                if(JSON.stringify(files) === "[]") {
+                    resolve(false);
+                } else {
+                    for(let i=0; i < files.length; i++) {
+                        console.log("Index " + i);
+                        console.log("File Name: " + files[i].name);
+                        DriveHelper.deleteFile(files[i].name).then(() => {
+                            if(isNaN(files.length) || i === files.length - 1) {
+                                alert("got here");
+                                DriveHelper.getFileList().then((list) => {
+                                    alert(list.length);
+                                    resolve(list.length > 0);
+                                })
+                            }
+                        });
+                    }
+                }       
+            }).catch(err => reject("Error deleting all files: " + err));
+        });
     }
 
     /**
