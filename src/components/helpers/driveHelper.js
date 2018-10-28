@@ -179,9 +179,7 @@ export default class DriveHelper {
      * 
      */
     static deleteAllFiles() {
-            alert("deleting all files");
             DriveHelper.attemptFileRemovals().then((areFilesRemaining) => {
-                alert(areFilesRemaining);
                 if(areFilesRemaining) {
                     DriveHelper.deleteAllFiles();
                 } else {
@@ -203,9 +201,7 @@ export default class DriveHelper {
                         console.log("File Name: " + files[i].name);
                         DriveHelper.deleteFile(files[i].name).then(() => {
                             if(isNaN(files.length) || i === files.length - 1) {
-                                alert("got here");
                                 DriveHelper.getFileList().then((list) => {
-                                    alert(list.length);
                                     resolve(list.length > 0);
                                 })
                             }
