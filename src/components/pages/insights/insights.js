@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {Card, withStyles} from '@material-ui/core';
-import InsightsItem from '../../views/insights/insightsItem';
+import DiaryEntriesWritten from '../../views/insights/diaryEntriesWritten';
+import AllTallies from '../../views/insights/allTallies';
 import PropTypes from 'prop-types';
 
 class Insights extends Component {
@@ -15,7 +16,8 @@ class Insights extends Component {
 
         return (
             <div>
-                <Card className={classes.insightCard}><InsightsItem entryCount={this.props.diaryEntryStore.entries.length}/></Card>   
+                <Card className={classes.insightCard}><DiaryEntriesWritten entryCount={this.props.diaryEntryStore.entries.length}/></Card>
+                <Card className={classes.insightCard}><AllTallies diaryEntryStore={this.props.diaryEntryStore}/></Card>
             </div>
         );
     }
@@ -29,6 +31,7 @@ const styles = theme => ({
         paddingBottom: 50,
         minWidth: 275,
         maxWidth: 575,
+        marginBottom: '2em',
     },
     insightsItemText: {
         textAlign: 'center',

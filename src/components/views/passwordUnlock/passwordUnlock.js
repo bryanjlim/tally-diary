@@ -20,6 +20,7 @@ class PasswordUnlock extends React.Component {
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.checkPassword = this.checkPassword.bind(this);
+    this.onKeyPress = this.onKeyPress.bind(this);
   }
 
   handleClose = () => {
@@ -31,6 +32,12 @@ class PasswordUnlock extends React.Component {
       this.props.onPasswordChecked();
     } else {
       this.setState({ incorrectPassword: true });
+    }
+  }
+
+  onKeyPress(event) {
+    if (event.key === 'Enter') {
+        this.checkPassword();
     }
   }
 
@@ -60,6 +67,7 @@ class PasswordUnlock extends React.Component {
                 error={this.state.incorrectPassword}
                 value={this.state.password}
                 onChange={this.handleInputChange}
+                onKeyPress={this.onKeyPress}
             />
           </DialogContent>
           <DialogActions>

@@ -9,7 +9,7 @@ const styles = theme => ({
         marginBottom: 'auto',
     },
 });
-class InsightsItem extends Component {
+class DiaryEntriesWritten extends Component {
     render() {
         const { classes } = this.props;
 
@@ -22,8 +22,8 @@ class InsightsItem extends Component {
     }
 }
 
-InsightsItem.propTypes = {
+DiaryEntriesWritten.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(InsightsItem);
+export default withStyles(styles)(DiaryEntriesWritten);

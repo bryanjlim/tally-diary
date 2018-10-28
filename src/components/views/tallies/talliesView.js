@@ -5,7 +5,6 @@ import Tally from '../../objects/tallies/tally';
 
 const styles = theme => ({
     wrapper: {
-        marginLeft: '.5em',
         fontFamily: 'roboto',
     }
 });
@@ -26,7 +25,7 @@ class TalliesView extends React.Component {
             activityTallies: [],
             locationTallies: [],
             otherTallies: [],
-            currentDiaryEntryTallyCount: 0,
+            currentDiaryEntryTallyCount: null,
         };
 
         this.eachTallyObject = this.eachTallyObject.bind(this);
@@ -37,7 +36,7 @@ class TalliesView extends React.Component {
         // Iterate through diary entry store to determine tallies
         for(let i = 0; i < this.props.diaryEntryStore.entries.length; i++) {
             for(let j = 0; j < this.props.diaryEntryStore.entries[i].tallies.length; j++) {
-                if(!(this.props.diaryEntryStore.entries[i].fileName == this.props.currentFileName)) {
+                if(!(this.props.diaryEntryStore.entries[i].fileName === this.props.currentFileName)) {
                     // Do not add if tally from current file
                     let existsInTallies = false;
                     const tallyMark = this.props.diaryEntryStore.entries[i].tallies[j];
