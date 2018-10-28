@@ -1,4 +1,3 @@
-/* global gapi */
 import React, { Component } from 'react';
 import {CircularProgress, TextField, MenuItem, Card, Button, Grid, Checkbox, Snackbar, 
         IconButton, withStyles, InputAdornment } from '@material-ui/core';
@@ -280,6 +279,9 @@ const styles = theme => ({
     bottomGrid: {
         marginLeft: '1em',
         marginBottom: '1em',
+        '@media (max-width: 500px)': { 
+            marginLeft: '.5em',
+        },
     },
     button: {
         marginLeft: '1em',
