@@ -46,6 +46,7 @@ class Timeline extends Component {
     deleteEntry(fileName, timelineCardIndex) {
         this.props.diaryEntryStore.entries.splice(timelineCardIndex, 1);
         DriveHelper.updateFile(fileName, {'deleted': true});
+        this.forceUpdate();
     }
 
     viewTimeline(){
