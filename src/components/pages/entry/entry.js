@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {TextField, MenuItem, Divider, Grid, Paper, Button, withStyles } from '@material-ui/core';
+import {TextField, IconButton, Snackbar, MenuItem, Divider, Grid, Paper, Button, withStyles } from '@material-ui/core';
+import CloseIcon from '@material-ui/icons/Close';
 import DriveHelper from '../../helpers/driveHelper';
 import Mood from '../../objects/mood/mood'; 
 import Weather from '../../objects/weather/weather'; 
@@ -34,6 +35,7 @@ class Entry extends Component {
                 tallies: [],
                 todos: [],
                 fileName: this.props.diaryEntryStore.entries.length + 1,
+                showSuccessfulSave: false,
             };
         } else {
             const weatherObject = this.props.weather;
@@ -52,10 +54,11 @@ class Entry extends Component {
                 todos: this.props.todos,
                 index: this.props.index,
                 fileName: this.props.fileName,
+                showSuccessfulSave: false,
             };
         }
 
-        
+        this.closeSuccessSnackBar = this.closeSuccessSnackBar.bind(this);
         this.addNewEntry = this.addNewEntry.bind(this);
         this.updateEntry = this.updateEntry.bind(this);
         this.addNewTallyMark = this.addNewTallyMark.bind(this);
@@ -69,6 +72,7 @@ class Entry extends Component {
         const { classes } = this.props;
         const daysAlive = Math.round((new Date(this.state.date) - new Date(this.state.dateOfBirth)) / (1000 * 60 * 60 * 24));
         return (
+            <div>
             <Paper elevation={1} className={classes.paper}>
 
                 {/* Title */}
@@ -140,9 +144,9 @@ class Entry extends Component {
                                 variant="outlined"
                                 select
                             >
-                                <MenuItem key={Mood.moodEnum.MEH} value={Mood.moodEnum.MEH}>😐</MenuItem>
-                                <MenuItem key={Mood.moodEnum.SAD} value={Mood.moodEnum.SAD}>😃</MenuItem>
-                                <MenuItem key={Mood.moodEnum.HAPPY} value={Mood.moodEnum.HAPPY}>😔</MenuItem>
+                                <MenuItem key={Mood.moodEnum.MEH} value={Mood.moodEnum.MEH}><span role="img" aria-label="meh">😐</span></MenuItem>
+                                <MenuItem key={Mood.moodEnum.SAD} value={Mood.moodEnum.SAD}><span role="img" aria-label="happy">😃</span></MenuItem>
+                                <MenuItem key={Mood.moodEnum.HAPPY} value={Mood.moodEnum.HAPPY}><span role="img" aria-label="sad">😔</span></MenuItem>
                             </TextField>
                         </Grid>
                         <Grid item className={classes.bottomClusterObject}>
@@ -223,11 +227,34 @@ class Entry extends Component {
                     </div>
                 }
             </Paper>
+            <Snackbar
+                open={this.state.showSuccessfulSave}
+                ContentProps={{
+                    'aria-describedby': 'message-id',
+                }}
+                message={<span>Save Successful</span>}
+                action={[
+                    <IconButton
+                        key="close"
+                        aria-label="Close"
+                        color="inherit"
+                        className={classes.close}
+                        onClick={this.closeSuccessSnackBar}
+                    >
+                        <CloseIcon className={classes.icon} />
+                    </IconButton>
+                ]}
+            />
+            </div>
         );
     }
 
 
     /* Methods */
+
+    closeSuccessSnackBar() {
+        this.setState({showSuccessfulSave: false}); 
+    }
 
     addNewTallyMark(newTallyMarkType, newTallyMarkText) {
         this.setState(prevState => ({
@@ -279,6 +306,11 @@ class Entry extends Component {
                 "fileName": this.state.fileName,
             });
             const formattedMonth = (new Date().getMonth() + 1).toString().length === 1 ? "0" + ( new Date().getMonth() + 1 ) : new Date().getMonth() + 1;
+            
+            this.setState({
+                showSuccessfulSave: false,
+            })
+            
             this.setState({
                 customTitle: '',
                 date: new Date().getFullYear() + "-" + formattedMonth + "-" + new Date().getDate(),
@@ -295,6 +327,7 @@ class Entry extends Component {
                 newTodoStatus: false,
                 newTodoText: '',
                 fileName: this.props.diaryEntryStore.entries.length + 1,
+                showSuccessfulSave: true,
             });
         } else {
             console.log("Error Posting Entry: Invalid Date");
@@ -312,6 +345,14 @@ class Entry extends Component {
             "weather": new Weather(this.state.weather, this.state.lowTemperature, this.state.highTemperature, this.state.humidity), 
             "todos": this.state.todos,
             "mood": new Mood(this.state.mood)
+        });
+
+        this.setState({
+            showSuccessfulSave: false,
+        });
+
+        this.setState({
+            showSuccessfulSave: true,
         });
     }
 
