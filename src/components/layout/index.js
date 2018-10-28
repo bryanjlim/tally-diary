@@ -54,7 +54,6 @@ class Layout extends Component {
 
     render () {
         const { classes, location: { pathname }, children } = this.props;
-        const { mobileOpen } = this.state;
 
         const drawer = (
           <div>

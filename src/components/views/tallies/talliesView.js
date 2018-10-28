@@ -118,7 +118,6 @@ class TalliesView extends React.Component {
     }
 
     eachTallyObject(tally) {
-        const { classes } = this.props;
         return (
             <div>
                 <p>{tally.text}: {tally.count}</p> 

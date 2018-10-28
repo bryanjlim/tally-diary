@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import DriveHelper from '../../helpers/driveHelper';
-import {CircularProgress, withStyles} from '@material-ui/core';
+import {withStyles} from '@material-ui/core';
 import TimelineCard  from '../../views/diaryEntries/timelineCard';
 import Entry from '../entry/entry';
 import PropTypes from 'prop-types';
