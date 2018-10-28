@@ -28,7 +28,7 @@ class PasswordUnlock extends React.Component {
   };
 
   checkPassword = () => {
-    if (this.props.userStore.preferences.password == this.state.password) {
+    if (this.props.userStore.preferences.password === this.state.password) {
       this.props.onPasswordChecked();
     } else {
       this.setState({ incorrectPassword: true });
@@ -52,6 +52,8 @@ class PasswordUnlock extends React.Component {
   }
 
   render() {
+    const { classes } = this.props;
+
     return (
       <div>
         <Dialog
@@ -68,6 +70,7 @@ class PasswordUnlock extends React.Component {
                 value={this.state.password}
                 onChange={this.handleInputChange}
                 onKeyPress={this.onKeyPress}
+                className={classes.input}
             />
           </DialogContent>
           <DialogActions>
@@ -82,6 +85,11 @@ class PasswordUnlock extends React.Component {
 }
 
 const styles = theme => ({
+  input: {
+    '@media (max-width: 350px)': { 
+      marginLeft: '-1em',
+  },
+  }
 });
 
 PasswordUnlock.propTypes = {
