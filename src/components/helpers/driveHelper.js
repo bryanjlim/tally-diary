@@ -179,16 +179,20 @@ export default class DriveHelper {
      * 
      */
     static deleteAllFiles() {
-            DriveHelper.attemptFileRemovals().then((areFilesRemaining) => {
-                if(areFilesRemaining) {
-                    DriveHelper.deleteAllFiles();
-                } else {
-                    window.location.reload();
-                }
-            });
+        DriveHelper.attemptFileRemovals().then((areFilesRemaining) => {
+            if(areFilesRemaining) {
+                DriveHelper.deleteAllFiles();
+            } else {
+                window.location.reload();
+            }
+        }).catch((error) => {
+            console.log(error);
+            DriveHelper.deleteAllFiles();
+        })
     }
 
     static attemptFileRemovals() {
+        console.log("attempting removal");
         return new Promise((resolve, reject) => {
             DriveHelper.getFileList().then((files) => {
                 console.log("Files: " + JSON.stringify(files));
@@ -203,12 +207,12 @@ export default class DriveHelper {
                             if(isNaN(files.length) || i === files.length - 1) {
                                 DriveHelper.getFileList().then((list) => {
                                     resolve(list.length > 0);
-                                })
+                                }).catch(error => reject(error));
                             }
-                        });
+                        }).catch(error => reject(error));
                     }
                 }       
-            }).catch(err => reject("Error deleting all files: " + err));
+            }).catch(error => reject("Error deleting all files: " + error));
         });
     }
 
@@ -228,7 +232,7 @@ export default class DriveHelper {
                 // console.log(response); 
                 const files = response.result.files;
                 resolve(files.length);
-            }).catch(err => reject(err));
+            }).catch(error => reject(error));
         }); 
     }
 
@@ -248,7 +252,7 @@ export default class DriveHelper {
                 // console.log(response); 
                 const files = response.result.files;
                 resolve(files);
-            }).catch(err => reject(err));
+            }).catch(error => reject(error));
         }); 
     }
 }

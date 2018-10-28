@@ -1,6 +1,7 @@
 /* global gapi */
 import React, { Component } from 'react';
-import {TextField, MenuItem, Card, Button, Grid, Checkbox, Snackbar, IconButton, withStyles } from '@material-ui/core';
+import {CircularProgress, TextField, MenuItem, Card, Button, Grid, Checkbox, Snackbar, 
+        IconButton, withStyles } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import DriveHelper from '../../helpers/driveHelper';
 import DeleteAllFiles from './deleteAllFiles';
@@ -77,7 +78,6 @@ class Settings extends Component {
     }
     
     render() {
-
         const { classes } = this.props;
 
         if(this.state.isLoading === false) {
@@ -157,8 +157,10 @@ class Settings extends Component {
                         </Card>
                         <Card className={classes.card}>
                             <h2 className={classes.cardTitle}>Account</h2>
-                            <Button className={classes.accountButton} color="primary" onClick={evt => {evt.preventDefault(); this.props.signOut();}}>Sign Out</Button>
-                            <div className={classes.accountButton}><DeleteAllFiles deleteAllFiles={DriveHelper.deleteAllFiles}/></div>
+                            <Button className={classes.accountButton} color="primary" onClick={evt => 
+                                {evt.preventDefault(); this.props.signOut();}}>Sign Out</Button>
+                            <div className={classes.accountButton}><DeleteAllFiles deleteAllFiles={() => 
+                                {this.setState({isLoading: true}); DriveHelper.deleteAllFiles();}}/></div>
                         </Card>
 
                         <Snackbar
@@ -200,11 +202,29 @@ class Settings extends Component {
                 </div> 
             );
         }
-        return null;
+        return (<div className={classes.outerContainer}> 
+            <div className={classes.middleContainer}> 
+            <div className={classes.innerContainer}> 
+            <CircularProgress/></div></div></div>); 
     }
 }
 
 const styles = theme => ({
+    outerContainer: {
+        backgroundColor: theme.palette.background.default,
+        fontFamily: 'Roboto',
+        display: 'table',
+        position: 'absolute',
+        height: '100%',
+        width: '100%',
+    },
+    middleContainer: {
+        display: 'table-cell',
+        verticalAlign: 'middle',
+    },
+    innerContainer: {
+        textAlign: 'center',
+    },
     title: {
         color: theme.palette.primary.main,
         textAlign: 'center',
