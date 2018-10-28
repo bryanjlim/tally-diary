@@ -121,7 +121,7 @@ class Settings extends Component {
                                         select
                                     >
                                         <MenuItem value="light">Light</MenuItem>
-                                        <MenuItem value="dark">Dark</MenuItem>
+                                        {/* <MenuItem value="dark">Dark</MenuItem> */}
                                     </TextField>
                                 </Grid>
                                 <Grid item className={classes.settingsGridItem}>
@@ -134,11 +134,11 @@ class Settings extends Component {
                                         select
                                     >
                                         <MenuItem value="blue">Blue</MenuItem>
-                                        <MenuItem value="red">Red</MenuItem>
+                                        {/* <MenuItem value="red">Red</MenuItem>
                                         <MenuItem value="green">Green</MenuItem>
                                         <MenuItem value="orange">Orange</MenuItem>
                                         <MenuItem value="purple">Purple</MenuItem>
-                                        <MenuItem value="pink">Pink</MenuItem>
+                                        <MenuItem value="pink">Pink</MenuItem> */}
                                     </TextField>
                                 </Grid>
                                 <Grid container className={classes.bottomGrid}>
