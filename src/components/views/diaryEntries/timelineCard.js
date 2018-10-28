@@ -52,7 +52,7 @@ class TimelineCard extends Component {
         const entryDate = new Date(this.props.date);
         const daysAlive = Math.round((entryDate - new Date(this.props.birthDate)) / (1000 * 60 * 60 * 24));
         const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-        const readDate = months[entryDate.getMonth()] + " " + entryDate.getDate() + ", " + entryDate.getFullYear(); 
+        const readDate = months[entryDate.getMonth()] + " " + (entryDate.getDate() + 1) + ", " + entryDate.getFullYear(); 
         const { classes } = this.props;
         const { anchorEl } = this.state;
 
