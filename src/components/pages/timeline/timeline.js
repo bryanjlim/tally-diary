@@ -50,24 +50,18 @@ class Timeline extends Component {
     }
 
     viewTimeline(){
-        DriveHelper.readFile(this.state.singleEntryFileName).then((entry) => {
-            const fileName = this.props.diaryEntryStore.entries[this.state.singleEntryTimelineCardIndex].fileName;
-            entry.fileName = fileName;
-            this.props.diaryEntryStore.entries[this.state.singleEntryTimelineCardIndex] = entry;
-
-            this.setState({
-                viewSingleEntry: false,
-                singleEntryFileName: '',
-                singleEntryTimelineCardIndex:'',
-                singleEntryTitle:'',
-                singleEntryDate:'',
-                singleEntryMood:'',
-                singleEntryWeather:'',
-                singleEntryBodyText:'',
-                singleEntryTodos: [],
-                singleEntryTallies: '',
-            }); 
-        });
+        this.setState({
+            viewSingleEntry: false,
+            singleEntryFileName: '',
+            singleEntryTimelineCardIndex:'',
+            singleEntryTitle:'',
+            singleEntryDate:'',
+            singleEntryMood:'',
+            singleEntryWeather:'',
+            singleEntryBodyText:'',
+            singleEntryTodos: [],
+            singleEntryTallies: '',
+        }); 
     }
 
     eachDiaryEntryObject(diaryEntry, i) {

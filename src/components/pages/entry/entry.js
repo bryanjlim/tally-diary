@@ -346,6 +346,16 @@ class Entry extends Component {
             "todos": this.state.todos,
             "mood": new Mood(this.state.mood)
         });
+        this.props.diaryEntryStore.entries[this.props.index] = {
+            "title": this.state.customTitle, 
+            "date": this.state.date,
+            "bodyText": this.state.bodyText,
+            "tallies": this.state.tallies, 
+            "weather": new Weather(this.state.weather, this.state.lowTemperature, this.state.highTemperature, this.state.humidity), 
+            "todos": this.state.todos,
+            "mood": new Mood(this.state.mood),
+            "fileName": this.props.fileName,
+        };
 
         this.setState({
             showSuccessfulSave: false,
