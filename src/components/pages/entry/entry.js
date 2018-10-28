@@ -255,43 +255,50 @@ class Entry extends Component {
 
     addNewEntry(e) {
         e.preventDefault();
-        DriveHelper.postEntry({
-            "title": this.state.customTitle, 
-            "date": this.state.date,
-            "bodyText": this.state.bodyText,
-            "tallies": this.state.tallies, 
-            "weather": new Weather(this.state.weather, this.state.lowTemperature, this.state.highTemperature, this.state.humidity), 
-            "todos": this.state.todos,
-            "mood": new Mood(this.state.mood),
-            "deleted": false,
-        }, this.state.fileName);
-        this.props.diaryEntryStore.entries.push({
-            "title": this.state.customTitle, 
-            "date": this.state.date,
-            "bodyText": this.state.bodyText,
-            "tallies": this.state.tallies, 
-            "weather": new Weather(this.state.weather, this.state.lowTemperature, this.state.highTemperature, this.state.humidity), 
-            "todos": this.state.todos,
-            "mood": new Mood(this.state.mood),
-            "deleted": false,
-            "fileName": this.state.fileName,
-        });
-        this.setState({
-            customTitle: '',
-            date: new Date(),
-            bodyText: '',
-            mood: Mood.moodEnum.MEH,
-            weather: 'Cloudy',
-            lowTemperature: 60,
-            highTemperature: 80, 
-            humidity: 34,
-            tallies: [],
-            todos: [],
-            newTallyMarkType: TallyMark.tallyTypeEnum.FOOD,
-            newTallyMarkText: '',
-            newTodoStatus: false,
-            newTodoText: '',
-        });
+
+        if(this.state.date) {
+            DriveHelper.postEntry({
+                "title": this.state.customTitle, 
+                "date": this.state.date,
+                "bodyText": this.state.bodyText,
+                "tallies": this.state.tallies, 
+                "weather": new Weather(this.state.weather, this.state.lowTemperature, this.state.highTemperature, this.state.humidity), 
+                "todos": this.state.todos,
+                "mood": new Mood(this.state.mood),
+                "deleted": false,
+            }, this.state.fileName);
+            this.props.diaryEntryStore.entries.push({
+                "title": this.state.customTitle, 
+                "date": this.state.date,
+                "bodyText": this.state.bodyText,
+                "tallies": this.state.tallies, 
+                "weather": new Weather(this.state.weather, this.state.lowTemperature, this.state.highTemperature, this.state.humidity), 
+                "todos": this.state.todos,
+                "mood": new Mood(this.state.mood),
+                "deleted": false,
+                "fileName": this.state.fileName,
+            });
+            const formattedMonth = (new Date().getMonth() + 1).toString().length === 1 ? "0" + ( new Date().getMonth() + 1 ) : new Date().getMonth() + 1;
+            this.setState({
+                customTitle: '',
+                date: new Date().getFullYear() + "-" + formattedMonth + "-" + new Date().getDate(),
+                bodyText: '',
+                mood: Mood.moodEnum.MEH,
+                weather: 'Cloudy',
+                lowTemperature: 60,
+                highTemperature: 80, 
+                humidity: 34,
+                tallies: [],
+                todos: [],
+                newTallyMarkType: TallyMark.tallyTypeEnum.FOOD,
+                newTallyMarkText: '',
+                newTodoStatus: false,
+                newTodoText: '',
+                fileName: this.props.diaryEntryStore.entries.length + 1,
+            });
+        } else {
+            console.log("Error Posting Entry: Invalid Date");
+        }
     }
 
     updateEntry(e) {
