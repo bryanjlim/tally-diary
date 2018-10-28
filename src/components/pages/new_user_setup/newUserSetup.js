@@ -1,6 +1,8 @@
 /* global gapi */
 import React, { Component } from 'react';
-import {TextField, MenuItem, Card, Button, Grid, Checkbox, withStyles } from '@material-ui/core';
+import {TextField, IconButton, InputAdornment, MenuItem, Card, Button, Grid, Checkbox, withStyles } from '@material-ui/core';
+import Visibility from '@material-ui/icons/Visibility';
+import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import DriveHelper from '../../helpers/driveHelper';
 import PropTypes from 'prop-types';
 import 'typeface-roboto';
@@ -16,11 +18,13 @@ class NewUserSetup extends Component {
             dateOfBirthError: false,
             primaryTheme: "light", //light or dark
             secondaryColor: "blue", // blue, red, orange, green, purple, or pink
-            usePin: false,
-            pin: '',
+            usePassword: false,
+            password: '',
+            showPassword: false,
         };
         this.handleInputChange = this.handleInputChange.bind(this);
         this.addUserProperties = this.addUserProperties.bind(this);
+        this.handleClickShowPassword = this.handleClickShowPassword.bind(this);
         this.validate = this.validate.bind(this);
     }
 
@@ -42,6 +46,12 @@ class NewUserSetup extends Component {
         });
     }
 
+    handleClickShowPassword() {
+        this.setState((oldState) => ({
+            showPassword: !oldState.showPassword,
+        }));
+    }
+
     validate() {
         if(this.state.dateOfBirth === '') {
             this.setState({dateOfBirthError: true});
@@ -57,8 +67,8 @@ class NewUserSetup extends Component {
     addUserProperties(e) {
         e.preventDefault();
 
-        if(!this.state.usePin) {
-            this.setState({pin: ''});
+        if(!this.state.usePassword) {
+            this.setState({password: ''});
         }
 
         if(this.validate()){
@@ -68,8 +78,8 @@ class NewUserSetup extends Component {
                 "dateOfBirth": this.state.dateOfBirth,
                 "primaryTheme": this.state.primaryTheme, 
                 "secondaryColor": this.state.secondaryColor, 
-                "usePin": this.state.usePin,
-                "pin": this.state.pin
+                "usePassword": this.state.usePassword,
+                "password": this.state.password,
             };
             DriveHelper.postUserData(userData);
             this.props.doneWithSetup(userData);
@@ -80,14 +90,11 @@ class NewUserSetup extends Component {
         const { classes } = this.props;
 
         return (
-            <div className={classes.outerContainer}> 
-            <div className={classes.middleContainer}> 
             <div className={classes.innerContainer}> 
-                <h1 className={classes.title}>Welcome To Tally Diary, {this.state.firstName}!</h1>
+                <h1 className={classes.title}>Welcome, {this.state.firstName}!</h1>
 
                     <Card className={classes.card}>
-                
-                    <h2 className={classes.cardTitle}>User Information and Preferences</h2>
+                        <h2 className={classes.cardTitle}>User Information and Preferences</h2>
                         <Grid container className={classes.topGrid}>
                             <Grid item className={classes.settingsGridItem}>
                                 <TextField
@@ -114,7 +121,7 @@ class NewUserSetup extends Component {
                                     select
                                 >
                                     <MenuItem value="light">Light</MenuItem>
-                                    <MenuItem value="dark">Dark</MenuItem>
+                                    {/* <MenuItem value="dark">Dark</MenuItem> */}
                                 </TextField>
                             </Grid>
                             <Grid item className={classes.settingsGridItem}>
@@ -127,65 +134,63 @@ class NewUserSetup extends Component {
                                     select
                                 >
                                     <MenuItem value="blue">Blue</MenuItem>
-                                    <MenuItem value="red">Red</MenuItem>
+                                    {/* <MenuItem value="red">Red</MenuItem>
                                     <MenuItem value="green">Green</MenuItem>
                                     <MenuItem value="orange">Orange</MenuItem>
                                     <MenuItem value="purple">Purple</MenuItem>
-                                    <MenuItem value="pink">Pink</MenuItem>
+                                    <MenuItem value="pink">Pink</MenuItem> */}
                                 </TextField>
                             </Grid>
                         </Grid>
 
                         <Grid container className={classes.bottomGrid}>
                             <Grid item className={classes.settingsGridItem}>
-                                    <label htmlFor="usePin">Use Pin?</label>
+                                    <label htmlFor="usePassword">Password?</label>
                                     <Checkbox
-                                        label="Use Pin?"
-                                        name="usePin"
+                                        label="Use Password?"
+                                        name="usePassword"
                                         color="primary"
-                                        checked={this.state.usePin}
+                                        checked={this.state.usePassword}
                                         onChange={this.handleInputChange}
                                     />
                             </Grid> 
-                            {this.state.usePin ? 
+                            {this.state.usePassword ? 
                                 <Grid item className={classes.settingsGridItem}>
                                     <TextField
-                                        name="pin"
-                                        label="Pin"
+                                        name="password"
+                                        label="Password"
                                         className={classes.textField}
-                                        type="password"
-                                        value={this.state.pin}
+                                        type={this.state.showPassword ? 'text' : 'password'}
+                                        value={this.state.password}
                                         onChange={this.handleInputChange}
+                                        InputProps={{
+                                            endAdornment: (
+                                              <InputAdornment position="end">
+                                                <IconButton
+                                                  aria-label="Toggle password visibility"
+                                                  onClick={this.handleClickShowPassword}
+                                                >
+                                                  {this.state.showPassword ? <VisibilityOff /> : <Visibility />}
+                                                </IconButton>
+                                              </InputAdornment>
+                                            ),
+                                          }}                                
                                     />
                                 </Grid> : null } 
                         </Grid>
-                    
                         <Button onClick={this.addUserProperties} className={classes.button}>Let's Begin</Button>
                     </Card>
                     <Card className={classes.card}>
                         <div className={classes.privacy}><i><b className={classes.boldNote}>Note: </b>This information is stored in your Google Drive's reserved application folder, only accessible by the Tally Diary app. Tally Diary never and will never store your data on its own servers. So no, we don't even store your email.</i></div>
                     </Card>
             </div> 
-            </div> 
-            </div> 
         );
     }
 }
 
 const styles = theme => ({
-    outerContainer: {
-        backgroundColor: theme.palette.background.default,
-        fontFamily: 'Roboto',
-        display: 'table',
-        position: 'absolute',
-        height: '100%',
-        width: '100%',
-    },
-    middleContainer: {
-        display: 'table-cell',
-        verticalAlign: 'middle',
-    },
     innerContainer: {
+        fontFamily: 'Roboto',
         marginLeft: 'auto',
         marginRight: 'auto',
     },
@@ -210,7 +215,7 @@ const styles = theme => ({
         marginBottom: '1em',
     },
     bottomGrid: {
-        marginLeft: '1.75em',
+        marginLeft: '1em',
         marginBottom: '1em',
     },
     button: {
@@ -223,6 +228,7 @@ const styles = theme => ({
     }, 
     selector: {
         width: 150,
+        marginBottom: '1em',
     },
     boldNote: {
         color: theme.palette.primary.main,

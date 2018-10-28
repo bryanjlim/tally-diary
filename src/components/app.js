@@ -13,7 +13,7 @@ import Insights from './pages/insights/insights';
 import Layout from './layout';
 import userPreferenceStore from '../stores/userPreferenceStore';
 import diaryEntryStore from '../stores/diaryEntryStore';
-import PinUnlock from './views/pinUnlock/pinUnlock';
+import PasswordUnlock from './views/passwordUnlock/passwordUnlock';
 import PropTypes from 'prop-types';
 
 class App extends Component {
@@ -23,7 +23,8 @@ class App extends Component {
       isInitialized: false,
       isSignedIn: false,
       newUserSetup: false,
-      pinChecked: false,
+      passwordChecked: false,
+      justFinishedSetup: false,
     };
     this.loadClientWhenGapiReady = this.loadClientWhenGapiReady.bind(this);
     this.initClient = this.initClient.bind(this);
@@ -55,14 +56,15 @@ class App extends Component {
     }
     if (this.state.newUserSetup) {
       return (
-        <NewUserSetup doneWithSetup={(userData) => {this.setState({ newUserSetup: false }); userPreferenceStore.preferences = userData; }} />
+        <NewUserSetup doneWithSetup={(userData) => {
+          this.setState({ newUserSetup: false, justFinishedSetup: true, }); userPreferenceStore.preferences = userData; }} />
       );
     }
     if (this.state.isSignedIn) {
-      if (userPreferenceStore.preferences.usePin && !this.state.pinChecked) {
-        // User needs to enter pin
+      if (userPreferenceStore.preferences.usePassword && !this.state.passwordChecked && !this.state.justFinishedSetup) {
+        // User needs to enter password
         return (
-          <PinUnlock userStore={userPreferenceStore} onPinChecked={this.onPinChecked}/>
+          <PasswordUnlock userStore={userPreferenceStore} onPasswordChecked={this.onPasswordChecked}/>
         );
       } else {
         return (
@@ -70,9 +72,12 @@ class App extends Component {
           <Layout>
             <div>
                 {
-                  (this.props.location.pathname === "/") ? <Entry userStore={userPreferenceStore} diaryEntryStore={diaryEntryStore} adding={true}/> :
-                    (this.props.location.pathname === "/settings") ? <Settings signOut={this.signOut} userStore={userPreferenceStore} /> :
-                      (this.props.location.pathname === "/insights") ? <Insights diaryEntryStore={diaryEntryStore}/> :
+                  (this.props.location.pathname === "/") ? 
+                  <Entry userStore={userPreferenceStore} diaryEntryStore={diaryEntryStore} adding={true} /> :
+                    (this.props.location.pathname === "/settings") ? 
+                    <Settings signOut={this.signOut} userStore={userPreferenceStore} /> :
+                      (this.props.location.pathname === "/insights") ? 
+                      <Insights diaryEntryStore={diaryEntryStore}/> :
                         <Timeline userStore={userPreferenceStore} diaryEntryStore={diaryEntryStore}/>
                 }
             </div>
@@ -179,8 +184,8 @@ class App extends Component {
           dateOfBirth: res.dateOfBirth,
           primaryTheme: res.primaryTheme,
           secondaryColor: res.secondaryColor,
-          usePin: res.usePin,
-          pin: res.pin,
+          usePassword: res.usePassword,
+          password: res.password,
         };
         userPreferenceStore.preferences = userData;
         resolve();
@@ -213,9 +218,9 @@ class App extends Component {
     });
   }
 
-  onPinChecked = () => {
+  onPasswordChecked = () => {
     this.setState({
-      pinChecked: true,
+      passwordChecked: true,
     }); 
   };
 }

@@ -8,29 +8,29 @@ import Button from '@material-ui/core/Button';
 import { withStyles } from '@material-ui/core';
 import PropTypes from 'prop-types';
 
-class PinUnlock extends React.Component {
+class PasswordUnlock extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       open: true,
-      pin: '',
-      incorrectPin: false,
+      password: '',
+      incorrectPassword: false,
     }
 
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleClose = this.handleClose.bind(this);
-    this.checkPin = this.checkPin.bind(this);
+    this.checkPassword = this.checkPassword.bind(this);
   }
 
   handleClose = () => {
     this.setState({ open: false });
   };
 
-  checkPin = () => {
-    if (this.props.userStore.preferences.pin == this.state.pin) {
-      this.props.onPinChecked();
+  checkPassword = () => {
+    if (this.props.userStore.preferences.password == this.state.password) {
+      this.props.onPasswordChecked();
     } else {
-      this.setState({ incorrectPin: true });
+      this.setState({ incorrectPassword: true });
     }
   }
 
@@ -51,19 +51,19 @@ class PinUnlock extends React.Component {
           open={this.state.open}
           aria-labelledby="form-dialog-title"
         >
-          <DialogTitle id="form-dialog-title">Enter Pin</DialogTitle>
+          <DialogTitle id="form-dialog-title">Enter Password</DialogTitle>
           <DialogContent>
             <TextField
-                name="pin"
-                label="Pin"
+                name="password"
+                label="Password"
                 type="password"
-                error={this.state.incorrectPin}
-                value={this.state.pin}
+                error={this.state.incorrectPassword}
+                value={this.state.password}
                 onChange={this.handleInputChange}
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.checkPin} color="primary">
+            <Button onClick={this.checkPassword} color="primary">
               Enter
             </Button>
           </DialogActions>
@@ -76,8 +76,8 @@ class PinUnlock extends React.Component {
 const styles = theme => ({
 });
 
-PinUnlock.propTypes = {
+PasswordUnlock.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(PinUnlock)
+export default withStyles(styles)(PasswordUnlock)
