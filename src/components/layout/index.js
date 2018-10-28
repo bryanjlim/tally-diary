@@ -93,9 +93,9 @@ class Layout extends Component {
                         variant="temporary"
                         open={this.state.mobileOpen}
                         classes={{
-                        paper: classes.drawerPaper,
+                            paper: classes.drawerPaper,
                         }}
-                        className={classes.robotoFont}
+                        style={{fontFamily: "roboto"}}
                         ModalProps={{
                         keepMounted: true, // Better open performance on mobile.
                         }}
