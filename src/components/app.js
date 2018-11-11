@@ -213,6 +213,12 @@ class App extends Component {
                 }
                 entriesProcessed++;
                 if(entriesProcessed === count - DriveHelper.nonEntryFileCount) {
+                  const copy = diaryEntryStore.entries.splice(0);
+                  copy.sort((a, b) => {
+                    // Sorts diaries in descending order by date
+                    return new Date(b.date).getTime() - new Date(a.date).getTime();
+                  });
+                  diaryEntryStore.entries = copy;
                   resolve();
                 }
             }).catch(err => reject(err))

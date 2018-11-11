@@ -21,10 +21,13 @@ class Entry extends Component {
         super(props);
 
         if(this.props.adding) {
-            const formattedMonth = (new Date().getMonth() + 1).toString().length === 1 ? "0" + ( new Date().getMonth() + 1 ) : new Date().getMonth() + 1;
+            const dateObject = new Date();
+            const formattedMonth = (dateObject.getMonth() + 1).toString().length === 1 ? "0" + ( dateObject.getMonth() + 1 ) : dateObject.getMonth() + 1;
+            const dateNumber = dateObject.getDate();
+            const formattedDate = dateNumber / 10 < 1 ? "0" + dateNumber : dateNumber;
             this.state = {
                 customTitle: '',
-                date: new Date().getFullYear() + "-" + formattedMonth + "-" + new Date().getDate(),
+                date: dateObject.getFullYear() + "-" + formattedMonth + "-" + formattedDate,
                 dateOfBirth: this.props.userStore.preferences.dateOfBirth,
                 bodyText: '',
                 mood: Mood.moodEnum.MEH,
@@ -305,7 +308,10 @@ class Entry extends Component {
                 "deleted": false,
                 "fileName": this.state.fileName,
             });
-            const formattedMonth = (new Date().getMonth() + 1).toString().length === 1 ? "0" + ( new Date().getMonth() + 1 ) : new Date().getMonth() + 1;
+            const dateObject = new Date();
+            const formattedMonth = (dateObject.getMonth() + 1).toString().length === 1 ? "0" + ( dateObject.getMonth() + 1 ) : dateObject.getMonth() + 1;
+            const dateNumber = dateObject.getDate();
+            const formattedDate = dateNumber / 10 < 1 ? "0" + dateNumber : dateNumber;
             
             this.setState({
                 showSuccessfulSave: false,
@@ -313,7 +319,7 @@ class Entry extends Component {
             
             this.setState({
                 customTitle: '',
-                date: new Date().getFullYear() + "-" + formattedMonth + "-" + new Date().getDate(),
+                date: dateObject.getFullYear() + "-" + formattedMonth + "-" + formattedDate,
                 bodyText: '',
                 mood: Mood.moodEnum.MEH,
                 weather: null,
@@ -329,6 +335,13 @@ class Entry extends Component {
                 fileName: this.props.diaryEntryStore.entries.length + 1,
                 showSuccessfulSave: true,
             });
+            
+            const copy = this.props.diaryEntryStore.entries.splice(0);
+            copy.sort((a, b) => {
+                // Sorts diaries in descending order by date
+                return new Date(b.date).getTime() - new Date(a.date).getTime();
+            });
+            this.props.diaryEntryStore.entries = copy;
         } else {
             console.log("Error Posting Entry: Invalid Date");
         }
@@ -364,6 +377,13 @@ class Entry extends Component {
         this.setState({
             showSuccessfulSave: true,
         });
+
+        const copy = this.props.diaryEntryStore.entries.splice(0);
+        copy.sort((a, b) => {
+            // Sorts diaries in descending order by date
+            return new Date(b.date).getTime() - new Date(a.date).getTime();
+        });
+        this.props.diaryEntryStore.entries = copy;
     }
 
     handleInputChange(event) {
