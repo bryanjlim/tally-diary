@@ -78,7 +78,10 @@ class App extends Component {
                     <Settings signOut={this.signOut} userStore={userPreferenceStore} /> :
                       (this.props.location.pathname === "/insights") ? 
                       <Insights diaryEntryStore={diaryEntryStore}/> :
-                        <Timeline userStore={userPreferenceStore} diaryEntryStore={diaryEntryStore}/>
+                        (this.props.location.pathname === "/timeline") ? 
+                        <Timeline userStore={userPreferenceStore} diaryEntryStore={diaryEntryStore}/> :
+                          <EntryViewer entryIndex={this.props.location.pathname} diaryEntryStore={diaryEntryStore} 
+                                       userStore={userPreferenceStore}/>
                 }
             </div>
           </Layout>
