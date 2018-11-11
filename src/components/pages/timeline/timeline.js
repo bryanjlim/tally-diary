@@ -2,66 +2,35 @@ import React, { Component } from 'react';
 import DriveHelper from '../../helpers/driveHelper';
 import {withStyles} from '@material-ui/core';
 import TimelineCard  from '../../views/diaryEntries/timelineCard';
-import Entry from '../entry/entry';
+import {Redirect} from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 class Timeline extends Component {
 
     constructor(props) {
         super(props); 
+
         this.state = {
-            // View Single Diary Entry
-            viewSingleEntry: false,
-            singleEntryFileName: '',
-            singleEntryTimelineCardIndex:'',
-            singleEntryTitle:'',
-            singleEntryDate:'',
-            singleEntryMood:'',
-            singleEntryWeather:'',
-            singleEntryBodyText:'',
-            singleEntryTodos: [],
-            singleEntryTallies: '',
+            redirect: false,
+            redirectIndex: -1,
         }
-        this.viewSingleEntry = this.viewSingleEntry.bind(this);
+
         this.deleteEntry = this.deleteEntry.bind(this);
-        this.viewTimeline = this.viewTimeline.bind(this);
         this.eachDiaryEntryObject = this.eachDiaryEntryObject.bind(this);
+        this.viewSingleEntry = this.viewSingleEntry.bind(this);
     }
 
-    viewSingleEntry(fileName, timelineCardIndex, title, date, mood, weather, bodyText, todos, tallies) {
-        this.setState({
-            viewSingleEntry: true,
-            singleEntryFileName: fileName,
-            singleEntryTimelineCardIndex: timelineCardIndex,
-            singleEntryTitle: title,
-            singleEntryDate: date,
-            singleEntryMood: mood,
-            singleEntryWeather: weather,
-            singleEntryBodyText: bodyText,
-            singleEntryTodos: todos,
-            singleEntryTallies: tallies,
-        });
-    }
-
-    deleteEntry(fileName, timelineCardIndex) {
-        this.props.diaryEntryStore.entries.splice(timelineCardIndex, 1);
+    deleteEntry(fileName, index) {
+        this.props.diaryEntryStore.entries.splice(index, 1);
         DriveHelper.updateFile(fileName, {'deleted': true});
         this.forceUpdate();
     }
 
-    viewTimeline(){
+    viewSingleEntry(index) {
         this.setState({
-            viewSingleEntry: false,
-            singleEntryFileName: '',
-            singleEntryTimelineCardIndex:'',
-            singleEntryTitle:'',
-            singleEntryDate:'',
-            singleEntryMood:'',
-            singleEntryWeather:'',
-            singleEntryBodyText:'',
-            singleEntryTodos: [],
-            singleEntryTallies: '',
-        }); 
+            redirect: true,
+            redirectIndex: index,
+        })
     }
 
     eachDiaryEntryObject(diaryEntry, i) {
@@ -90,23 +59,10 @@ class Timeline extends Component {
     render() {
         const { classes } = this.props;
 
-        if(this.state.viewSingleEntry) {
-            return (
-                <Entry 
-                    adding={false}
-                    fileName={this.state.singleEntryFileName}
-                    index={this.state.singleEntryTimelineCardIndex}
-                    title={this.state.singleEntryTitle}
-                    date={this.state.singleEntryDate}
-                    mood={this.state.singleEntryMood}
-                    weather={this.state.singleEntryWeather}
-                    bodyText={this.state.singleEntryBodyText}
-                    todos={this.state.singleEntryTodos}
-                    tallies={this.state.singleEntryTallies}
-                    userStore={this.props.userStore}
-                    diaryEntryStore={this.props.diaryEntryStore}
-                    back={this.viewTimeline}
-                /> 
+        if(this.state.redirect) {
+            const location = "/timeline/" + this.state.redirectIndex;
+            return(
+                <Redirect to={location} push />
             );
         } else {
             if(this.props.diaryEntryStore.entries.length) {
@@ -114,17 +70,11 @@ class Timeline extends Component {
             } else {
                 return(<div className={classes.centerText}><i>There are no diary entries to show. It's empty here....</i></div>);
             } 
-        }
+        } 
     }
 }
 
 const styles = theme => ({
-    circularProgress: {
-        marginTop: '30%',
-        marginLeft: 'auto',
-        marginRight: 'auto',
-        textAlign: 'center',
-    }, 
     centerText: {
         marginLeft: 'auto',
         marginRight: 'auto',

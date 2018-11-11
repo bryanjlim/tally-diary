@@ -14,6 +14,7 @@ import Layout from './layout';
 import userPreferenceStore from '../stores/userPreferenceStore';
 import diaryEntryStore from '../stores/diaryEntryStore';
 import PasswordUnlock from './views/passwordUnlock/passwordUnlock';
+import EntryViewer from './views/diaryEntries/entryViewer';
 import PropTypes from 'prop-types';
 
 class App extends Component {
@@ -67,21 +68,23 @@ class App extends Component {
           <PasswordUnlock userStore={userPreferenceStore} onPasswordChecked={this.onPasswordChecked}/>
         );
       } else {
+        const pathname = this.props.location.pathname;
         return (
           // Tally Diary App
           <Layout>
             <div>
                 {
-                  (this.props.location.pathname === "/") ? 
+                  (pathname === "/") ? 
                   <Entry userStore={userPreferenceStore} diaryEntryStore={diaryEntryStore} adding={true} /> :
-                    (this.props.location.pathname === "/settings") ? 
+                    (pathname === "/settings") ? 
                     <Settings signOut={this.signOut} userStore={userPreferenceStore} /> :
-                      (this.props.location.pathname === "/insights") ? 
+                      (pathname === "/insights") ? 
                       <Insights diaryEntryStore={diaryEntryStore}/> :
-                        (this.props.location.pathname === "/timeline") ? 
-                        <Timeline userStore={userPreferenceStore} diaryEntryStore={diaryEntryStore}/> :
-                          <EntryViewer entryIndex={this.props.location.pathname} diaryEntryStore={diaryEntryStore} 
-                                       userStore={userPreferenceStore}/>
+                        (pathname === "/timeline") ? 
+                        <Timeline userStore={userPreferenceStore} diaryEntryStore={diaryEntryStore}
+                                  router={this.props.router}/> :
+                          <EntryViewer entryIndex={pathname.substring(10, pathname.length)} router={this.props.router}
+                                       diaryEntryStore={diaryEntryStore}userStore={userPreferenceStore}/>
                 }
             </div>
           </Layout>

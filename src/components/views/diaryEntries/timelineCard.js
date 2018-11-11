@@ -31,9 +31,7 @@ class TimelineCard extends Component {
 
 
     onViewButtonClick() {
-        this.props.viewSingleEntry(this.props.fileName, this.props.index, this.props.title, this.props.date, 
-                                   this.props.mood, this.props.weather, this.props.bodyText, this.props.todos, 
-                                   this.props.tallies);
+        this.props.viewSingleEntry(this.props.index);
     } 
 
     handleMenuOpen = event => {
