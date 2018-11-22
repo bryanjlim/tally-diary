@@ -31,9 +31,10 @@ export default class EntryStyling {
         },
         customTitleAdornment: {
             color: theme.palette.primary.main,
-            marginRight: '10px',
+            marginRight: '.5em',
             userSelect: 'none',  
-            fontSize: '2em',     
+            fontSize: '2em',
+            whiteSpace: 'nowrap',     
             [theme.breakpoints.down('sm')]: {
                 fontSize: '1.5em',
             },      
