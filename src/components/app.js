@@ -157,8 +157,10 @@ class App extends Component {
           this.setState({ newUserSetup: true });
         } else {
           this.loadUserPreferencesStore().then(() => {
-            this.setState({ isInitialized: true });
-            this.updateSignInStatus();
+            this.loadDiaryEntryStore().then(() => {
+              this.setState({ isInitialized: true });
+              this.updateSignInStatus();
+            });
           });
         }
       });
