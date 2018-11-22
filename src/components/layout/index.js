@@ -7,6 +7,7 @@ import { Menu } from '@material-ui/icons';
 import { Link, withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
 import 'typeface-roboto';
+import { Scrollbars } from 'react-custom-scrollbars';
 
 const drawerWidth = 240;
 
@@ -19,6 +20,7 @@ const styles = theme => ({
       position: 'relative',
       display: 'flex',
       width: '100%',
+      overflow: 'hidden',
     },
     appBar: {
         zIndex: theme.zIndex.drawer + 1,
@@ -72,7 +74,7 @@ class Layout extends Component {
         return (
             <Fragment>
                 <CssBaseline/>
-                <div className={classes.root}>
+                <div className={classes.root} style={{height: '100vh'}}>
                     <AppBar position='absolute' className={classes.appBar}>
                     <Toolbar>
                         <IconButton
@@ -108,16 +110,19 @@ class Layout extends Component {
                         variant="permanent"
                         open
                         classes={{
-                        paper: classes.drawerPaper,
+                            paper: classes.drawerPaper,
                         }}
+                        style={{height: '100vh'}}
                     >
                         {drawer}
                     </Drawer>
                     </Hidden>
-                    <main className={classes.content}>
-                        <div className={classes.toolbar} />
-                        {children}
-                    </main>
+                    <Scrollbars>
+                        <main className={classes.content}>
+                            <div className={classes.toolbar} />
+                                {children}
+                        </main>
+                    </Scrollbars>
                 </div>
             </Fragment>
         );

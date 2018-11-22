@@ -7,6 +7,7 @@ export default class EntryStyling {
             marginRight: 'auto',
             maxWidth: 1600,
             paddingBottom: '5em',
+            marginBottom: '2em',
             [theme.breakpoints.down('xs')]: {
                 marginLeft: '-1em',
                 marginTop: '-1em',
