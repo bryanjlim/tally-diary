@@ -79,7 +79,7 @@ class App extends Component {
                     (pathname === "/settings") ? 
                     <Settings signOut={this.signOut} userStore={userPreferenceStore} /> :
                       (pathname === "/insights") ? 
-                      <Insights diaryEntryStore={diaryEntryStore}/> :
+                      <Insights diaryEntryStore={diaryEntryStore} userStore={userPreferenceStore}/> :
                         (pathname === "/timeline") ? 
                         <Timeline userStore={userPreferenceStore} diaryEntryStore={diaryEntryStore}
                                   router={this.props.router}/> :
