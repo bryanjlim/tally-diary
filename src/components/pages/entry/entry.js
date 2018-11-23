@@ -92,6 +92,7 @@ class Entry extends Component {
                         }}
                         InputProps={{
                             startAdornment: <div className={classes.customTitleAdornment}>{"Day " + daysAlive}</div>,
+                            className: classes.customTitleInput
                         }}
                     />
                 </div>

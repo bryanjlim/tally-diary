@@ -33,36 +33,22 @@ export default class EntryStyling {
             color: theme.palette.primary.main,
             marginRight: '.5em',
             userSelect: 'none',  
-            fontSize: '2em',
             whiteSpace: 'nowrap',     
-            [theme.breakpoints.down('sm')]: {
-                fontSize: '1.5em',
-            },      
-            '@media (max-width: 420px)': { 
-                fontSize: '1.3em',
-            },
-            '@media (max-width: 360px)': { 
-                fontSize: '1em',
-                width: '35%',
-            },
         },
         customTitleInput: {
             width: '100%',
             minWidth: 0, 
             marginTop: '1em',
-            fontSize: '2em',
+            fontSize: '1.5em',
             [theme.breakpoints.down('sm')]: {
-                fontSize: '1.5em',
+                fontSize: '1.37em',
             }, 
             '@media (max-width: 420px)': { 
-                fontSize: '1.5em',
+                fontSize: '1.2em',
             },
             '@media (max-width: 380px)': { 
                 fontSize: '1em',
             },
-        },
-        customTitleInputText: {
-            fontSize: '1.5em',
         },
 
         // Top Cluster (Add Tally/Todo Buttons, Date Selector)
