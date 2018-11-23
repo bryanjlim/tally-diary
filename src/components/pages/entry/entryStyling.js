@@ -110,6 +110,10 @@ export default class EntryStyling {
                 marginLeft: '.5em',
             },
         }, 
+        bottomClusterRightObject: {
+            marginTop: '.65em',
+            float: 'right',
+        }, 
 
         // Tally Marks and Todos
         spaceDivider: {

@@ -3,8 +3,6 @@ import PropTypes from 'prop-types';
 import {TextField, IconButton, Snackbar, MenuItem, Divider, Grid, Paper, Button, withStyles } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import DriveHelper from '../../helpers/driveHelper';
-import Mood from '../../objects/mood/mood'; 
-import Weather from '../../objects/weather/weather'; 
 import Todo from '../../objects/todos/todo'; 
 import TodoChip from '../../views/todo/todoChip';
 import TallyMark from '../../objects/tallies/tallyMark';
@@ -12,8 +10,7 @@ import TallyMarkChip from '../../views/tallyMark/tallyMarkChip';
 import AddTally from './addTally';
 import AddTodo from './addTodo';
 import EntryStyling from './entryStyling';
-import {Save, ArrowBack, ArrowForward} from '@material-ui/icons';
-import {Redirect} from 'react-router-dom';
+import {Save, ArrowBack, ArrowForward, ThumbDownOutlined, ThumbDown, ThumbUpOutlined, ThumbUp} from '@material-ui/icons';
 
 const styles = EntryStyling.styles;
 
@@ -31,23 +28,23 @@ class Entry extends Component {
                 date: dateObject.getFullYear() + "-" + formattedMonth + "-" + formattedDate,
                 dateOfBirth: this.props.userStore.preferences.dateOfBirth,
                 bodyText: '',
-                mood: Mood.moodEnum.MEH,
                 tallies: [],
                 todos: [],
+                isThumbUp: false, // Thumb indicates mood, can be up or down or neither
+                isThumbDown: false,
                 fileName: this.props.diaryEntryStore.entries.length + 1,
                 redirectIndex: 0,
             };
         } else {
-            const weatherObject = this.props.weather;
-
             this.state = {
                 customTitle: this.props.title,
                 date: this.props.date,
                 dateOfBirth: this.props.userStore.preferences.dateOfBirth,
                 bodyText: this.props.bodyText,
-                mood: Mood.moodEnum.MEH,
                 tallies: this.props.tallies,
                 todos: this.props.todos,
+                isThumbUp: this.props.isThumbUp,
+                isThumbDown: this.props.isThumbDown,
                 index: this.props.index,
                 fileName: this.props.fileName,
                 redirectIndex: 0,
@@ -64,6 +61,8 @@ class Entry extends Component {
         this.handleInputChange = this.handleInputChange.bind(this);
         this.navigateBack = this.navigateBack.bind(this);
         this.navigateForward = this.navigateForward.bind(this);
+        this.toggleThumbUp = this.toggleThumbUp.bind(this);
+        this.toggleThumbDown = this.toggleThumbDown.bind(this);
     }
 
     render() {
@@ -150,6 +149,18 @@ class Entry extends Component {
                         <Grid item className={classes.bottomClusterObject}>
                             <AddTodo addTodo={this.addTodo}/>
                         </Grid>
+                        <Grid item className={classes.bottomClusterRightObject} style={{marginLeft: '1em'}}>
+                            <IconButton className={classes.button} aria-label="Good Rating" 
+                                        onClick={this.toggleThumbUp}>
+                                {this.state.isThumbUp ? <ThumbUp /> : <ThumbUpOutlined/>}
+                            </IconButton>
+                        </Grid>
+                        <Grid item className={classes.bottomClusterRightObject}>
+                            <IconButton className={classes.button} aria-label="Bad Rating" 
+                                        onClick={this.toggleThumbDown}>
+                                {this.state.isThumbDown ? <ThumbDown /> : <ThumbDownOutlined/>}
+                            </IconButton>
+                        </Grid>
                     </Grid>
                 </div>
 
@@ -214,6 +225,23 @@ class Entry extends Component {
 
     /* Methods */
 
+    toggleThumbUp() {
+        const thumbUp = !this.state.isThumbUp;
+
+        this.setState({
+            isThumbUp: thumbUp,
+            isThumbDown: false,
+        })
+    }
+
+    toggleThumbDown() {
+        const thumbDown = !this.state.isThumbDown;
+        this.setState({
+            isThumbDown: thumbDown,
+            isThumbUp: false,
+        })
+    }
+
     navigateBack() {
         this.setState({
             shouldRedirect: true,
@@ -265,19 +293,19 @@ class Entry extends Component {
                 "date": this.state.date,
                 "bodyText": this.state.bodyText,
                 "tallies": this.state.tallies, 
-                "weather": new Weather(this.state.weather, this.state.lowTemperature, this.state.highTemperature, this.state.humidity), 
                 "todos": this.state.todos,
-                "mood": new Mood(this.state.mood),
+                "isThumbUp": this.state.isThumbUp, 
+                "isThumbDown": this.state.isThumbDown,
                 "deleted": false,
             }, this.state.fileName);
             this.props.diaryEntryStore.entries.push({
                 "title": this.state.customTitle, 
                 "date": this.state.date,
                 "bodyText": this.state.bodyText,
-                "tallies": this.state.tallies, 
-                "weather": new Weather(this.state.weather, this.state.lowTemperature, this.state.highTemperature, this.state.humidity), 
+                "tallies": this.state.tallies,  
                 "todos": this.state.todos,
-                "mood": new Mood(this.state.mood),
+                "isThumbUp": this.state.isThumbUp, 
+                "isThumbDown": this.state.isThumbDown,
                 "deleted": false,
                 "fileName": this.state.fileName,
             });
@@ -294,13 +322,10 @@ class Entry extends Component {
                 customTitle: '',
                 date: dateObject.getFullYear() + "-" + formattedMonth + "-" + formattedDate,
                 bodyText: '',
-                mood: Mood.moodEnum.MEH,
-                weather: null,
-                lowTemperature: null,
-                highTemperature: null, 
-                humidity: null,
                 tallies: [],
                 todos: [],
+                isThumbUp: false,
+                isThumbDown: false,
                 newTallyMarkType: TallyMark.tallyTypeEnum.FOOD,
                 newTallyMarkText: '',
                 newTodoStatus: false,
@@ -328,18 +353,18 @@ class Entry extends Component {
             "date": this.state.date,
             "bodyText": this.state.bodyText,
             "tallies": this.state.tallies, 
-            "weather": new Weather(this.state.weather, this.state.lowTemperature, this.state.highTemperature, this.state.humidity), 
             "todos": this.state.todos,
-            "mood": new Mood(this.state.mood)
+            "isThumbUp": this.state.isThumbUp, 
+            "isThumbDown": this.state.isThumbDown,
         });
         this.props.diaryEntryStore.entries[this.props.index] = {
             "title": this.state.customTitle, 
             "date": this.state.date,
             "bodyText": this.state.bodyText,
             "tallies": this.state.tallies, 
-            "weather": new Weather(this.state.weather, this.state.lowTemperature, this.state.highTemperature, this.state.humidity), 
             "todos": this.state.todos,
-            "mood": new Mood(this.state.mood),
+            "isThumbUp": this.state.isThumbUp, 
+            "isThumbDown": this.state.isThumbDown,
             "fileName": this.props.fileName,
         };
 

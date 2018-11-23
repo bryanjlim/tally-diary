@@ -24,8 +24,8 @@ class EntryViewer extends Component {
                 singleEntryIndex: entryIndex,
                 singleEntryTitle: this.props.diaryEntryStore.entries[entryIndex].title,
                 singleEntryDate: this.props.diaryEntryStore.entries[entryIndex].date,
-                singleEntryMood: this.props.diaryEntryStore.entries[entryIndex].mood,
-                singleEntryWeather: this.props.diaryEntryStore.entries[entryIndex].weather,
+                singleEntryIsThumbUp: this.props.diaryEntryStore.entries[entryIndex].isThumbUp,
+                singleEntryIsThumbDown: this.props.diaryEntryStore.entries[entryIndex].isThumbDown,
                 singleEntryBodyText: this.props.diaryEntryStore.entries[entryIndex].bodyText,
                 singleEntryTodos: this.props.diaryEntryStore.entries[entryIndex].todos,
                 singleEntryTallies: this.props.diaryEntryStore.entries[entryIndex].tallies,
@@ -64,8 +64,8 @@ class EntryViewer extends Component {
             singleEntryIndex: this.props.entryIndex,
             singleEntryTitle: this.props.diaryEntryStore.entries[this.props.entryIndex].title,
             singleEntryDate: this.props.diaryEntryStore.entries[this.props.entryIndex].date,
-            singleEntryMood: this.props.diaryEntryStore.entries[this.props.entryIndex].mood,
-            singleEntryWeather: this.props.diaryEntryStore.entries[this.props.entryIndex].weather,
+            singleEntryIsThumbUp: this.props.diaryEntryStore.entries[this.props.entryIndex].isThumbUp,
+            singleEntryIsThumbDown: this.props.diaryEntryStore.entries[this.props.entryIndex].isThumbDown,
             singleEntryBodyText: this.props.diaryEntryStore.entries[this.props.entryIndex].bodyText,
             singleEntryTodos: this.props.diaryEntryStore.entries[this.props.entryIndex].todos,
             singleEntryTallies: this.props.diaryEntryStore.entries[this.props.entryIndex].tallies,
@@ -96,8 +96,8 @@ class EntryViewer extends Component {
                     index={this.state.singleEntryIndex}
                     title={this.state.singleEntryTitle}
                     date={this.state.singleEntryDate}
-                    mood={this.state.singleEntryMood}
-                    weather={this.state.singleEntryWeather}
+                    isThumbUp={this.state.singleEntryIsThumbUp}
+                    isThumbDown={this.state.singleEntryIsThumbDown}
                     bodyText={this.state.singleEntryBodyText}
                     todos={this.state.singleEntryTodos}
                     tallies={this.state.singleEntryTallies}
