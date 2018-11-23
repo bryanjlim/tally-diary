@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {withStyles } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import 'typeface-roboto';
+import logo from './TextLogo.jpg';
 
 class Home extends Component {
 
@@ -27,7 +28,7 @@ class Home extends Component {
                         <div className={classes.innerContainer}> 
                             <div className={classes.home}>
                                 <div className={classes.logoWrapper}><img className={classes.logoImage} onLoad={this.onImageLoad} 
-                                    alt="Tally Diary Logo" src={require('./TextLogo.png')}/></div>
+                                    alt="Tally Diary Logo" src={logo}/></div>
                                 <h1 className={classes.homeTitle}><i>A Diary to Tally Your Life</i></h1>
                                 <div className={classes.centerButton}><button onClick={evt => 
                                     { evt.preventDefault(); this.props.signIn(); }} className={classes.getStartedButton} 
