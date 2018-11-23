@@ -12,7 +12,8 @@ import TallyMarkChip from '../../views/tallyMark/tallyMarkChip';
 import AddTally from './addTally';
 import AddTodo from './addTodo';
 import EntryStyling from './entryStyling';
-import Save from '@material-ui/icons/Save';
+import {Save, ArrowBack, ArrowForward} from '@material-ui/icons';
+import {Redirect} from 'react-router-dom';
 
 const styles = EntryStyling.styles;
 
@@ -31,14 +32,10 @@ class Entry extends Component {
                 dateOfBirth: this.props.userStore.preferences.dateOfBirth,
                 bodyText: '',
                 mood: Mood.moodEnum.MEH,
-                weather: null,
-                lowTemperature: null,
-                highTemperature: null, 
-                humidity: null,
                 tallies: [],
                 todos: [],
                 fileName: this.props.diaryEntryStore.entries.length + 1,
-                showSuccessfulSave: false,
+                redirectIndex: 0,
             };
         } else {
             const weatherObject = this.props.weather;
@@ -49,15 +46,11 @@ class Entry extends Component {
                 dateOfBirth: this.props.userStore.preferences.dateOfBirth,
                 bodyText: this.props.bodyText,
                 mood: Mood.moodEnum.MEH,
-                weather: weatherObject.weather,
-                lowTemperature: weatherObject.lowTemperature,
-                highTemperature: weatherObject.highTemperature, 
-                humidity: weatherObject.humidity,
                 tallies: this.props.tallies,
                 todos: this.props.todos,
                 index: this.props.index,
                 fileName: this.props.fileName,
-                showSuccessfulSave: false,
+                redirectIndex: 0,
             };
         }
 
@@ -69,6 +62,8 @@ class Entry extends Component {
         this.addTodo = this.addTodo.bind(this);
         this.deleteTodo = this.deleteTodo.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
+        this.navigateBack = this.navigateBack.bind(this);
+        this.navigateForward = this.navigateForward.bind(this);
     }
 
     render() {
@@ -108,17 +103,26 @@ class Entry extends Component {
                         InputLabelProps={{
                         }}
                     /> 
-                    <div className={classes.verticalButtonCluster}> 
-                        <br/>
-                        <div className={classes.addButton}><AddTally currentFileName={this.state.fileName} tallyMarks={this.state.tallies} diaryEntryStore={this.props.diaryEntryStore} addNewTallyMark={this.addNewTallyMark}/></div> 
-                        <br/>
-                        <div className={classes.addButton}><AddTodo addTodo={this.addTodo}/></div>
+                </div>
+
+                {this.props.adding ? null :
+                    <div> 
+                        <div className={classes.navButton}> 
+                            <IconButton className={classes.button} aria-label="Next Entry"
+                                        disabled={this.props.diaryEntryStore.entries.length - 1 <= this.props.index}
+                                        onClick={this.props.navigateForward}>
+                                <ArrowForward/>
+                            </IconButton>
+                        </div>
+                        <div className={classes.navButton}> 
+                            <IconButton className={classes.button} aria-label="Previous Entry" 
+                                        disabled={this.props.index == 0}
+                                        onClick={this.props.navigateBack}>
+                                <ArrowBack/>
+                            </IconButton>
+                        </div>
                     </div>
-                </div>
-                <div className={classes.horizontalButtonCluster}> 
-                        <div className={classes.addButton}><AddTally currentFileName={this.state.fileName} tallyMarks={this.state.tallies} diaryEntryStore={this.props.diaryEntryStore} addNewTallyMark={this.addNewTallyMark}/></div>
-                        <div className={classes.addButton}><AddTodo addTodo={this.addTodo}/></div>
-                </div>
+                }
 
                 {/* Body Text */}
                 <div className={classes.bodyTextWrapper}>
@@ -127,7 +131,7 @@ class Entry extends Component {
                         id="outlined-multiline-static"
                         label="Your Thoughts"
                         multiline
-                        rows="10"
+                        rows="15"
                         value={this.state.bodyText}
                         onChange={this.handleInputChange}
                         className={classes.bodyText}
@@ -139,58 +143,12 @@ class Entry extends Component {
                 {/* Bottom Cluster (Mood and Weather) */}
                 <div className={classes.bottomClusterGridContainer}>
                     <Grid container>
-                        <Grid item className={classes.moodSelector}>
-                            <TextField
-                                label="Mood"
-                                name="mood"
-                                value={this.state.mood}
-                                onChange={this.handleInputChange}
-                                variant="outlined"
-                                select
-                            >
-                                <MenuItem key={Mood.moodEnum.MEH} value={Mood.moodEnum.MEH}><span role="img" aria-label="meh">😐</span></MenuItem>
-                                <MenuItem key={Mood.moodEnum.SAD} value={Mood.moodEnum.SAD}><span role="img" aria-label="happy">😃</span></MenuItem>
-                                <MenuItem key={Mood.moodEnum.HAPPY} value={Mood.moodEnum.HAPPY}><span role="img" aria-label="sad">😔</span></MenuItem>
-                            </TextField>
+                        <Grid item className={classes.bottomClusterObject}>
+                            <AddTally currentFileName={this.state.fileName} tallyMarks={this.state.tallies} 
+                                      diaryEntryStore={this.props.diaryEntryStore} addNewTallyMark={this.addNewTallyMark}/>
                         </Grid>
                         <Grid item className={classes.bottomClusterObject}>
-                            <TextField
-                                label="Weather"
-                                name="weather"
-                                value={this.state.weather}
-                                onChange={this.handleInputChange}
-                                variant="outlined"
-                            />
-                        </Grid>
-                        <Grid item className={classes.bottomClusterObject}>
-                            <TextField
-                                label="Low Temperature"
-                                name="lowTemperature"
-                                type="number"
-                                value={this.state.lowTemperature}
-                                onChange={this.handleInputChange}
-                                variant="outlined"
-                            />
-                        </Grid>
-                        <Grid item className={classes.bottomClusterObject}>
-                            <TextField
-                                label="High Temperature"
-                                name="highTemperature"
-                                type="number"
-                                value={this.state.highTemperature}
-                                onChange={this.handleInputChange}
-                                variant="outlined"
-                            />
-                        </Grid>
-                        <Grid item className={classes.bottomClusterObject}>
-                            <TextField
-                                label="Humidity"
-                                name="humidity"
-                                type="number"
-                                value={this.state.humidity}
-                                onChange={this.humidity}
-                                variant="outlined"
-                            />
+                            <AddTodo addTodo={this.addTodo}/>
                         </Grid>
                     </Grid>
                 </div>
@@ -255,6 +213,20 @@ class Entry extends Component {
 
 
     /* Methods */
+
+    navigateBack() {
+        this.setState({
+            shouldRedirect: true,
+            redirectIndex: Number(this.props.index) - 1,
+        })
+    }
+    
+    navigateForward() {
+        this.setState({
+            shouldRedirect: true,
+            redirectIndex: Number(this.props.index) + 1,
+        })
+    }
 
     closeSuccessSnackBar() {
         this.setState({showSuccessfulSave: false}); 

@@ -8,12 +8,18 @@ class EntryViewer extends Component {
 
     constructor(props) {
         super(props); 
+
         this.viewTimeline = this.viewTimeline.bind(this);
+        this.navigateBack = this.navigateBack.bind(this);
+        this.navigateForward = this.navigateForward.bind(this);
+        this.handleIndexRedirect = this.handleIndexRedirect.bind(this);
         const entryIndex = this.props.entryIndex;
 
         if(entryIndex >= 0 && entryIndex < this.props.diaryEntryStore.entries.length) {
             this.state = {
-                redirect: false,
+                redirectToIndex: false,
+                redirectIndex: entryIndex,
+                redirectToTimeline: false,
                 singleEntryFileName: this.props.diaryEntryStore.entries[entryIndex].fileName,
                 singleEntryIndex: entryIndex,
                 singleEntryTitle: this.props.diaryEntryStore.entries[entryIndex].title,
@@ -31,18 +37,58 @@ class EntryViewer extends Component {
 
     viewTimeline() {
         this.setState({
-            redirect: true,
+            redirectToTimeline: true,
         })
     }
 
-    render() {
-        const { classes } = this.props;
+    navigateForward() {
+        this.setState({
+            redirectToIndex: true,
+            redirectIndex: Number(this.props.entryIndex) + 1,
+        })
+    }
 
-        if(this.state.redirect) {
+    navigateBack() {
+        this.setState({
+            redirectToIndex: true,
+            redirectIndex: Number(this.props.entryIndex) - 1,
+        })
+    }
+
+    handleIndexRedirect() {
+        this.setState({
+            redirectToIndex: false,
+            redirectIndex: this.props.entryIndex,
+            redirectToTimeline: false,
+            singleEntryFileName: this.props.diaryEntryStore.entries[this.props.entryIndex].fileName,
+            singleEntryIndex: this.props.entryIndex,
+            singleEntryTitle: this.props.diaryEntryStore.entries[this.props.entryIndex].title,
+            singleEntryDate: this.props.diaryEntryStore.entries[this.props.entryIndex].date,
+            singleEntryMood: this.props.diaryEntryStore.entries[this.props.entryIndex].mood,
+            singleEntryWeather: this.props.diaryEntryStore.entries[this.props.entryIndex].weather,
+            singleEntryBodyText: this.props.diaryEntryStore.entries[this.props.entryIndex].bodyText,
+            singleEntryTodos: this.props.diaryEntryStore.entries[this.props.entryIndex].todos,
+            singleEntryTallies: this.props.diaryEntryStore.entries[this.props.entryIndex].tallies,
+        });
+    }
+
+    render() {
+        if(this.state.redirectIndex != this.props.entryIndex) {
+            this.handleIndexRedirect();
+        }
+
+        if(this.state.redirectToTimeline) {
             return (
                 <Redirect to="/timeline" push />
             );
-        } else {
+        } else if(this.state.redirectToIndex) {
+            const goHere = this.state.redirectIndex;
+
+            const location = "/timeline/" + goHere;
+            return (
+                <Redirect to={location} push />
+            );
+        } else{
             return (
                 <Entry 
                     adding={false}
@@ -58,6 +104,8 @@ class EntryViewer extends Component {
                     userStore={this.props.userStore}
                     diaryEntryStore={this.props.diaryEntryStore}
                     back={this.viewTimeline}
+                    navigateBack = {this.navigateBack}
+                    navigateForward = {this.navigateForward}
                 /> 
             );
         }

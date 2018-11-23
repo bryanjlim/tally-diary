@@ -84,7 +84,7 @@ class App extends Component {
                         <Timeline userStore={userPreferenceStore} diaryEntryStore={diaryEntryStore}
                                   router={this.props.router}/> :
                           <EntryViewer entryIndex={pathname.substring(10, pathname.length)} router={this.props.router}
-                                       diaryEntryStore={diaryEntryStore}userStore={userPreferenceStore}/>
+                                       diaryEntryStore={diaryEntryStore} userStore={userPreferenceStore}/>
                 }
             </div>
           </Layout>
