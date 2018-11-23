@@ -77,7 +77,6 @@ class AddTally extends React.Component {
   }
 
   render() {
-    const { fullScreen } = this.props;
     return (
       <div>
         <Button variant="contained" color="primary" onClick={this.handleClickOpen} 
@@ -85,7 +84,7 @@ class AddTally extends React.Component {
         Tallies
         </Button>
         <Dialog
-          fullScreen={fullScreen}
+          fullScreen={false}
           open={this.state.open}
           onClose={this.handleClose}
           aria-labelledby="responsive-dialog-title"
