@@ -1,9 +1,9 @@
 import React, {Component, Fragment } from 'react';
 import {
-    AppBar, Toolbar, IconButton, Typography, Hidden, Drawer, CssBaseline, List, ListItem
+    AppBar, Toolbar, IconButton, Typography, Hidden, Drawer, CssBaseline, List, ListItem, ListItemText, ListItemIcon,
 } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
-import { Menu } from '@material-ui/icons';
+import { Menu, Add, Settings, PieChart, LibraryBooks } from '@material-ui/icons';
 import { Link, withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
 import 'typeface-roboto';
@@ -63,10 +63,18 @@ class Layout extends Component {
                 <div className={classes.toolbar} />
             </Hidden>
             <List>
-                <ListItem component={Link} onClick={this.handleDrawerToggle} to='/' selected={'/' === pathname}>Add Entry</ListItem>
-                <ListItem component={Link} onClick={this.handleDrawerToggle} to='/timeline' selected={'/timeline' === pathname}>My Entries</ListItem>
-                <ListItem component={Link} onClick={this.handleDrawerToggle} to='/insights' selected={'/insights' === pathname}>Insights</ListItem>
-                <ListItem component={Link} onClick={this.handleDrawerToggle} to='/settings' selected={'/settings' === pathname}>Settings</ListItem>
+                <ListItem component={Link} onClick={this.handleDrawerToggle} to='/' selected={'/' === pathname}>
+                    <ListItemIcon><Add /></ListItemIcon><ListItemText primary="Add Entry" />
+                </ListItem>
+                <ListItem component={Link} onClick={this.handleDrawerToggle} to='/timeline' selected={'/timeline' === pathname}>
+                    <ListItemIcon><LibraryBooks /></ListItemIcon>
+                <ListItemText primary="My Entries" /></ListItem>
+                <ListItem component={Link} onClick={this.handleDrawerToggle} to='/insights' selected={'/insights' === pathname}>
+                    <ListItemIcon><PieChart /></ListItemIcon>
+                <ListItemText primary="Insights" /></ListItem>
+                <ListItem component={Link} onClick={this.handleDrawerToggle} to='/settings' selected={'/settings' === pathname}>
+                    <ListItemIcon><Settings /></ListItemIcon>
+                <ListItemText primary="Settings" /></ListItem>
             </List>
           </div>
         );
