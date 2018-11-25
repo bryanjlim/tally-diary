@@ -7,10 +7,33 @@ const styles = theme => ({
     timelineCard: {
         minWidth: 275,
         maxWidth: 575,
+        overflow: 'visible',
     },
-    timelineCardTitle: {
-        marginBottom: 16,
-        fontSize: 14,
+    title: {
+        overflow: 'hidden',
+        whiteSpace: 'nowrap',
+        maxWidth: 450, 
+        '@media (max-width: 650px)': { 
+            maxWidth: 435,
+        },
+        '@media (max-width: 550px)': { 
+            maxWidth: 385,
+        },
+        '@media (max-width: 500px)': { 
+            maxWidth: 335,
+        },
+        '@media (max-width: 450px)': { 
+            maxWidth: 285,
+        },
+        '@media (max-width: 400px)': { 
+            maxWidth: 235,
+        },
+        '@media (max-width: 350px)': { 
+            maxWidth: 185,
+        },
+        '@media (max-width: 300px)': { 
+            maxWidth: 160,
+        },
     },
     timelineCardPos: {
         marginBottom: 12,
@@ -65,7 +88,7 @@ class TimelineCard extends Component {
                 <CardHeader
                     action={
                         <div>
-                        <IconButton onClick={this.handleMenuOpen}>
+                        <IconButton onClick={this.handleMenuOpen} style={{overflow: 'visible'}}>
                             <MoreVertIcon/>
                         </IconButton>
                             <Menu
@@ -78,6 +101,9 @@ class TimelineCard extends Component {
                         </div>
                     }
                     title= {"Day " + daysAlive + (this.props.title ? " - " + this.props.title : " ")}
+                    classes={{
+                        title: classes.title,
+                    }}
                     subheader={readDate}
                 />  
                 <CardContent>

@@ -179,6 +179,9 @@ class Timeline extends Component {
                                 </Grid>
                             </Grid>
                         </div>
+                        <div className={classes.showingItalic}>
+                            <i>Showing {this.state.diaryEntriesToShow.length} entries</i>
+                        </div>
                         {this.state.diaryEntriesToShow.map(this.eachDiaryEntryObject)}
                     </div>
                 );
@@ -211,7 +214,15 @@ const styles = theme => ({
         paddingTop: 25, 
         minWidth: 275,
         maxWidth: 575,
+        [theme.breakpoints.down('xs')]: {
+            marginLeft: '-1em',
+            marginTop: '-1em',
+        },
     },
+    showingItalic: {
+        textAlign: 'center',
+        marginTop: '2em',
+    }
 });
 
 Timeline.propTypes = {

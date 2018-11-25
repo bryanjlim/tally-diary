@@ -11,9 +11,32 @@ const styles = theme => ({
     headlineText: {
         fontSize: '1.2em',
         display: 'inline-block',
-        whiteSpace: 'no-wrap',
-        maxWidth: 500,
+        overflow: 'hidden',
+        maxWidth: 450,
+        whiteSpace: 'nowrap',
         marginTop: '.2em',
+        '@media (max-width: 650px)': { 
+            maxWidth: 435,
+        },
+        '@media (max-width: 550px)': { 
+            fontSize: '1em',
+            maxWidth: 385,
+        },
+        '@media (max-width: 500px)': { 
+            maxWidth: 335,
+        },
+        '@media (max-width: 450px)': { 
+            maxWidth: 285,
+        },
+        '@media (max-width: 400px)': { 
+            maxWidth: 235,
+        },
+        '@media (max-width: 350px)': { 
+            maxWidth: 185,
+        },
+        '@media (max-width: 300px)': { 
+            maxWidth: 160,
+        },
     },
     headlineVertButton: {
         float: 'right',
@@ -33,7 +56,6 @@ class TimelineHeadline extends Component {
         this.handleMenuOpen = this.handleMenuOpen.bind(this);
         this.handleMenuClose = this.handleMenuClose.bind(this);
     }
-
 
     onViewButtonClick() {
         this.props.viewSingleEntry(this.props.index);
