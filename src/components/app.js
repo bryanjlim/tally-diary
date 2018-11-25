@@ -34,6 +34,7 @@ class App extends Component {
     this.signOut = this.signOut.bind(this);
     this.loadUserPreferencesStore = this.loadUserPreferencesStore.bind(this);
     this.loadDiaryEntryStore = this.loadDiaryEntryStore.bind(this); 
+    this.loadNextDiaryEntry = this.loadNextDiaryEntry.bind(this);
   }
 
   componentDidMount() {
@@ -140,7 +141,7 @@ class App extends Component {
               this.loadDiaryEntryStore().then(() => {
                 that.setState({ isInitialized: true });
               });
-            });
+            }).catch((err) => console.log(err));
           }
         });
       } else {
@@ -208,29 +209,37 @@ class App extends Component {
   loadDiaryEntryStore = () => {
     return new Promise((resolve, reject) => {
       DriveHelper.getFileCount().then((count) => {
-        let entriesProcessed = 0;
         if(count <= 1) {
           resolve();
         }
-        for(let i = count - DriveHelper.nonEntryFileCount; i > 0; i--) {
-            DriveHelper.readFile(i).then((entry) => {
-                entry.fileName=i;
-                if(!entry.deleted) {
-                  diaryEntryStore.entries.push(entry);
-                }
-                entriesProcessed++;
-                if(entriesProcessed === count - DriveHelper.nonEntryFileCount) {
-                  const copy = diaryEntryStore.entries.splice(0);
-                  copy.sort((a, b) => {
-                    // Sorts diaries in descending order by date
-                    return new Date(b.date).getTime() - new Date(a.date).getTime();
-                  });
-                  diaryEntryStore.entries = copy;
-                  resolve();
-                }
-            }).catch(err => reject(err))
-        }
+        this.loadNextDiaryEntry(count).then(() => {
+          const copy = diaryEntryStore.entries.splice(0);
+          copy.sort((a, b) => {
+            // Sorts diaries in descending order by date
+            return new Date(b.date).getTime() - new Date(a.date).getTime();
+          });
+          diaryEntryStore.entries = copy;
+          resolve();
+        })
       });
+    });
+  }
+
+  loadNextDiaryEntry(index) {
+    return new Promise((resolve, reject) => {
+      if(Number(index) === 0) {
+        resolve();
+      } else {
+        DriveHelper.readFile(index).then((entry) => {
+          entry.fileName=index;
+          if(!entry.deleted) {
+            diaryEntryStore.entries.push(entry);
+          }
+          this.loadNextDiaryEntry(index - 1).then(() => {
+            resolve();
+          });
+        }).catch(err => reject(err))
+      }
     });
   }
 

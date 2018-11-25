@@ -41,7 +41,7 @@ class DeleteAllFiles extends React.Component {
         >
           <DialogTitle >{"Confirmation Prompt"}</DialogTitle>
           <DialogContent>
-            <DialogContentText>
+            <DialogContentText style={{fontFamily: 'roboto'}}>
                 This will delete all your files, including all diary entries and your settings. This cannot be undone. Do you wish to proceed?
             </DialogContentText>
           </DialogContent>

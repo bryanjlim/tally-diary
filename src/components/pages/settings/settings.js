@@ -226,24 +226,14 @@ class Settings extends Component {
                 </div> 
             );
         }
-        return (<div className={classes.outerContainer}> 
-            <div className={classes.middleContainer}> 
-            <CircularProgress/></div></div>); 
+        return (<div className={classes.middleContainer}><i>Deleting All Files...</i></div>); 
     }
 }
 
 const styles = theme => ({
-    outerContainer: {
-        backgroundColor: theme.palette.background.default,
-        fontFamily: 'Roboto',
-        display: 'table',
-        position: 'absolute',
-        height: '100%',
-        width: '100%',
-    },
     middleContainer: {
-        display: 'table-cell',
-        verticalAlign: 'middle',
+        textAlign: 'center',
+        marginTop: '2em',
     },
     title: {
         color: theme.palette.primary.main,
