@@ -220,17 +220,6 @@ export default class DriveHelper {
             const index = files.length - 1;
             DriveHelper.removeFiles(index);
         }).catch(err => console.log(err));
-
-        DriveHelper.attemptFileRemovals().then((areFilesRemaining) => {
-            if(areFilesRemaining) {
-                DriveHelper.deleteAllFiles();
-            } else {
-                window.location.reload();
-            }
-        }).catch((error) => {
-            console.log(error);
-            DriveHelper.deleteAllFiles();
-        })
     }
 
     /**
