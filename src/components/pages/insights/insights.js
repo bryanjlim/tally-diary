@@ -21,7 +21,7 @@ class Insights extends Component {
         for(let i = 0; i < this.props.diaryEntryStore.entries.length; i++) {
             const date = new Date(this.props.diaryEntryStore.entries[i].date);
 
-            if(Math.round((new Date() - new Date(date))/ (1000 * 60 * 60 * 24)) - 1 == 365) {
+            if(Math.round((new Date() - new Date(date))/ (1000 * 60 * 60 * 24)) - 1 === 365) {
                 this.state.existsYearOldDiary = true;
                 this.state.yearOldDiaryIndex = i;
             }

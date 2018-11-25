@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {Card, CardContent, IconButton, Button, Typography, Menu, MenuItem, withStyles} from '@material-ui/core';
+import {Card, CardContent, IconButton, Menu, MenuItem, withStyles} from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 
 const styles = theme => ({

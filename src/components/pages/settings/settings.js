@@ -87,23 +87,13 @@ class Settings extends Component {
     exportData(e) {
         e.preventDefault();
 
-        let filteredEntries = [];
-        // Filter diary entries
-
-        for(let i = 0; i < this.props.diaryEntryStore.entries.length; i++) {
-            if(this.props.diaryEntryStore.entries[i].deleted !== true) {
-                filteredEntries.push(this.props.diaryEntryStore.entries[i]);
-            }
-        }
-
-        const json = Object.values(filteredEntries);
+        const json = Object.values(this.props.diaryEntryStore.entries);
         var csv = "";
         var keys = (json[0] && Object.keys(json[0])) || [];
         csv += keys.join(',') + '\n';
         for (var line of json) {
             csv += keys.map(key => line[key]).join(',') + '\n';
         }
-        alert(csv)
 
         var blob = new Blob([csv], {type: "text/csv"});
         FileSaver.saveAs(blob, "backup.csv");

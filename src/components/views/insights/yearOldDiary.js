@@ -42,7 +42,7 @@ class YearOldDiary extends Component {
             return (
                 <div className={classes.insightsItemText}>
                     <h2>You wrote a diary entry one year ago!</h2>
-                    <i>Day {this.props.title == '' ? daysAlive : daysAlive + "(" + this.props.title + ")"}</i>
+                    <i>Day {this.props.title === '' ? daysAlive : daysAlive + "(" + this.props.title + ")"}</i>
                     <CardActions>
                         <Button onClick={this.viewSingleEntry} size="small" style={{marginLeft: 'auto', marginRight: 'auto',}}>View Entry</Button>
                     </CardActions>

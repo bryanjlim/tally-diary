@@ -29,7 +29,7 @@ class Timeline extends Component {
 
     deleteEntry(fileName, index) {
         this.props.diaryEntryStore.entries.splice(index, 1);
-        DriveHelper.updateFile(fileName, {'deleted': true});
+        DriveHelper.updateEntries(this.props.diaryEntryStore.entries);
         this.forceUpdate();
     }
 
@@ -69,8 +69,8 @@ class Timeline extends Component {
                 }
             } 
             
-            if(bodyTextFilter !== '') {
-                if(!entry.bodyText.contains(bodyTextFilter)) {
+            if(entry.bodyText !== null && entry.bodyText !== undefined && bodyTextFilter !== '') {
+                if(!entry.bodyText.includes(bodyTextFilter)) {
                     addEntry = false;
                 }
             }
@@ -108,10 +108,6 @@ class Timeline extends Component {
     eachDiaryEntryObject(diaryEntry, i) {
         const entry = diaryEntry;
         const { classes } = this.props;
-        const showEntry = true;
-        if(this.state.hasFilters) {
-            
-        }
 
         return (
             <div className={classes.timelineCard}>

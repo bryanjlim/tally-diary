@@ -20,7 +20,7 @@ class EntryViewer extends Component {
                 redirectToIndex: false,
                 redirectIndex: entryIndex,
                 redirectToTimeline: false,
-                singleEntryFileName: this.props.diaryEntryStore.entries[entryIndex].fileName,
+                singleEntryNumber: this.props.diaryEntryStore.entries[entryIndex].entryNumber,
                 singleEntryIndex: entryIndex,
                 singleEntryTitle: this.props.diaryEntryStore.entries[entryIndex].title,
                 singleEntryDate: this.props.diaryEntryStore.entries[entryIndex].date,
@@ -61,7 +61,7 @@ class EntryViewer extends Component {
             redirectToIndex: false,
             redirectIndex: this.props.entryIndex,
             redirectToTimeline: false,
-            singleEntryFileName: this.props.diaryEntryStore.entries[this.props.entryIndex].fileName,
+            singleEntryNumber: this.props.diaryEntryStore.entries[this.props.entryIndex].entryNumber,
             singleEntryIndex: this.props.entryIndex,
             singleEntryTitle: this.props.diaryEntryStore.entries[this.props.entryIndex].title,
             singleEntryDate: this.props.diaryEntryStore.entries[this.props.entryIndex].date,
@@ -96,7 +96,7 @@ class EntryViewer extends Component {
         return (
             <Entry 
                 adding={false}
-                fileName={this.state.singleEntryFileName}
+                entryNumber={this.state.singleEntryNumber}
                 index={this.state.singleEntryIndex}
                 title={this.state.singleEntryTitle}
                 date={this.state.singleEntryDate}

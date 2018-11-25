@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {TextField, IconButton, Snackbar, MenuItem, Divider, Grid, Paper, Button, withStyles } from '@material-ui/core';
+import {TextField, IconButton, Snackbar, Divider, Grid, Paper, Button, withStyles } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import DriveHelper from '../../helpers/driveHelper';
 import Todo from '../../objects/todos/todo'; 
@@ -32,7 +32,7 @@ class Entry extends Component {
                 todos: [],
                 isThumbUp: false, // Thumb indicates mood, can be up or down or neither
                 isThumbDown: false,
-                fileName: this.props.diaryEntryStore.entries.length + 1,
+                entryNumber: this.props.diaryEntryStore.entries.length + 1,
                 redirectIndex: 0,
             };
         } else {
@@ -46,7 +46,7 @@ class Entry extends Component {
                 isThumbUp: this.props.isThumbUp,
                 isThumbDown: this.props.isThumbDown,
                 index: this.props.index,
-                fileName: this.props.fileName,
+                entryNumber: this.props.entryNumber,
                 redirectIndex: 0,
             };
         }
@@ -115,7 +115,7 @@ class Entry extends Component {
                         </div>
                         <div className={classes.navButton}> 
                             <IconButton className={classes.button} aria-label="Previous Entry" 
-                                        disabled={this.props.index == 0}
+                                        disabled={Number(this.props.index) === 0}
                                         onClick={this.props.navigateBack}>
                                 <ArrowBack/>
                             </IconButton>
@@ -143,7 +143,7 @@ class Entry extends Component {
                 <div className={classes.bottomClusterGridContainer}>
                     <Grid container>
                         <Grid item className={classes.bottomClusterObject}>
-                            <AddTally currentFileName={this.state.fileName} tallyMarks={this.state.tallies} 
+                            <AddTally currentFileName={this.state.entryNumber} tallyMarks={this.state.tallies} 
                                       diaryEntryStore={this.props.diaryEntryStore} addNewTallyMark={this.addNewTallyMark}/>
                         </Grid>
                         <Grid item className={classes.bottomClusterObject}>
@@ -297,8 +297,7 @@ class Entry extends Component {
                 "todos": this.state.todos,
                 "isThumbUp": this.state.isThumbUp, 
                 "isThumbDown": this.state.isThumbDown,
-                "deleted": false,
-                "fileName": this.state.fileName,
+                "entryNumber": this.state.entryNumber,
             });
 
             // Updates Google Drive with New Entry
@@ -326,7 +325,7 @@ class Entry extends Component {
                 newTallyMarkText: '',
                 newTodoStatus: false,
                 newTodoText: '',
-                fileName: this.props.diaryEntryStore.entries.length + 1,
+                entryNumber: this.props.diaryEntryStore.entries.length + 1,
                 showSuccessfulSave: true,
             });
             
@@ -353,7 +352,7 @@ class Entry extends Component {
             "todos": this.state.todos,
             "isThumbUp": this.state.isThumbUp, 
             "isThumbDown": this.state.isThumbDown,
-            "fileName": this.props.fileName,
+            "entryNumber": this.props.entryNumber,
         };
 
         // Updates Google Drive with updated entry

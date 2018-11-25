@@ -217,8 +217,20 @@ export default class DriveHelper {
      */
     static deleteAllFiles() {
         DriveHelper.getFileList().then((files) => {
-            const index = files.length - 1;
-            DriveHelper.removeFiles(index);
+            if(files.length === 0) {
+                window.location.reload();
+            } else {
+                const index = files.length;
+                DriveHelper.removeFiles(index).then(() => {
+                    DriveHelper.getFileList().then((files) => {
+                        if(files.length !== 0) {
+                            DriveHelper.deleteAllFiles();
+                        } else {
+                            window.location.reload();
+                        }
+                    }); 
+                });
+            }
         }).catch(err => console.log(err));
     }
 
@@ -230,12 +242,13 @@ export default class DriveHelper {
         return new Promise((resolve, reject) => {
             if(Number(index) === -1) {
                 resolve();
+            } else {
+                DriveHelper.deleteFile(index).then(() => {
+                    DriveHelper.removeFiles(Number(index) - 1).then(()=> {
+                        resolve();
+                    })
+                }).catch(err => reject(err));
             }
-            DriveHelper.deleteFile(index).then(() => {
-                DriveHelper.removeFiles(Number(index) - 1).then(()=> {
-                    resolve();
-                })
-            }).catch(err => reject(err));
         });
     }
 
