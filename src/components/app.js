@@ -125,7 +125,6 @@ class App extends Component {
       clientId: '577206274010-9oung4hgd77fij9e50kjbc32tlviai4e.apps.googleusercontent.com',
       discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"],
       scope: 'https://www.googleapis.com/auth/drive.appdata',
-      ux_mode: 'redirect',
     }).then(() => {
       that.updateSignInStatus();
       if (that.state.isSignedIn) {
