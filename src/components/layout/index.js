@@ -1,12 +1,13 @@
 import React, {Component, Fragment } from 'react';
 import {
-    AppBar, Toolbar, IconButton, Typography, Hidden, Drawer, CssBaseline, List, ListItem
+    AppBar, Toolbar, IconButton, Typography, Hidden, Drawer, CssBaseline, List, ListItem, ListItemText, ListItemIcon,
 } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
-import { Menu } from '@material-ui/icons';
+import { Menu, Add, Settings, PieChart, LibraryBooks } from '@material-ui/icons';
 import { Link, withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
 import 'typeface-roboto';
+import { Scrollbars } from 'react-custom-scrollbars';
 
 const drawerWidth = 240;
 
@@ -19,6 +20,7 @@ const styles = theme => ({
       position: 'relative',
       display: 'flex',
       width: '100%',
+      overflow: 'hidden',
     },
     appBar: {
         zIndex: theme.zIndex.drawer + 1,
@@ -54,7 +56,6 @@ class Layout extends Component {
 
     render () {
         const { classes, location: { pathname }, children } = this.props;
-        const { mobileOpen } = this.state;
 
         const drawer = (
           <div>
@@ -62,10 +63,18 @@ class Layout extends Component {
                 <div className={classes.toolbar} />
             </Hidden>
             <List>
-                <ListItem component={Link} onClick={this.handleDrawerToggle} to='/' selected={'/' === pathname}>Add Entry</ListItem>
-                <ListItem component={Link} onClick={this.handleDrawerToggle} to='/timeline' selected={'/timeline' === pathname}>My Entries</ListItem>
-                <ListItem component={Link} onClick={this.handleDrawerToggle} to='/insights' selected={'/insights' === pathname}>Insights</ListItem>
-                <ListItem component={Link} onClick={this.handleDrawerToggle} to='/settings' selected={'/settings' === pathname}>Settings</ListItem>
+                <ListItem component={Link} onClick={this.handleDrawerToggle} to='/' selected={'/' === pathname}>
+                    <ListItemIcon><Add /></ListItemIcon><ListItemText primary="Add Entry" />
+                </ListItem>
+                <ListItem component={Link} onClick={this.handleDrawerToggle} to='/timeline' selected={'/timeline' === pathname}>
+                    <ListItemIcon><LibraryBooks /></ListItemIcon>
+                <ListItemText primary="My Entries" /></ListItem>
+                <ListItem component={Link} onClick={this.handleDrawerToggle} to='/insights' selected={'/insights' === pathname}>
+                    <ListItemIcon><PieChart /></ListItemIcon>
+                <ListItemText primary="Insights" /></ListItem>
+                <ListItem component={Link} onClick={this.handleDrawerToggle} to='/settings' selected={'/settings' === pathname}>
+                    <ListItemIcon><Settings /></ListItemIcon>
+                <ListItemText primary="Settings" /></ListItem>
             </List>
           </div>
         );
@@ -73,7 +82,7 @@ class Layout extends Component {
         return (
             <Fragment>
                 <CssBaseline/>
-                <div className={classes.root}>
+                <div className={classes.root} style={{height: '100vh'}}>
                     <AppBar position='absolute' className={classes.appBar}>
                     <Toolbar>
                         <IconButton
@@ -94,9 +103,9 @@ class Layout extends Component {
                         variant="temporary"
                         open={this.state.mobileOpen}
                         classes={{
-                        paper: classes.drawerPaper,
+                            paper: classes.drawerPaper,
                         }}
-                        className={classes.robotoFont}
+                        style={{fontFamily: "roboto"}}
                         ModalProps={{
                         keepMounted: true, // Better open performance on mobile.
                         }}
@@ -109,16 +118,19 @@ class Layout extends Component {
                         variant="permanent"
                         open
                         classes={{
-                        paper: classes.drawerPaper,
+                            paper: classes.drawerPaper,
                         }}
+                        style={{height: '100vh'}}
                     >
                         {drawer}
                     </Drawer>
                     </Hidden>
-                    <main className={classes.content}>
-                        <div className={classes.toolbar} />
-                        {children}
-                    </main>
+                    <Scrollbars>
+                        <main className={classes.content}>
+                            <div className={classes.toolbar} />
+                                {children}
+                        </main>
+                    </Scrollbars>
                 </div>
             </Fragment>
         );

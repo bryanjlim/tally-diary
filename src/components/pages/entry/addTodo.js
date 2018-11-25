@@ -64,7 +64,6 @@ class AddTodo extends React.Component {
   }
 
   render() {
-    const { fullScreen } = this.props;
 
     return (
       <div>
@@ -73,7 +72,7 @@ class AddTodo extends React.Component {
         Add Todo
         </Button>
         <Dialog
-          fullScreen={fullScreen}
+          fullScreen={false}
           open={this.state.open}
           onClose={this.handleClose}
           aria-labelledby="responsive-dialog-title"

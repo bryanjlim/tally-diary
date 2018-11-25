@@ -1,7 +1,9 @@
-/* global gapi */
 import React, { Component } from 'react';
-import {TextField, MenuItem, Card, Button, Grid, Checkbox, Snackbar, IconButton, withStyles } from '@material-ui/core';
+import {CircularProgress, TextField, MenuItem, Card, Button, Grid, Checkbox, Snackbar, 
+        IconButton, withStyles, InputAdornment } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
+import Visibility from '@material-ui/icons/Visibility';
+import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import DriveHelper from '../../helpers/driveHelper';
 import DeleteAllFiles from './deleteAllFiles';
 import PropTypes from 'prop-types';
@@ -20,13 +22,15 @@ class Settings extends Component {
             dateOfBirth: new Date(),
             primaryTheme: '', //light or dark
             secondaryColor: '', // blue, red, orange, green, purple, or pink
-            usePin: null,
-            pin: '',
+            usePassword: null,
+            password: '',
+            showPassword: false,
         };
         this.handleInputChange = this.handleInputChange.bind(this);
         this.updateUserProperties = this.updateUserProperties.bind(this);
         this.closeSuccessSnackBar = this.closeSuccessSnackBar.bind(this);
         this.closeErrorSnackBar = this.closeErrorSnackBar.bind(this);
+        this.handleClickShowPassword = this.handleClickShowPassword.bind(this);
     }
 
     componentDidMount() {
@@ -46,6 +50,12 @@ class Settings extends Component {
         });
     }
 
+    handleClickShowPassword() {
+        this.setState((oldState) => ({
+            showPassword: !oldState.showPassword,
+        }));
+    }
+
     updateUserProperties(e) {
         e.preventDefault();
 
@@ -55,8 +65,8 @@ class Settings extends Component {
             "dateOfBirth": this.state.dateOfBirth,
             "primaryTheme": this.state.primaryTheme,
             "secondaryColor": this.state.secondaryColor,
-            "usePin": this.state.usePin,
-            "pin": this.state.pin,
+            "usePassword": this.state.usePassword,
+            "password": this.state.password,
         };
         DriveHelper.updateFile("0", updatedProperties).then(() => {
             console.log("successfully updated");
@@ -77,7 +87,6 @@ class Settings extends Component {
     }
     
     render() {
-
         const { classes } = this.props;
 
         if(this.state.isLoading === false) {
@@ -111,7 +120,7 @@ class Settings extends Component {
                                         select
                                     >
                                         <MenuItem value="light">Light</MenuItem>
-                                        <MenuItem value="dark">Dark</MenuItem>
+                                        {/* <MenuItem value="dark">Dark</MenuItem> */}
                                     </TextField>
                                 </Grid>
                                 <Grid item className={classes.settingsGridItem}>
@@ -124,32 +133,47 @@ class Settings extends Component {
                                         select
                                     >
                                         <MenuItem value="blue">Blue</MenuItem>
-                                        <MenuItem value="red">Red</MenuItem>
+                                        {/* <MenuItem value="red">Red</MenuItem>
                                         <MenuItem value="green">Green</MenuItem>
                                         <MenuItem value="orange">Orange</MenuItem>
                                         <MenuItem value="purple">Purple</MenuItem>
-                                        <MenuItem value="pink">Pink</MenuItem>
+                                        <MenuItem value="pink">Pink</MenuItem> */}
                                     </TextField>
                                 </Grid>
-                                <Grid item className={classes.settingsGridItem}>
-                                    <label htmlFor="usePin">Use Pin?</label>
-                                    <Checkbox
-                                        label="Use Pin?"
-                                        name="usePin"
-                                        color="primary"
-                                        checked={this.state.usePin}
-                                        onChange={this.handleInputChange}
-                                    />
-                                </Grid>
-                                <Grid item className={this.state.usePin ? classes.settingsGridItem : classes.hide}>
-                                    <TextField
-                                        name="pin"
-                                        label="Pin"
-                                        className={classes.textField}
-                                        type="password"
-                                        value={this.state.pin}
-                                        onChange={this.handleInputChange}
-                                    />
+                                <Grid container className={classes.bottomGrid}>
+                                    <Grid item className={classes.settingsGridItem}>
+                                            <label htmlFor="usePassword">Password?</label>
+                                            <Checkbox
+                                                label="Password?"
+                                                name="usePassword"
+                                                color="primary"
+                                                checked={this.state.usePassword}
+                                                onChange={this.handleInputChange}
+                                            />
+                                    </Grid> 
+                                    {this.state.usePassword ? 
+                                        <Grid item className={classes.settingsGridItem}>
+                                            <TextField
+                                                name="password"
+                                                label="Password"
+                                                className={classes.textField}
+                                                type={this.state.showPassword ? 'text' : 'password'}
+                                                value={this.state.password}
+                                                onChange={this.handleInputChange}
+                                                InputProps={{
+                                                    endAdornment: (
+                                                    <InputAdornment position="end">
+                                                        <IconButton
+                                                        aria-label="Toggle password visibility"
+                                                        onClick={this.handleClickShowPassword}
+                                                        >
+                                                        {this.state.showPassword ? <VisibilityOff /> : <Visibility />}
+                                                        </IconButton>
+                                                    </InputAdornment>
+                                                    ),
+                                                }}                                
+                                            />
+                                        </Grid> : null } 
                                 </Grid>
                             </Grid>
                         
@@ -157,8 +181,10 @@ class Settings extends Component {
                         </Card>
                         <Card className={classes.card}>
                             <h2 className={classes.cardTitle}>Account</h2>
-                            <Button className={classes.accountButton} color="primary" onClick={evt => {evt.preventDefault(); this.props.signOut();}}>Sign Out</Button>
-                            <div className={classes.accountButton}><DeleteAllFiles deleteAllFiles={DriveHelper.deleteAllFiles}/></div>
+                            <Button className={classes.accountButton} color="primary" onClick={evt => 
+                                {evt.preventDefault(); this.props.signOut();}}>Sign Out</Button>
+                            <div className={classes.accountButton}><DeleteAllFiles deleteAllFiles={() => 
+                                {this.setState({isLoading: true}); DriveHelper.deleteAllFiles();}}/></div>
                         </Card>
 
                         <Snackbar
@@ -200,11 +226,25 @@ class Settings extends Component {
                 </div> 
             );
         }
-        return null;
+        return (<div className={classes.outerContainer}> 
+            <div className={classes.middleContainer}> 
+            <CircularProgress/></div></div>); 
     }
 }
 
 const styles = theme => ({
+    outerContainer: {
+        backgroundColor: theme.palette.background.default,
+        fontFamily: 'Roboto',
+        display: 'table',
+        position: 'absolute',
+        height: '100%',
+        width: '100%',
+    },
+    middleContainer: {
+        display: 'table-cell',
+        verticalAlign: 'middle',
+    },
     title: {
         color: theme.palette.primary.main,
         textAlign: 'center',
@@ -230,6 +270,13 @@ const styles = theme => ({
         paddingBottom: '1em',
     },
     grid: {
+        marginLeft: '1em',
+        marginBottom: '1em',
+        '@media (max-width: 500px)': { 
+            marginLeft: '.5em',
+        },
+    },
+    bottomGrid: {
         marginLeft: '1em',
         marginBottom: '1em',
         '@media (max-width: 500px)': { 
