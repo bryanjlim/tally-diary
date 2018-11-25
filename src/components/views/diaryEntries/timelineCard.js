@@ -44,6 +44,9 @@ class TimelineCard extends Component {
 
     handleDelete = () => {
         this.props.deleteEntry(this.props.fileName, this.props.index);
+        this.setState({
+            anchorEl: null,
+        });
     }
 
     render() {
