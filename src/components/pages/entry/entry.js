@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {TextField, MenuItem, Divider, Grid, Paper, Button, withStyles } from '@material-ui/core';
+import {TextField, IconButton, Snackbar, MenuItem, Divider, Grid, Paper, Button, withStyles } from '@material-ui/core';
+import CloseIcon from '@material-ui/icons/Close';
 import DriveHelper from '../../helpers/driveHelper';
-import Mood from '../../objects/mood/mood'; 
-import Weather from '../../objects/weather/weather'; 
 import Todo from '../../objects/todos/todo'; 
 import TodoChip from '../../views/todo/todoChip';
 import TallyMark from '../../objects/tallies/tallyMark';
@@ -11,7 +10,7 @@ import TallyMarkChip from '../../views/tallyMark/tallyMarkChip';
 import AddTally from './addTally';
 import AddTodo from './addTodo';
 import EntryStyling from './entryStyling';
-import Save from '@material-ui/icons/Save';
+import {Save, ArrowBack, ArrowForward, ThumbDownOutlined, ThumbDown, ThumbUpOutlined, ThumbUp} from '@material-ui/icons';
 
 const styles = EntryStyling.styles;
 
@@ -20,42 +19,39 @@ class Entry extends Component {
         super(props);
 
         if(this.props.adding) {
-            const formattedMonth = (new Date().getMonth() + 1).toString().length === 1 ? "0" + ( new Date().getMonth() + 1 ) : new Date().getMonth() + 1;
+            const dateObject = new Date();
+            const formattedMonth = (dateObject.getMonth() + 1).toString().length === 1 ? "0" + ( dateObject.getMonth() + 1 ) : dateObject.getMonth() + 1;
+            const dateNumber = dateObject.getDate();
+            const formattedDate = dateNumber / 10 < 1 ? "0" + dateNumber : dateNumber;
             this.state = {
                 customTitle: '',
-                date: new Date().getFullYear() + "-" + formattedMonth + "-" + new Date().getDate(),
+                date: dateObject.getFullYear() + "-" + formattedMonth + "-" + formattedDate,
                 dateOfBirth: this.props.userStore.preferences.dateOfBirth,
                 bodyText: '',
-                mood: Mood.moodEnum.MEH,
-                weather: 'Cloudy',
-                lowTemperature: 60,
-                highTemperature: 80, 
-                humidity: 34,
                 tallies: [],
                 todos: [],
+                isThumbUp: false, // Thumb indicates mood, can be up or down or neither
+                isThumbDown: false,
                 fileName: this.props.diaryEntryStore.entries.length + 1,
+                redirectIndex: 0,
             };
         } else {
-            const weatherObject = this.props.weather;
-
             this.state = {
                 customTitle: this.props.title,
                 date: this.props.date,
                 dateOfBirth: this.props.userStore.preferences.dateOfBirth,
                 bodyText: this.props.bodyText,
-                mood: Mood.moodEnum.MEH,
-                weather: weatherObject.weather,
-                lowTemperature: weatherObject.lowTemperature,
-                highTemperature: weatherObject.highTemperature, 
-                humidity: weatherObject.humidity,
                 tallies: this.props.tallies,
                 todos: this.props.todos,
+                isThumbUp: this.props.isThumbUp,
+                isThumbDown: this.props.isThumbDown,
                 index: this.props.index,
                 fileName: this.props.fileName,
+                redirectIndex: 0,
             };
         }
 
-        
+        this.closeSuccessSnackBar = this.closeSuccessSnackBar.bind(this);
         this.addNewEntry = this.addNewEntry.bind(this);
         this.updateEntry = this.updateEntry.bind(this);
         this.addNewTallyMark = this.addNewTallyMark.bind(this);
@@ -63,12 +59,17 @@ class Entry extends Component {
         this.addTodo = this.addTodo.bind(this);
         this.deleteTodo = this.deleteTodo.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
+        this.navigateBack = this.navigateBack.bind(this);
+        this.navigateForward = this.navigateForward.bind(this);
+        this.toggleThumbUp = this.toggleThumbUp.bind(this);
+        this.toggleThumbDown = this.toggleThumbDown.bind(this);
     }
 
     render() {
         const { classes } = this.props;
         const daysAlive = Math.round((new Date(this.state.date) - new Date(this.state.dateOfBirth)) / (1000 * 60 * 60 * 24));
         return (
+            <div>
             <Paper elevation={1} className={classes.paper}>
 
                 {/* Title */}
@@ -85,6 +86,7 @@ class Entry extends Component {
                         }}
                         InputProps={{
                             startAdornment: <div className={classes.customTitleAdornment}>{"Day " + daysAlive}</div>,
+                            className: classes.customTitleInput
                         }}
                     />
                 </div>
@@ -100,17 +102,26 @@ class Entry extends Component {
                         InputLabelProps={{
                         }}
                     /> 
-                    <div className={classes.verticalButtonCluster}> 
-                        <br/>
-                        <div className={classes.addButton}><AddTally currentFileName={this.state.fileName} tallyMarks={this.state.tallies} diaryEntryStore={this.props.diaryEntryStore} addNewTallyMark={this.addNewTallyMark}/></div> 
-                        <br/>
-                        <div className={classes.addButton}><AddTodo addTodo={this.addTodo}/></div>
+                </div>
+
+                {this.props.adding ? null :
+                    <div> 
+                        <div className={classes.navButton}> 
+                            <IconButton className={classes.button} aria-label="Next Entry"
+                                        disabled={this.props.diaryEntryStore.entries.length - 1 <= this.props.index}
+                                        onClick={this.props.navigateForward}>
+                                <ArrowForward/>
+                            </IconButton>
+                        </div>
+                        <div className={classes.navButton}> 
+                            <IconButton className={classes.button} aria-label="Previous Entry" 
+                                        disabled={this.props.index == 0}
+                                        onClick={this.props.navigateBack}>
+                                <ArrowBack/>
+                            </IconButton>
+                        </div>
                     </div>
-                </div>
-                <div className={classes.horizontalButtonCluster}> 
-                        <div className={classes.addButton}><AddTally currentFileName={this.state.fileName} tallyMarks={this.state.tallies} diaryEntryStore={this.props.diaryEntryStore} addNewTallyMark={this.addNewTallyMark}/></div>
-                        <div className={classes.addButton}><AddTodo addTodo={this.addTodo}/></div>
-                </div>
+                }
 
                 {/* Body Text */}
                 <div className={classes.bodyTextWrapper}>
@@ -119,7 +130,7 @@ class Entry extends Component {
                         id="outlined-multiline-static"
                         label="Your Thoughts"
                         multiline
-                        rows="10"
+                        rows="15"
                         value={this.state.bodyText}
                         onChange={this.handleInputChange}
                         className={classes.bodyText}
@@ -131,58 +142,24 @@ class Entry extends Component {
                 {/* Bottom Cluster (Mood and Weather) */}
                 <div className={classes.bottomClusterGridContainer}>
                     <Grid container>
-                        <Grid item className={classes.moodSelector}>
-                            <TextField
-                                label="Mood"
-                                name="mood"
-                                value={this.state.mood}
-                                onChange={this.handleInputChange}
-                                variant="outlined"
-                                select
-                            >
-                                <MenuItem key={Mood.moodEnum.MEH} value={Mood.moodEnum.MEH}>😐</MenuItem>
-                                <MenuItem key={Mood.moodEnum.SAD} value={Mood.moodEnum.SAD}>😃</MenuItem>
-                                <MenuItem key={Mood.moodEnum.HAPPY} value={Mood.moodEnum.HAPPY}>😔</MenuItem>
-                            </TextField>
+                        <Grid item className={classes.bottomClusterObject}>
+                            <AddTally currentFileName={this.state.fileName} tallyMarks={this.state.tallies} 
+                                      diaryEntryStore={this.props.diaryEntryStore} addNewTallyMark={this.addNewTallyMark}/>
                         </Grid>
                         <Grid item className={classes.bottomClusterObject}>
-                            <TextField
-                                label="Weather"
-                                name="weather"
-                                value={this.state.weather}
-                                onChange={this.handleInputChange}
-                                variant="outlined"
-                            />
+                            <AddTodo addTodo={this.addTodo}/>
                         </Grid>
-                        <Grid item className={classes.bottomClusterObject}>
-                            <TextField
-                                label="Low Temperature"
-                                name="lowTemperature"
-                                type="number"
-                                value={this.state.lowTemperature}
-                                onChange={this.handleInputChange}
-                                variant="outlined"
-                            />
+                        <Grid item className={classes.bottomClusterRightObject} style={{marginLeft: '1em'}}>
+                            <IconButton className={classes.button} aria-label="Good Rating" 
+                                        onClick={this.toggleThumbUp}>
+                                {this.state.isThumbUp ? <ThumbUp /> : <ThumbUpOutlined/>}
+                            </IconButton>
                         </Grid>
-                        <Grid item className={classes.bottomClusterObject}>
-                            <TextField
-                                label="High Temperature"
-                                name="highTemperature"
-                                type="number"
-                                value={this.state.highTemperature}
-                                onChange={this.handleInputChange}
-                                variant="outlined"
-                            />
-                        </Grid>
-                        <Grid item className={classes.bottomClusterObject}>
-                            <TextField
-                                label="Humidity"
-                                name="humidity"
-                                type="number"
-                                value={this.state.lowTemperature}
-                                onChange={this.humidity}
-                                variant="outlined"
-                            />
+                        <Grid item className={classes.bottomClusterRightObject}>
+                            <IconButton className={classes.button} aria-label="Bad Rating" 
+                                        onClick={this.toggleThumbDown}>
+                                {this.state.isThumbDown ? <ThumbDown /> : <ThumbDownOutlined/>}
+                            </IconButton>
                         </Grid>
                     </Grid>
                 </div>
@@ -223,11 +200,65 @@ class Entry extends Component {
                     </div>
                 }
             </Paper>
+            <Snackbar
+                open={this.state.showSuccessfulSave}
+                ContentProps={{
+                    'aria-describedby': 'message-id',
+                }}
+                message={<span>Save Successful</span>}
+                action={[
+                    <IconButton
+                        key="close"
+                        aria-label="Close"
+                        color="inherit"
+                        className={classes.close}
+                        onClick={this.closeSuccessSnackBar}
+                    >
+                        <CloseIcon className={classes.icon} />
+                    </IconButton>
+                ]}
+            />
+            </div>
         );
     }
 
 
     /* Methods */
+
+    toggleThumbUp() {
+        const thumbUp = !this.state.isThumbUp;
+
+        this.setState({
+            isThumbUp: thumbUp,
+            isThumbDown: false,
+        })
+    }
+
+    toggleThumbDown() {
+        const thumbDown = !this.state.isThumbDown;
+        this.setState({
+            isThumbDown: thumbDown,
+            isThumbUp: false,
+        })
+    }
+
+    navigateBack() {
+        this.setState({
+            shouldRedirect: true,
+            redirectIndex: Number(this.props.index) - 1,
+        })
+    }
+    
+    navigateForward() {
+        this.setState({
+            shouldRedirect: true,
+            redirectIndex: Number(this.props.index) + 1,
+        })
+    }
+
+    closeSuccessSnackBar() {
+        this.setState({showSuccessfulSave: false}); 
+    }
 
     addNewTallyMark(newTallyMarkType, newTallyMarkText) {
         this.setState(prevState => ({
@@ -255,43 +286,63 @@ class Entry extends Component {
 
     addNewEntry(e) {
         e.preventDefault();
-        DriveHelper.postEntry({
-            "title": this.state.customTitle, 
-            "date": this.state.date,
-            "bodyText": this.state.bodyText,
-            "tallies": this.state.tallies, 
-            "weather": new Weather(this.state.weather, this.state.lowTemperature, this.state.highTemperature, this.state.humidity), 
-            "todos": this.state.todos,
-            "mood": new Mood(this.state.mood),
-            "deleted": false,
-        }, this.state.fileName);
-        this.props.diaryEntryStore.entries.push({
-            "title": this.state.customTitle, 
-            "date": this.state.date,
-            "bodyText": this.state.bodyText,
-            "tallies": this.state.tallies, 
-            "weather": new Weather(this.state.weather, this.state.lowTemperature, this.state.highTemperature, this.state.humidity), 
-            "todos": this.state.todos,
-            "mood": new Mood(this.state.mood),
-            "deleted": false,
-            "fileName": this.state.fileName,
-        });
-        this.setState({
-            customTitle: '',
-            date: new Date(),
-            bodyText: '',
-            mood: Mood.moodEnum.MEH,
-            weather: 'Cloudy',
-            lowTemperature: 60,
-            highTemperature: 80, 
-            humidity: 34,
-            tallies: [],
-            todos: [],
-            newTallyMarkType: TallyMark.tallyTypeEnum.FOOD,
-            newTallyMarkText: '',
-            newTodoStatus: false,
-            newTodoText: '',
-        });
+
+        if(this.state.date) {
+            DriveHelper.postEntry({
+                "title": this.state.customTitle, 
+                "date": this.state.date,
+                "bodyText": this.state.bodyText,
+                "tallies": this.state.tallies, 
+                "todos": this.state.todos,
+                "isThumbUp": this.state.isThumbUp, 
+                "isThumbDown": this.state.isThumbDown,
+                "deleted": false,
+            }, this.state.fileName);
+            this.props.diaryEntryStore.entries.push({
+                "title": this.state.customTitle, 
+                "date": this.state.date,
+                "bodyText": this.state.bodyText,
+                "tallies": this.state.tallies,  
+                "todos": this.state.todos,
+                "isThumbUp": this.state.isThumbUp, 
+                "isThumbDown": this.state.isThumbDown,
+                "deleted": false,
+                "fileName": this.state.fileName,
+            });
+            const dateObject = new Date();
+            const formattedMonth = (dateObject.getMonth() + 1).toString().length === 1 ? "0" + ( dateObject.getMonth() + 1 ) : dateObject.getMonth() + 1;
+            const dateNumber = dateObject.getDate();
+            const formattedDate = dateNumber / 10 < 1 ? "0" + dateNumber : dateNumber;
+            
+            this.setState({
+                showSuccessfulSave: false,
+            })
+            
+            this.setState({
+                customTitle: '',
+                date: dateObject.getFullYear() + "-" + formattedMonth + "-" + formattedDate,
+                bodyText: '',
+                tallies: [],
+                todos: [],
+                isThumbUp: false,
+                isThumbDown: false,
+                newTallyMarkType: TallyMark.tallyTypeEnum.FOOD,
+                newTallyMarkText: '',
+                newTodoStatus: false,
+                newTodoText: '',
+                fileName: this.props.diaryEntryStore.entries.length + 1,
+                showSuccessfulSave: true,
+            });
+            
+            const copy = this.props.diaryEntryStore.entries.splice(0);
+            copy.sort((a, b) => {
+                // Sorts diaries in descending order by date
+                return new Date(b.date).getTime() - new Date(a.date).getTime();
+            });
+            this.props.diaryEntryStore.entries = copy;
+        } else {
+            console.log("Error Posting Entry: Invalid Date");
+        }
     }
 
     updateEntry(e) {
@@ -302,10 +353,35 @@ class Entry extends Component {
             "date": this.state.date,
             "bodyText": this.state.bodyText,
             "tallies": this.state.tallies, 
-            "weather": new Weather(this.state.weather, this.state.lowTemperature, this.state.highTemperature, this.state.humidity), 
             "todos": this.state.todos,
-            "mood": new Mood(this.state.mood)
+            "isThumbUp": this.state.isThumbUp, 
+            "isThumbDown": this.state.isThumbDown,
         });
+        this.props.diaryEntryStore.entries[this.props.index] = {
+            "title": this.state.customTitle, 
+            "date": this.state.date,
+            "bodyText": this.state.bodyText,
+            "tallies": this.state.tallies, 
+            "todos": this.state.todos,
+            "isThumbUp": this.state.isThumbUp, 
+            "isThumbDown": this.state.isThumbDown,
+            "fileName": this.props.fileName,
+        };
+
+        this.setState({
+            showSuccessfulSave: false,
+        });
+
+        this.setState({
+            showSuccessfulSave: true,
+        });
+
+        const copy = this.props.diaryEntryStore.entries.splice(0);
+        copy.sort((a, b) => {
+            // Sorts diaries in descending order by date
+            return new Date(b.date).getTime() - new Date(a.date).getTime();
+        });
+        this.props.diaryEntryStore.entries = copy;
     }
 
     handleInputChange(event) {

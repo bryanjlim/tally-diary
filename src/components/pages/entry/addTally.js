@@ -4,7 +4,6 @@ import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import withMobileDialog from '@material-ui/core/withMobileDialog';
@@ -78,7 +77,6 @@ class AddTally extends React.Component {
   }
 
   render() {
-    const { fullScreen } = this.props;
     return (
       <div>
         <Button variant="contained" color="primary" onClick={this.handleClickOpen} 
@@ -86,14 +84,15 @@ class AddTally extends React.Component {
         Tallies
         </Button>
         <Dialog
-          fullScreen={fullScreen}
+          fullScreen={false}
           open={this.state.open}
           onClose={this.handleClose}
           aria-labelledby="responsive-dialog-title"
         >
           <DialogTitle id="responsive-dialog-title">{"Tallies"}</DialogTitle>
-          <TalliesView currentFileName={this.props.currentFileName} currentEntryTallyMarks={this.props.tallyMarks} diaryEntryStore={this.props.diaryEntryStore}/>
           <DialogContent>
+            <TalliesView currentFileName={this.props.currentFileName} currentEntryTallyMarks={this.props.tallyMarks} 
+              diaryEntryStore={this.props.diaryEntryStore} />
             <FormControl className="tallyFormControl">
               {this.state.newTallyMarkTypeError ? 
                 <div>

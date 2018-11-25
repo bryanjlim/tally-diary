@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {withStyles } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import 'typeface-roboto';
+import logo from './TextLogo.jpg';
 
 class Home extends Component {
 
@@ -22,17 +23,20 @@ class Home extends Component {
 
         return (
             <div className={this.state.isImageLoaded ? classes.show : classes.hide}>
-            <div className={classes.outerContainer}> 
-            <div className={classes.middleContainer}> 
-            <div className={classes.innerContainer}> 
-                <div className={classes.home}>
-                    <div className={classes.logoWrapper}><img className={classes.logoImage} onLoad={this.onImageLoad} src={require('./TextLogo.png')}/></div>
-                    <h1 className={classes.homeTitle}><i>A Diary to Tally Your Life</i></h1>
-                    <div className={classes.centerButton}><button onClick={evt => { evt.preventDefault(); this.props.signIn(); }} className={classes.getStartedButton} type="submit">Get Started</button></div>
+                <div className={classes.outerContainer}> 
+                    <div className={classes.middleContainer}> 
+                        <div className={classes.innerContainer}> 
+                            <div className={classes.home}>
+                                <div className={classes.logoWrapper}><img className={classes.logoImage} onLoad={this.onImageLoad} 
+                                    alt="Tally Diary Logo" src={logo}/></div>
+                                <h1 className={classes.homeTitle}><i>A Diary to Tally Your Life</i></h1>
+                                <div className={classes.centerButton}><button onClick={evt => 
+                                    { evt.preventDefault(); this.props.signIn(); }} className={classes.getStartedButton} 
+                                    type="submit">Get Started</button></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            </div>
-            </div>
             </div>
         );
     }

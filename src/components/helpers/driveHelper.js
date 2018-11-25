@@ -179,21 +179,41 @@ export default class DriveHelper {
      * 
      */
     static deleteAllFiles() {
-        gapi.client.drive.files.list({
-            'spaces': 'appDataFolder',
-            'fields': "nextPageToken, files(id, name)",
-            'pageSize': 25
-        }).then((response) => {
-            const files = response.result.files;
-            console.log("Files: " + JSON.stringify(files));
-            for(let i=0; i< files.length; i++) {
-                console.log("Index " + i);
-                console.log("File Name: " + files[i].name);
-                DriveHelper.deleteFile(files[i].name).then(() => {
-                    if(i === files.length - 1) window.location.reload();
-                });
+        DriveHelper.attemptFileRemovals().then((areFilesRemaining) => {
+            if(areFilesRemaining) {
+                DriveHelper.deleteAllFiles();
+            } else {
+                window.location.reload();
             }
-        }).catch(err => console.log("Error deleting all files: " + err));
+        }).catch((error) => {
+            console.log(error);
+            DriveHelper.deleteAllFiles();
+        })
+    }
+
+    static attemptFileRemovals() {
+        console.log("attempting removal");
+        return new Promise((resolve, reject) => {
+            DriveHelper.getFileList().then((files) => {
+                console.log("Files: " + JSON.stringify(files));
+                
+                if(JSON.stringify(files) === "[]") {
+                    resolve(false);
+                } else {
+                    for(let i=0; i < files.length; i++) {
+                        console.log("Index " + i);
+                        console.log("File Name: " + files[i].name);
+                        DriveHelper.deleteFile(files[i].name).then(() => {
+                            if(isNaN(files.length) || i === files.length - 1) {
+                                DriveHelper.getFileList().then((list) => {
+                                    resolve(list.length > 0);
+                                }).catch(error => reject(error));
+                            }
+                        }).catch(error => reject(error));
+                    }
+                }       
+            }).catch(error => reject("Error deleting all files: " + error));
+        });
     }
 
     /**
@@ -212,7 +232,7 @@ export default class DriveHelper {
                 // console.log(response); 
                 const files = response.result.files;
                 resolve(files.length);
-            }).catch(err => reject(err));
+            }).catch(error => reject(error));
         }); 
     }
 
@@ -232,7 +252,7 @@ export default class DriveHelper {
                 // console.log(response); 
                 const files = response.result.files;
                 resolve(files);
-            }).catch(err => reject(err));
+            }).catch(error => reject(error));
         }); 
     }
 }

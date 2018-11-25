@@ -1,22 +1,25 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {Card, CardActions, CardContent, CardHeader, IconButton, Button, Typography, Menu, MenuItem, withStyles} from '@material-ui/core';
+import {Card, CardContent, IconButton, Button, Typography, Menu, MenuItem, withStyles} from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 
 const styles = theme => ({
     timelineCard: {
         minWidth: 275,
         maxWidth: 575,
-        overflow: 'visible',
     },
-    title: {
+    headlineText: {
+        fontSize: '1.2em',
+        display: 'inline-block',
         overflow: 'hidden',
+        maxWidth: 450,
         whiteSpace: 'nowrap',
-        maxWidth: 450, 
+        marginTop: '.2em',
         '@media (max-width: 650px)': { 
             maxWidth: 435,
         },
         '@media (max-width: 550px)': { 
+            fontSize: '1em',
             maxWidth: 385,
         },
         '@media (max-width: 500px)': { 
@@ -35,12 +38,14 @@ const styles = theme => ({
             maxWidth: 160,
         },
     },
-    timelineCardPos: {
-        marginBottom: 12,
+    headlineVertButton: {
+        float: 'right',
+        display: 'inline-block',
+        marginTop: '-.5em',
     }
 });
 
-class TimelineCard extends Component {
+class TimelineHeadline extends Component {
 
     constructor(props) {
         super(props);
@@ -52,9 +57,11 @@ class TimelineCard extends Component {
         this.handleMenuClose = this.handleMenuClose.bind(this);
     }
 
-
     onViewButtonClick() {
         this.props.viewSingleEntry(this.props.index);
+        this.setState({
+            anchorEl: null,
+        });
     } 
 
     handleMenuOpen = event => {
@@ -75,52 +82,38 @@ class TimelineCard extends Component {
     render() {
         const entryDate = new Date(this.props.date);
         const daysAlive = Math.round((entryDate - new Date(this.props.birthDate)) / (1000 * 60 * 60 * 24));
-        const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-        const readDate = months[entryDate.getMonth()] + " " + (entryDate.getDate() + 1) + ", " + entryDate.getFullYear(); 
         const { classes } = this.props;
         const { anchorEl } = this.state;
 
-        const textToShow = (this.props.bodyText.length < 50) ? this.props.bodyText : 
-                            (this.props.bodyText.substring(0,51) + "...");
-
         return (
             <Card className={classes.timelineCard}>
-                <CardHeader
-                    action={
-                        <div>
-                        <IconButton onClick={this.handleMenuOpen} style={{overflow: 'visible'}}>
-                            <MoreVertIcon/>
+                <CardContent>
+                    <div className={classes.headlineText}>
+                        <b>
+                            {"Day " + daysAlive + (this.props.title ? " - " + this.props.title : " ")}
+                        </b>
+                    </div>
+                    <div className={classes.headlineVertButton}>
+                        <IconButton onClick={this.handleMenuOpen}>
+                                <MoreVertIcon/>
                         </IconButton>
                             <Menu
-                            anchorEl={anchorEl}
-                            open={Boolean(anchorEl)}
-                            onClose={this.handleMenuClose}
-                            >
-                            <MenuItem onClick={this.handleDelete}>Delete</MenuItem>
-                        </Menu>
-                        </div>
-                    }
-                    title= {"Day " + daysAlive + (this.props.title ? " - " + this.props.title : " ")}
-                    classes={{
-                        title: classes.title,
-                    }}
-                    subheader={readDate}
-                />  
-                <CardContent>
-                    <Typography component="p">
-                        {textToShow}
-                    </Typography>
+                                anchorEl={anchorEl}
+                                open={Boolean(anchorEl)}
+                                onClose={this.handleMenuClose}
+                                >
+                                <MenuItem onClick={this.handleDelete}>Delete</MenuItem>
+                                <MenuItem onClick={this.onViewButtonClick}>View Entry</MenuItem>
+                            </Menu>
+                    </div>
                 </CardContent>
-                <CardActions>
-                    <Button onClick={this.onViewButtonClick} size="small">View Entry</Button>
-                </CardActions>
             </Card>
         );
     }
 }
 
-TimelineCard.propTypes = {
+TimelineHeadline.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(TimelineCard);
+export default withStyles(styles)(TimelineHeadline);
