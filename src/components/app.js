@@ -34,7 +34,6 @@ class App extends Component {
     this.signOut = this.signOut.bind(this);
     this.loadUserPreferencesStore = this.loadUserPreferencesStore.bind(this);
     this.loadDiaryEntryStore = this.loadDiaryEntryStore.bind(this); 
-    this.loadNextDiaryEntry = this.loadNextDiaryEntry.bind(this);
   }
 
   componentDidMount() {
@@ -163,7 +162,7 @@ class App extends Component {
               this.setState({ isInitialized: true });
               this.updateSignInStatus();
             });
-          });
+          }).catch(err => console.log(err));
         }
       });
     }).catch((error) => {
@@ -188,17 +187,8 @@ class App extends Component {
 
   loadUserPreferencesStore = () => {
     return new Promise((resolve, reject) => {
-      DriveHelper.readFile('0').then((res) => {
-        const userData = {
-          fistName: res.firstName,
-          lastName: res.lastName,
-          dateOfBirth: res.dateOfBirth,
-          primaryTheme: res.primaryTheme,
-          secondaryColor: res.secondaryColor,
-          usePassword: res.usePassword,
-          password: res.password,
-        };
-        userPreferenceStore.preferences = userData;
+      DriveHelper.getUserData().then((res) => { 
+        userPreferenceStore.preferences = res;
         resolve();
       }).catch((err) => {
           reject(err);
@@ -208,38 +198,10 @@ class App extends Component {
 
   loadDiaryEntryStore = () => {
     return new Promise((resolve, reject) => {
-      DriveHelper.getFileCount().then((count) => {
-        if(count <= 1) {
-          resolve();
-        }
-        this.loadNextDiaryEntry(count).then(() => {
-          const copy = diaryEntryStore.entries.splice(0);
-          copy.sort((a, b) => {
-            // Sorts diaries in descending order by date
-            return new Date(b.date).getTime() - new Date(a.date).getTime();
-          });
-          diaryEntryStore.entries = copy;
-          resolve();
-        })
-      });
-    });
-  }
-
-  loadNextDiaryEntry(index) {
-    return new Promise((resolve, reject) => {
-      if(Number(index) === 0) {
+      DriveHelper.getEntries().then((res) => {
+        diaryEntryStore.entries = res;
         resolve();
-      } else {
-        DriveHelper.readFile(index).then((entry) => {
-          entry.fileName=index;
-          if(!entry.deleted) {
-            diaryEntryStore.entries.push(entry);
-          }
-          this.loadNextDiaryEntry(index - 1).then(() => {
-            resolve();
-          });
-        }).catch(err => reject(err))
-      }
+      }).catch(err => reject(err));
     });
   }
 

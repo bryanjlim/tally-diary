@@ -8,13 +8,50 @@ export default class DriveHelper {
 
     static nonEntryFileCount = 1;
     
+    static getUserData() {
+        return new Promise((resolve, reject) => {
+            DriveHelper.readFile('0').then((res) => { // User Properties stored in file '0'
+              const userData = {
+                fistName: res.firstName,
+                lastName: res.lastName,
+                dateOfBirth: res.dateOfBirth,
+                primaryTheme: res.primaryTheme,
+                secondaryColor: res.secondaryColor,
+                usePassword: res.usePassword,
+                password: res.password,
+              };
+              resolve(userData);
+            }).catch((err) => {
+                reject(err);
+            });
+        });
+    }
+
     static postUserData(fileData) {
-        const fileName = 0; // 0 is reserved for user data, diary entries start at 1
+        const fileName = 0; // User Properties stored in file '0'
         DriveHelper.postFile(fileName, fileData);
     }
 
-    static postEntry(fileData, fileName) {
+    static updateUserData(fileData) {
+        DriveHelper.updateFile("0", fileData); // User Properties stored in file '0'
+    }
+
+    static getEntries() {
+        return new Promise((resolve, reject) => {
+            DriveHelper.readFile('1').then((res) => { // Diary Entries stored in file '1' in array entries
+              resolve(res);
+            }).catch(err => reject(err));
+        });
+    }
+
+    static postEntries(fileData) {
+        const fileName = 1; // Diary Entries stored in file '1' in array entries
         DriveHelper.postFile(fileName, fileData);
+    }
+
+    static updateEntries(fileData) {
+        const fileName = 1; // Diary Entries stored in file '1' in array entries
+        DriveHelper.updateFile(fileName, fileData);
     }
 
     /**
@@ -179,6 +216,11 @@ export default class DriveHelper {
      * 
      */
     static deleteAllFiles() {
+        DriveHelper.getFileList().then((files) => {
+            const index = files.length - 1;
+            DriveHelper.removeFiles(index);
+        }).catch(err => console.log(err));
+
         DriveHelper.attemptFileRemovals().then((areFilesRemaining) => {
             if(areFilesRemaining) {
                 DriveHelper.deleteAllFiles();
@@ -191,28 +233,20 @@ export default class DriveHelper {
         })
     }
 
-    static attemptFileRemovals() {
-        console.log("attempting removal");
+    /**
+     * Recurseively removes all files starting from highest index and moving down to 0
+     * 
+     */
+    static removeFiles(index) {
         return new Promise((resolve, reject) => {
-            DriveHelper.getFileList().then((files) => {
-                console.log("Files: " + JSON.stringify(files));
-                
-                if(JSON.stringify(files) === "[]") {
-                    resolve(false);
-                } else {
-                    for(let i=0; i < files.length; i++) {
-                        console.log("Index " + i);
-                        console.log("File Name: " + files[i].name);
-                        DriveHelper.deleteFile(files[i].name).then(() => {
-                            if(isNaN(files.length) || i === files.length - 1) {
-                                DriveHelper.getFileList().then((list) => {
-                                    resolve(list.length > 0);
-                                }).catch(error => reject(error));
-                            }
-                        }).catch(error => reject(error));
-                    }
-                }       
-            }).catch(error => reject("Error deleting all files: " + error));
+            if(Number(index) === -1) {
+                resolve();
+            }
+            DriveHelper.deleteFile(index).then(() => {
+                DriveHelper.removeFiles(Number(index) - 1).then(()=> {
+                    resolve();
+                })
+            }).catch(err => reject(err));
         });
     }
 

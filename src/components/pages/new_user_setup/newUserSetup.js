@@ -82,6 +82,7 @@ class NewUserSetup extends Component {
                 "password": this.state.password,
             };
             DriveHelper.postUserData(userData);
+            DriveHelper.postEntries({}); // Creates empty file for diary entries
             this.props.doneWithSetup(userData);
         }
     }

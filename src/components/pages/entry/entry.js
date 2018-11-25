@@ -288,16 +288,7 @@ class Entry extends Component {
         e.preventDefault();
 
         if(this.state.date) {
-            DriveHelper.postEntry({
-                "title": this.state.customTitle, 
-                "date": this.state.date,
-                "bodyText": this.state.bodyText,
-                "tallies": this.state.tallies, 
-                "todos": this.state.todos,
-                "isThumbUp": this.state.isThumbUp, 
-                "isThumbDown": this.state.isThumbDown,
-                "deleted": false,
-            }, this.state.fileName);
+            // Updates Diary Entry Store global state with new entry
             this.props.diaryEntryStore.entries.push({
                 "title": this.state.customTitle, 
                 "date": this.state.date,
@@ -309,6 +300,11 @@ class Entry extends Component {
                 "deleted": false,
                 "fileName": this.state.fileName,
             });
+
+            // Updates Google Drive with New Entry
+            DriveHelper.updateEntries(this.props.diaryEntryStore.entries); 
+
+            // Reset Diary Entry
             const dateObject = new Date();
             const formattedMonth = (dateObject.getMonth() + 1).toString().length === 1 ? "0" + ( dateObject.getMonth() + 1 ) : dateObject.getMonth() + 1;
             const dateNumber = dateObject.getDate();
@@ -347,16 +343,8 @@ class Entry extends Component {
 
     updateEntry(e) {
         e.preventDefault();
-        DriveHelper.updateFile(this.props.fileName,
-        {
-            "title": this.state.customTitle, 
-            "date": this.state.date,
-            "bodyText": this.state.bodyText,
-            "tallies": this.state.tallies, 
-            "todos": this.state.todos,
-            "isThumbUp": this.state.isThumbUp, 
-            "isThumbDown": this.state.isThumbDown,
-        });
+
+        // Updates Diary Entry Store global state with updated entry
         this.props.diaryEntryStore.entries[this.props.index] = {
             "title": this.state.customTitle, 
             "date": this.state.date,
@@ -368,6 +356,10 @@ class Entry extends Component {
             "fileName": this.props.fileName,
         };
 
+        // Updates Google Drive with updated entry
+        DriveHelper.updateEntries(this.props.diaryEntryStore.entries); 
+
+        // Post update tasks
         this.setState({
             showSuccessfulSave: false,
         });
