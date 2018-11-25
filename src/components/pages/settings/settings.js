@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {CircularProgress, TextField, MenuItem, Card, Button, Grid, Checkbox, Snackbar, 
+import {TextField, MenuItem, Card, Button, Grid, Checkbox, Snackbar, 
         IconButton, withStyles, InputAdornment } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import Visibility from '@material-ui/icons/Visibility';
@@ -7,6 +7,7 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import DriveHelper from '../../helpers/driveHelper';
 import DeleteAllFiles from './deleteAllFiles';
 import PropTypes from 'prop-types';
+import FileSaver from 'file-saver';
 import 'typeface-roboto';
 
 class Settings extends Component {
@@ -17,6 +18,8 @@ class Settings extends Component {
             isLoading: true,
             showSuccessfulSave: false,
             showErrorSaving: false,
+            showSuccessfulImport: false,
+            showErrorExporting: false,
             firstName: '',
             lastName: '',
             dateOfBirth: new Date(),
@@ -28,9 +31,12 @@ class Settings extends Component {
         };
         this.handleInputChange = this.handleInputChange.bind(this);
         this.updateUserProperties = this.updateUserProperties.bind(this);
-        this.closeSuccessSnackBar = this.closeSuccessSnackBar.bind(this);
-        this.closeErrorSnackBar = this.closeErrorSnackBar.bind(this);
+        this.closeSuccessSaveSnackBar = this.closeSuccessSaveSnackBar.bind(this);
+        this.closeErrorSaveSnackBar = this.closeErrorSaveSnackBar.bind(this);
+        this.closeSuccessImportSnackBar = this.closeSuccessImportSnackBar.bind(this);
+        this.closeErrorExportSnackBar = this.closeErrorExportSnackBar.bind(this);
         this.handleClickShowPassword = this.handleClickShowPassword.bind(this);
+        this.exportData = this.exportData.bind(this);
     }
 
     componentDidMount() {
@@ -78,14 +84,47 @@ class Settings extends Component {
         });
     }
 
-    closeSuccessSnackBar() {
+    exportData(e) {
+        e.preventDefault();
+
+        let filteredEntries = [];
+        // Filter diary entries
+
+        for(let i = 0; i < this.props.diaryEntryStore.entries.length; i++) {
+            if(this.props.diaryEntryStore.entries[i].deleted !== true) {
+                filteredEntries.push(this.props.diaryEntryStore.entries[i]);
+            }
+        }
+
+        const json = Object.values(filteredEntries);
+        var csv = "";
+        var keys = (json[0] && Object.keys(json[0])) || [];
+        csv += keys.join(',') + '\n';
+        for (var line of json) {
+            csv += keys.map(key => line[key]).join(',') + '\n';
+        }
+        alert(csv)
+
+        var blob = new Blob([csv], {type: "text/csv"});
+        FileSaver.saveAs(blob, "backup.csv");
+    }
+
+    closeSuccessSaveSnackBar() {
         this.setState({showSuccessfulSave: false}); 
     }
 
-    closeErrorSnackBar() {
+    closeErrorSaveSnackBar() {
         this.setState({showErrorSaving: false}); 
     }
+
+    closeSuccessImportSnackBar() {
+        this.setState({showSuccessfulImport: false}); 
+    }
     
+    closeErrorExportSnackBar() {
+        this.setState({showErrorExporting: false}); 
+    }
+
     render() {
         const { classes } = this.props;
 
@@ -187,6 +226,12 @@ class Settings extends Component {
                                 {this.setState({isLoading: true}); DriveHelper.deleteAllFiles();}}/></div>
                         </Card>
 
+                        <Card className={classes.card}>
+                            <h2 className={classes.cardTitle}>Export and Import</h2>
+                            <Button className={classes.accountButton} color="primary" 
+                                    onClick={evt => this.exportData(evt)}>Download Entries</Button>
+                        </Card>
+
                         <Snackbar
                             open={this.state.showSuccessfulSave}
                             ContentProps={{
@@ -199,7 +244,7 @@ class Settings extends Component {
                                     aria-label="Close"
                                     color="inherit"
                                     className={classes.close}
-                                    onClick={this.closeSuccessSnackBar}
+                                    onClick={this.closeSuccessSaveSnackBar}
                                 >
                                     <CloseIcon className={classes.icon} />
                                 </IconButton>
@@ -217,7 +262,25 @@ class Settings extends Component {
                                     aria-label="Close"
                                     color="inherit"
                                     className={classes.close}
-                                    onClick={this.closeErrorSnackBar}
+                                    onClick={this.closeErrorSaveSnackBar}
+                                >
+                                    <CloseIcon className={classes.icon} />
+                                </IconButton>
+                            ]}
+                        />
+                        <Snackbar
+                            open={this.state.showErrorExporting}
+                            ContentProps={{
+                                'aria-describedby': 'message-id',
+                            }}
+                            message={<span>There was an error exporting your diary entries</span>}
+                            action={[
+                                <IconButton
+                                    key="close"
+                                    aria-label="Close"
+                                    color="inherit"
+                                    className={classes.close}
+                                    onClick={this.closeErrorExportSnackBar}
                                 >
                                     <CloseIcon className={classes.icon} />
                                 </IconButton>

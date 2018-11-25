@@ -13,7 +13,7 @@ const drawerWidth = 240;
 
 const styles = theme => ({
     root: {
-      fontFamily: 'roboto',
+      fontFamily: 'roboto, sans-serif',
       flexGrow: 1,
       height: 440,
       zIndex: 1,
