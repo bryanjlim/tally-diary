@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {TextField, MenuItem, Card, Button, Grid, Checkbox, Snackbar, 
+import {TextField, MenuItem, Card, Button, Grid, Checkbox, Snackbar,
         IconButton, withStyles, InputAdornment } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import Visibility from '@material-ui/icons/Visibility';
@@ -9,6 +9,13 @@ import DeleteAllFiles from './deleteAllFiles';
 import PropTypes from 'prop-types';
 import FileSaver from 'file-saver';
 import 'typeface-roboto';
+
+function buildFileSelector(){
+    const fileSelector = document.createElement('input');
+    fileSelector.setAttribute('type', 'file');
+    fileSelector.setAttribute('multiple', 'multiple');
+    return fileSelector;
+}
 
 class Settings extends Component {
     
@@ -37,6 +44,8 @@ class Settings extends Component {
         this.closeErrorExportSnackBar = this.closeErrorExportSnackBar.bind(this);
         this.handleClickShowPassword = this.handleClickShowPassword.bind(this);
         this.exportData = this.exportData.bind(this);
+        this.handleImportClick = this.handleImportClick.bind(this);
+        this.importData = this.importData.bind(this);
     }
 
     componentDidMount() {
@@ -44,6 +53,8 @@ class Settings extends Component {
             ...this.props.userStore.preferences, 
             isLoading: false,
         });
+
+        this.fileSelector = buildFileSelector();
     }
 
     handleInputChange(event) {
@@ -87,16 +98,34 @@ class Settings extends Component {
     exportData(e) {
         e.preventDefault();
 
-        const json = Object.values(this.props.diaryEntryStore.entries);
-        var csv = "";
-        var keys = (json[0] && Object.keys(json[0])) || [];
-        csv += keys.join(',') + '\n';
-        for (var line of json) {
-            csv += keys.map(key => line[key]).join(',') + '\n';
+        var blob = new Blob([JSON.stringify(this.props.diaryEntryStore.entries)], {type: "text/json"});
+        FileSaver.saveAs(blob, "backup.json");
+    }
+
+    handleImportClick(e) {
+        e.preventDefault(); 
+        document.getElementById("fileInput").click(); 
+    }
+
+    importData(e) {
+        const reader = new FileReader();
+        const that = this;
+
+        const input = e.target;
+        const file = input.files[0];
+
+        reader.onloadend = function () {
+            const entries = JSON.parse(reader.result);
+            entries.forEach((entry) => {
+                alert(entry);
+                that.props.diaryEntryStore.entries.push(entry);
+            })
+            that.setState({
+                showSuccessfulImport: true,
+            })
         }
 
-        var blob = new Blob([csv], {type: "text/csv"});
-        FileSaver.saveAs(blob, "backup.csv");
+        reader.readAsBinaryString(file)
     }
 
     closeSuccessSaveSnackBar() {
@@ -121,6 +150,9 @@ class Settings extends Component {
         if(this.state.isLoading === false) {
             return (
                 <div> 
+                    {/* File Input */}
+                    <input type="file" accept="text/json" style={{ display: 'none' }} id="fileInput" onChange={this.importData} />
+
                     <h1 className={classes.title}>User Settings</h1>
 
                      <Card className={classes.card}>
@@ -211,15 +243,25 @@ class Settings extends Component {
                         <Card className={classes.card}>
                             <h2 className={classes.cardTitle}>Account</h2>
                             <Button className={classes.accountButton} color="primary" onClick={evt => 
-                                {evt.preventDefault(); this.props.signOut();}}>Sign Out</Button>
-                            <div className={classes.accountButton}><DeleteAllFiles deleteAllFiles={() => 
-                                {this.setState({isLoading: true}); DriveHelper.deleteAllFiles();}}/></div>
+                                {evt.preventDefault(); this.props.signOut();}}>
+                                Sign Out
+                            </Button>
+                            <div className={classes.accountButton}>
+                                <DeleteAllFiles deleteAllFiles={() => {this.setState({isLoading: true}); 
+                                                                       DriveHelper.deleteAllFiles();}}/>
+                            </div>
                         </Card>
 
                         <Card className={classes.card}>
                             <h2 className={classes.cardTitle}>Export and Import</h2>
                             <Button className={classes.accountButton} color="primary" 
-                                    onClick={evt => this.exportData(evt)}>Download Entries</Button>
+                                    onClick={evt => this.exportData(evt)}>
+                                    Download Backup
+                            </Button>
+                            <Button className={classes.accountButton} color="primary" 
+                                    onClick={evt => this.handleImportClick(evt)}>
+                                    Import Backup
+                            </Button>
                         </Card>
 
                         <Snackbar
@@ -271,6 +313,24 @@ class Settings extends Component {
                                     color="inherit"
                                     className={classes.close}
                                     onClick={this.closeErrorExportSnackBar}
+                                >
+                                    <CloseIcon className={classes.icon} />
+                                </IconButton>
+                            ]}
+                        />
+                        <Snackbar
+                            open={this.state.showSuccessfulImport}
+                            ContentProps={{
+                                'aria-describedby': 'message-id',
+                            }}
+                            message={<span>Diary entries from json file successfully added.</span>}
+                            action={[
+                                <IconButton
+                                    key="close"
+                                    aria-label="Close"
+                                    color="inherit"
+                                    className={classes.close}
+                                    onClick={this.closeSuccessImportSnackBar}
                                 >
                                     <CloseIcon className={classes.icon} />
                                 </IconButton>
