@@ -42,7 +42,7 @@ class TalliesView extends React.Component {
                     const tallyMark = this.props.diaryEntryStore.entries[i].tallies[j];
                     const tallyMarkText = tallyMark.text;
                     const tallyMarkType = tallyMark.type;
-                    const stateArrayToUse = tallyMarkType === "Food" ? this.state.storeFoodTallies : tallyMarkType === "People" ? this.state.storePeopleTallies : 
+                    const stateArrayToUse = tallyMarkType === "Food" ? this.state.storeFoodTallies : tallyMarkType === "Person" ? this.state.storePeopleTallies : 
                                             tallyMarkType === "Activity" ? this.state.storeActivityTallies : tallyMarkType === "Location" ? this.state.storeLocationTallies : this.state.storeOtherTallies;
     
                     const stateArrayToUseLength = stateArrayToUse.length;
@@ -77,7 +77,7 @@ class TalliesView extends React.Component {
             const tallyMark = this.props.currentEntryTallyMarks[i];
             const tallyMarkText = tallyMark.text;
             const tallyMarkType = tallyMark.type;
-            const stateArrayToUse = tallyMarkType === "Food" ? this.state.foodTallies : tallyMarkType === "People" ? this.state.peopleTallies : 
+            const stateArrayToUse = tallyMarkType === "Food" ? this.state.foodTallies : tallyMarkType === "Person" ? this.state.peopleTallies : 
                                     tallyMarkType === "Activity" ? this.state.activityTallies : tallyMarkType === "Location" ? this.state.locationTallies : this.state.otherTallies;
             for(let j = 0; j < stateArrayToUse.length; j++) {
                 if(!existsInTallies) {
