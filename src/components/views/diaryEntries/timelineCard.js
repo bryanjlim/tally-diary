@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {Card, CardActions, CardContent, CardHeader, IconButton, Button, Typography, Menu, MenuItem, withStyles} from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import DeleteDiaryEntry from './deleteDiaryEntry';
 
 const styles = theme => ({
     timelineCard: {
@@ -97,7 +98,7 @@ class TimelineCard extends Component {
                             open={Boolean(anchorEl)}
                             onClose={this.handleMenuClose}
                             >
-                            <MenuItem onClick={this.handleDelete}>Delete</MenuItem>
+                            <DeleteDiaryEntry handleDelete={this.handleDelete} />
                         </Menu>
                         </div>
                     }

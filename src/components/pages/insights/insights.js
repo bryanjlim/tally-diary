@@ -3,6 +3,7 @@ import {Card, withStyles} from '@material-ui/core';
 import DiaryEntriesWritten from '../../views/insights/diaryEntriesWritten';
 import AllTallies from '../../views/insights/allTallies';
 import YearOldDiary from '../../views/insights/yearOldDiary';
+import AppLaunches from '../../views/insights/appLaunches';
 import PropTypes from 'prop-types';
 
 class Insights extends Component {
@@ -33,6 +34,7 @@ class Insights extends Component {
 
         return (
             <div>
+                <Card className={classes.insightCard}><AppLaunches appLaunches={this.props.userStore.preferences.appLaunches}/></Card>
                 {this.state.existsYearOldDiary ? 
                     <Card className={classes.insightCard}>
                         <YearOldDiary index={this.state.yearOldDiaryIndex} userStore={this.props.userStore} 

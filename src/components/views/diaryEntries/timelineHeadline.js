@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {Card, CardContent, IconButton, Menu, MenuItem, withStyles} from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import DeleteDiaryEntry from './deleteDiaryEntry';
 
 const styles = theme => ({
     timelineCard: {
@@ -81,6 +82,7 @@ class TimelineHeadline extends Component {
 
     render() {
         const entryDate = new Date(this.props.date);
+        entryDate.setDate(entryDate.getDate() + 1);
         const daysAlive = Math.round((entryDate - new Date(this.props.birthDate)) / (1000 * 60 * 60 * 24));
         const { classes } = this.props;
         const { anchorEl } = this.state;
@@ -102,7 +104,7 @@ class TimelineHeadline extends Component {
                                 open={Boolean(anchorEl)}
                                 onClose={this.handleMenuClose}
                                 >
-                                <MenuItem onClick={this.handleDelete}>Delete</MenuItem>
+                                <DeleteDiaryEntry handleDelete={this.handleDelete} />
                                 <MenuItem onClick={this.onViewButtonClick}>View Entry</MenuItem>
                             </Menu>
                     </div>

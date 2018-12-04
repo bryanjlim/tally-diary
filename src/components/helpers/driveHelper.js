@@ -12,13 +12,14 @@ export default class DriveHelper {
         return new Promise((resolve, reject) => {
             DriveHelper.readFile('0').then((res) => { // User Properties stored in file '0'
               const userData = {
-                fistName: res.firstName,
+                firstName: res.firstName,
                 lastName: res.lastName,
                 dateOfBirth: res.dateOfBirth,
                 primaryTheme: res.primaryTheme,
                 secondaryColor: res.secondaryColor,
                 usePassword: res.usePassword,
                 password: res.password,
+                appLaunches: res.appLaunches,
               };
               resolve(userData);
             }).catch((err) => {

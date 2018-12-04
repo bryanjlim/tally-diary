@@ -67,7 +67,7 @@ class Entry extends Component {
 
     render() {
         const { classes } = this.props;
-        const daysAlive = Math.round((new Date(this.state.date) - new Date(this.state.dateOfBirth)) / (1000 * 60 * 60 * 24));
+        const daysAlive = Math.round((new Date(this.state.date) - new Date(this.state.dateOfBirth)) / (1000 * 60 * 60 * 24)) + 1;
         return (
             <div>
             <Paper elevation={1} className={classes.paper}>

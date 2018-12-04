@@ -77,16 +77,17 @@ class Settings extends Component {
         e.preventDefault();
 
         const updatedProperties = {
-            "fistName": this.state.firstName,
+            "firstName": "test",//this.state.firstName,
             "lastName": this.state.lastName,
             "dateOfBirth": this.state.dateOfBirth,
             "primaryTheme": this.state.primaryTheme,
             "secondaryColor": this.state.secondaryColor,
             "usePassword": this.state.usePassword,
             "password": this.state.password,
+            "appLaunches" : 1,
         };
+        
         DriveHelper.updateFile("0", updatedProperties).then(() => {
-            console.log("successfully updated");
             this.setState({ showSuccessfulSave: true, showErrorSaving: false });
             this.props.userStore.preferences = updatedProperties;
         }).catch((err) => {
@@ -162,7 +163,7 @@ class Settings extends Component {
                                 <Grid item className={classes.settingsGridItem}>
                                     <TextField
                                         name="dateOfBirth"
-                                        label="Date of Birth"
+                                        label="Start/Birth Date"
                                         type="date"
                                         value={this.state.dateOfBirth}
                                         onChange={this.handleInputChange}

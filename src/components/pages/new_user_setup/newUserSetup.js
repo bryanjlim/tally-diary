@@ -11,10 +11,17 @@ class NewUserSetup extends Component {
     
     constructor(props) {
         super(props);
+
+        const dateObject = new Date();
+        const formattedMonth = (dateObject.getMonth() + 1).toString().length === 1 ? "0" + ( dateObject.getMonth() + 1 ) : dateObject.getMonth() + 1;
+        const dateNumber = dateObject.getDate();
+        const formattedDate = dateNumber / 10 < 1 ? "0" + dateNumber : dateNumber;
+        const currentDate = dateObject.getFullYear() + "-" + formattedMonth + "-" + formattedDate;
+
         this.state = {
             firstName: '',
             lastName: '',
-            dateOfBirth: '',
+            dateOfBirth: currentDate,
             dateOfBirthError: false,
             primaryTheme: "light", //light or dark
             secondaryColor: "blue", // blue, red, orange, green, purple, or pink
@@ -76,6 +83,7 @@ class NewUserSetup extends Component {
                 "firstName": this.state.firstName, 
                 "lastName": this.state.lastName,
                 "dateOfBirth": this.state.dateOfBirth,
+                "appLaunches" : 0,
                 "primaryTheme": this.state.primaryTheme, 
                 "secondaryColor": this.state.secondaryColor, 
                 "usePassword": this.state.usePassword,
@@ -100,7 +108,7 @@ class NewUserSetup extends Component {
                             <Grid item className={classes.settingsGridItem}>
                                 <TextField
                                     name="dateOfBirth"
-                                    label="Date of Birth"
+                                    label="Start/Birth Date"
                                     type="date"
                                     error={this.state.dateOfBirthError}
                                     helperText={this.state.dateOfBirthError ? 'Invalid date' : ''}
@@ -182,7 +190,7 @@ class NewUserSetup extends Component {
                         <Button onClick={this.addUserProperties} className={classes.button}>Let's Begin</Button>
                     </Card>
                     <Card className={classes.card}>
-                        <div className={classes.privacy}><i><b className={classes.boldNote}>Note: </b>This information is stored in your Google Drive's reserved application folder, only accessible by the Tally Diary app. Tally Diary never and will never store your data on its own servers. Additionally, Tally Diary is currently in its beta phase.</i></div>
+                        <div className={classes.privacy}><i><b className={classes.boldNote}>Note: </b>This information is stored in your Google Drive's reserved application folder, only accessible by the Tally Diary app. Tally Diary will never, ever store your data on its own servers. Additionally, please note that Tally Diary is currently in its beta phase.</i></div>
                     </Card>
             </div> 
         );

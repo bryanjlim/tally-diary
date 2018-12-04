@@ -182,13 +182,14 @@ class App extends Component {
 
   updateSignInStatus = () => {
     this.setState({ isSignedIn: gapi.auth2.getAuthInstance().isSignedIn.get() });
-    this.forceUpdate();
   };
 
   loadUserPreferencesStore = () => {
     return new Promise((resolve, reject) => {
       DriveHelper.getUserData().then((res) => { 
         userPreferenceStore.preferences = res;
+        userPreferenceStore.preferences.appLaunches += 1;
+        DriveHelper.updateUserData(userPreferenceStore.preferences);
         resolve();
       }).catch((err) => {
           reject(err);
