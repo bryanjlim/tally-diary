@@ -28,6 +28,7 @@ class Settings extends Component {
             saveError: '',
             showSuccessfulImport: false,
             showErrorExporting: false,
+            showDownloadAttempt: false,
             firstName: '',
             lastName: '',
             dateOfBirth: new Date(),
@@ -43,6 +44,7 @@ class Settings extends Component {
         this.closeErrorSaveSnackBar = this.closeErrorSaveSnackBar.bind(this);
         this.closeSuccessImportSnackBar = this.closeSuccessImportSnackBar.bind(this);
         this.closeErrorExportSnackBar = this.closeErrorExportSnackBar.bind(this);
+        this.closeDownloadAttempt = this.closeDownloadAttempt.bind(this);
         this.handleClickShowPassword = this.handleClickShowPassword.bind(this);
         this.exportData = this.exportData.bind(this);
         this.handleImportClick = this.handleImportClick.bind(this);
@@ -99,7 +101,9 @@ class Settings extends Component {
 
     exportData(e) {
         e.preventDefault();
-
+        this.setState({
+            showDownloadAttempt: true,
+        })
         var blob = new Blob([JSON.stringify(this.props.diaryEntryStore.entries)], {type: "text/json"});
         FileSaver.saveAs(blob, "backup.json");
     }
@@ -144,6 +148,10 @@ class Settings extends Component {
     
     closeErrorExportSnackBar() {
         this.setState({showErrorExporting: false}); 
+    }
+
+    closeDownloadAttempt() {
+        this.setState({showDownloadAttempt: false}); 
     }
 
     render() {
@@ -279,6 +287,24 @@ class Settings extends Component {
                                     color="inherit"
                                     className={classes.close}
                                     onClick={this.closeSuccessSaveSnackBar}
+                                >
+                                    <CloseIcon className={classes.icon} />
+                                </IconButton>
+                            ]}
+                        />
+                        <Snackbar
+                            open={this.state.showDownloadAttempt}
+                            ContentProps={{
+                                'aria-describedby': 'message-id',
+                            }}
+                            message={<span>Attempting download... If you are in our app, please visit tallydiary.me to download in your browser</span>}
+                            action={[
+                                <IconButton
+                                    key="close"
+                                    aria-label="Close"
+                                    color="inherit"
+                                    className={classes.close}
+                                    onClick={this.closeDownloadAttempt}
                                 >
                                     <CloseIcon className={classes.icon} />
                                 </IconButton>
