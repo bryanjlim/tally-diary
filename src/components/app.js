@@ -1,6 +1,7 @@
 /* global gapi */
 import React, { Component } from 'react';
-import { CircularProgress, withStyles, } from '@material-ui/core';
+import { CircularProgress, withStyles, Snackbar, IconButton } from '@material-ui/core';
+import CloseIcon from '@material-ui/icons/Close';
 import DriveHelper from './helpers/driveHelper';
 import Home from './pages/home/home';
 import { Contact } from './pages/contact/contact';
@@ -26,6 +27,8 @@ class App extends Component {
       newUserSetup: false,
       passwordChecked: false,
       justFinishedSetup: false,
+      showSignOutError: false,
+      signOutError: '',
     };
     this.loadClientWhenGapiReady = this.loadClientWhenGapiReady.bind(this);
     this.initClient = this.initClient.bind(this);
@@ -86,6 +89,24 @@ class App extends Component {
                           <EntryViewer entryIndex={pathname.substring(10, pathname.length)} router={this.props.router}
                                        diaryEntryStore={diaryEntryStore} userStore={userPreferenceStore}/>
                 }
+                <Snackbar
+                  open={this.state.showSignOutError}
+                  ContentProps={{
+                      'aria-describedby': 'message-id',
+                  }}
+                  message={<span>Error Signing Out: {this.state.signOutError}</span>}
+                  action={[
+                      <IconButton
+                          key="close"
+                          aria-label="Close"
+                          color="inherit"
+                          className={classes.close}
+                          onClick={() => {this.setState({showSignOutError: false})}}
+                      >
+                          <CloseIcon className={classes.icon} />
+                      </IconButton>
+                  ]}
+                />
             </div>
           </Layout>
         );
@@ -152,7 +173,7 @@ class App extends Component {
   }
 
   signIn() {
-    gapi.auth2.getAuthInstance().signIn().then(() => {
+    gapi.auth2.getAuthInstance().signIn({prompt: 'select_account'}).then(() => {
       DriveHelper.getFileCount().then((count) => {
         if (count === 0) {
           this.setState({ newUserSetup: true });
@@ -176,7 +197,10 @@ class App extends Component {
       window.location.href = '/';
       this.updateSignInStatus();
     }).catch((error) => {
-      console.log(error);
+      this.setState({
+        showSignOutError: true,
+        signOutError: error,
+      })
     })
   }
 
@@ -200,7 +224,16 @@ class App extends Component {
   loadDiaryEntryStore = () => {
     return new Promise((resolve, reject) => {
       DriveHelper.getEntries().then((res) => {
-        diaryEntryStore.entries = res;
+        let temp = res;
+        if(temp != null && temp != undefined && temp.length != undefined) {
+          temp.sort((a, b) => {
+            // Sorts diaries in descending order by date
+            return new Date(b.date).getTime() - new Date(a.date).getTime();
+          });
+        } else {
+          temp = [];
+        }
+        diaryEntryStore.entries = temp;
         resolve();
       }).catch(err => reject(err));
     });

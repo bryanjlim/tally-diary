@@ -99,7 +99,7 @@ export default class DriveHelper {
             'mimeType': contentType,
             'parents': ['appDataFolder']
         };
-        const base64Data = btoa(JSON.stringify(fileData));
+        const base64Data = btoa(unescape(encodeURIComponent(JSON.stringify(fileData))));
         const multipartRequest =
             // metadata request 
             DriveHelper.delimiter +
@@ -141,7 +141,7 @@ export default class DriveHelper {
             'name': fileName,
             'mimeType': contentType
             };
-            const base64Data = btoa(JSON.stringify(fileData));
+            const base64Data = btoa(unescape(encodeURIComponent(JSON.stringify(fileData))));
             const multipartRequest =
                 // metadata request
                 DriveHelper.delimiter +

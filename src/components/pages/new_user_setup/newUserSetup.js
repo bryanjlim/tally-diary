@@ -83,14 +83,14 @@ class NewUserSetup extends Component {
                 "firstName": this.state.firstName, 
                 "lastName": this.state.lastName,
                 "dateOfBirth": this.state.dateOfBirth,
-                "appLaunches" : 0,
+                "appLaunches" : 1,
                 "primaryTheme": this.state.primaryTheme, 
                 "secondaryColor": this.state.secondaryColor, 
                 "usePassword": this.state.usePassword,
                 "password": this.state.password,
             };
             DriveHelper.postUserData(userData);
-            DriveHelper.postEntries({}); // Creates empty file for diary entries
+            DriveHelper.postEntries({1: []}); // Creates empty file for diary entries
             this.props.doneWithSetup(userData);
         }
     }

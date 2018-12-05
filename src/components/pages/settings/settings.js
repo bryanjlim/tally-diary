@@ -25,6 +25,7 @@ class Settings extends Component {
             isLoading: true,
             showSuccessfulSave: false,
             showErrorSaving: false,
+            saveError: '',
             showSuccessfulImport: false,
             showErrorExporting: false,
             firstName: '',
@@ -92,7 +93,7 @@ class Settings extends Component {
             this.props.userStore.preferences = updatedProperties;
         }).catch((err) => {
             console.log("error saving: " + err);
-            this.setState({ showErrorSaving: true, showSuccessfulSave: false});
+            this.setState({ showErrorSaving: true, showSuccessfulSave: false, saveError: err});
         });
     }
 
@@ -118,9 +119,9 @@ class Settings extends Component {
         reader.onloadend = function () {
             const entries = JSON.parse(reader.result);
             entries.forEach((entry) => {
-                alert(entry);
                 that.props.diaryEntryStore.entries.push(entry);
             })
+            DriveHelper.updateEntries(that.props.diaryEntryStore.entries);
             that.setState({
                 showSuccessfulImport: true,
             })
@@ -288,7 +289,7 @@ class Settings extends Component {
                             ContentProps={{
                                 'aria-describedby': 'message-id',
                             }}
-                            message={<span>There was an error saving your settings. Please try again.</span>}
+                            message={<span>There was an error saving your settings. Error: {this.state.saveError}</span>}
                             action={[
                                 <IconButton
                                     key="close"
