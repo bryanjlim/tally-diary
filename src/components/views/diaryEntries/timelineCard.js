@@ -82,8 +82,8 @@ class TimelineCard extends Component {
         const { classes } = this.props;
         const { anchorEl } = this.state;
 
-        const textToShow = (this.props.bodyText.length < 50) ? this.props.bodyText : 
-                            (this.props.bodyText.substring(0,51) + "...");
+        const textToShow = (this.props.bodyText.length < 75) ? this.props.bodyText : 
+                            (this.props.bodyText.substring(0,76) + "...");
 
         return (
             <Card className={classes.timelineCard}>

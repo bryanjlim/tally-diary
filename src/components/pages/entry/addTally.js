@@ -106,7 +106,7 @@ class AddTally extends React.Component {
                           id: 'newTallyMarkType',
                       }}
                       style={{
-                        width: 175,
+                        width: 350,
                       }}
                       error
                   >
@@ -130,7 +130,7 @@ class AddTally extends React.Component {
                           id: 'newTallyMarkType',
                       }}
                       style={{
-                        width: 175,
+                        width: 350,
                       }}
                   >
                       <MenuItem value=""><em>Select</em></MenuItem>
@@ -152,7 +152,7 @@ class AddTally extends React.Component {
                   value={this.state.newTallyMarkText}
                   error
                   style={{
-                    width: 175,
+                    width: 350,
                   }}
                 />
                 <FormHelperText>Please Enter A Valid Label</FormHelperText> 
@@ -165,7 +165,7 @@ class AddTally extends React.Component {
                  onChange = {this.handleTextChange}
                  value={this.state.newTallyMarkText}
                  style={{
-                  width: 175,
+                  width: 350,
                  }}
                />
              </div>

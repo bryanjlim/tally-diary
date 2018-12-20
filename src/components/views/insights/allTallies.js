@@ -5,16 +5,18 @@ import TalliesView from '../tallies/talliesView';
 
 const styles = theme => ({
     insightsItemText: {
-        marginLeft: '2em',
         textAlign: 'left',
+        marginLeft: '1em',
+        marginRight: '1em',
         [theme.breakpoints.down('sm')]: {
             marginLeft: '.5em',
+            marginRight: '.5em',
         },
     },
     centerText: {
         textAlign: 'center',
         marginTop: 'auto',
-        marginBottom: 'auto',
+        marginBottom: '.7em',
     },
 });
 class AllTallies extends Component {

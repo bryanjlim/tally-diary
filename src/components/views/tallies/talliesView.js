@@ -2,6 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core';
 import Tally from '../../objects/tallies/tally';
+import ExpansionPanel from '@material-ui/core/ExpansionPanel';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import Typography from '@material-ui/core/Typography';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+
 
 const styles = theme => ({
     wrapper: {
@@ -14,7 +20,7 @@ class TalliesView extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state ={
+        this.state = {
             storeFoodTallies: [],
             storePeopleTallies: [],
             storeActivityTallies: [],
@@ -103,16 +109,56 @@ class TalliesView extends React.Component {
         const { classes } = this.props;
         return (
             <div className={classes.wrapper}>
-                <h3><u>Food</u></h3>
-                <div>{this.state.foodTallies.map(this.eachTallyObject)}</div>
-                <h3><u>People</u></h3>
-                <div>{this.state.peopleTallies.map(this.eachTallyObject)}</div>
-                <h3><u>Activity</u></h3>
-                <div>{this.state.activityTallies.map(this.eachTallyObject)}</div>
-                <h3><u>Location</u></h3>
-                <div>{this.state.locationTallies.map(this.eachTallyObject)}</div>
-                <h3><u>Other</u></h3>
-                <div>{this.state.otherTallies.map(this.eachTallyObject)}</div>
+                <ExpansionPanel>
+                    <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                        <Typography className={classes.heading}>Food</Typography>
+                    </ExpansionPanelSummary>
+                    <ExpansionPanelDetails>
+                    <Typography>
+                        {this.state.foodTallies.map(this.eachTallyObject)}
+                    </Typography>
+                    </ExpansionPanelDetails>
+                </ExpansionPanel>
+                <ExpansionPanel>
+                    <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                        <Typography className={classes.heading}>People</Typography>
+                    </ExpansionPanelSummary>
+                    <ExpansionPanelDetails>
+                    <Typography>
+                        {this.state.peopleTallies.map(this.eachTallyObject)}
+                    </Typography>
+                    </ExpansionPanelDetails>
+                </ExpansionPanel>
+                <ExpansionPanel>
+                    <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                        <Typography className={classes.heading}>Activities</Typography>
+                    </ExpansionPanelSummary>
+                    <ExpansionPanelDetails>
+                    <Typography>
+                        {this.state.activityTallies.map(this.eachTallyObject)}
+                    </Typography>
+                    </ExpansionPanelDetails>
+                </ExpansionPanel>
+                <ExpansionPanel>
+                    <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                        <Typography className={classes.heading}>Locations</Typography>
+                    </ExpansionPanelSummary>
+                    <ExpansionPanelDetails>
+                    <Typography>
+                        {this.state.locationTallies.map(this.eachTallyObject)}
+                    </Typography>
+                    </ExpansionPanelDetails>
+                </ExpansionPanel>
+                <ExpansionPanel>
+                    <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                        <Typography className={classes.heading}>Other</Typography>
+                    </ExpansionPanelSummary>
+                    <ExpansionPanelDetails>
+                    <Typography>
+                        {this.state.otherTallies.map(this.eachTallyObject)}
+                    </Typography>
+                    </ExpansionPanelDetails>
+                </ExpansionPanel>
             </div>
         );
     }

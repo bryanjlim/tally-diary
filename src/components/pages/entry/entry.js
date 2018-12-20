@@ -91,7 +91,7 @@ class Entry extends Component {
                     />
                 </div>
 
-                {/* Top Cluster (Date Selector, Add Tally Button, Add Todo Button) */}
+                {/* Top Cluster (Date Selector, Previous/Next Entry Buttons) */}
                 <div className={classes.topCluster}>
                     <TextField
                         id="date"
@@ -139,7 +139,7 @@ class Entry extends Component {
                     />
                 </div>
                 
-                {/* Bottom Cluster (Mood and Weather) */}
+                {/* Bottom Cluster (Add Tallies, Add Todos, Thumbs) */}
                 <div className={classes.bottomClusterGridContainer}>
                     <Grid container>
                         <Grid item className={classes.bottomClusterObject}>
