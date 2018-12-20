@@ -4,6 +4,7 @@ import { CircularProgress, withStyles, Snackbar, IconButton } from '@material-ui
 import CloseIcon from '@material-ui/icons/Close';
 import DriveHelper from './helpers/driveHelper';
 import Home from './pages/home/home';
+import PrivacyPolicy from './pages/privacy_policy/privacyPolicy';
 import { Contact } from './pages/contact/contact';
 import { AboutUs } from './pages/about_us/aboutUs';
 import Entry from './pages/entry/entry';
@@ -51,6 +52,11 @@ class App extends Component {
   render() {
     const { classes } = this.props;
 
+    const pathname = this.props.location.pathname;
+
+    if(pathname === "/privacy-policy") {
+      return(<PrivacyPolicy />)
+    }
     if (!this.state.isInitialized) {
       // Loading Circle
       return (<div className={classes.outerContainer}> 
@@ -71,7 +77,6 @@ class App extends Component {
           <PasswordUnlock userStore={userPreferenceStore} onPasswordChecked={this.onPasswordChecked}/>
         );
       } else {
-        const pathname = this.props.location.pathname;
         return (
           // Tally Diary App
           <Layout>
