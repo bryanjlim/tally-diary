@@ -19,7 +19,7 @@ class PrivacyPolicy extends Component {
 
         return (
             <div>
-                <div className={classes.home}>
+                <div>
                     <div className={classes.policy}>
                         <Typography variant="h3" gutterBottom>
                             Privacy Policy
@@ -50,7 +50,7 @@ class PrivacyPolicy extends Component {
                         </Typography>
                     </div>
                     <div className={classes.centerButton}><button onClick={this.handleButtonClick} className={classes.getStartedButton} 
-                                    type="submit">Go To Tally Diary</button></div>
+                                    type="submit">Return To Tally Diary</button></div>
                 </div>
             </div>
         );

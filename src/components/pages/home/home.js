@@ -37,6 +37,15 @@ class Home extends Component {
                         </div>
                     </div>
                 </div>
+                <div className={classes.footer}>
+                    <div className={classes.footerTextContainer}>
+                    <a className={classes.footerText} href="/privacy-policy">Privacy Policy</a>
+                    <a> | </a>
+                    <a className={classes.footerText} href="/about">About</a>
+                    <a> | </a>
+                    <a className={classes.footerText} href="/contact">Contact Us</a>
+                    </div>
+                </div>
             </div>
         );
     }
@@ -104,6 +113,25 @@ const styles = theme => ({
             color: 'white',
         }
     }, 
+    footer: {
+        bottom: 0,
+        left: -20,
+        overflow: 'hidden',
+        position: 'fixed',
+        width: '105%',
+        height: '1.3em',
+        backgroundColor: theme.palette.primary.main,
+        textAlign: 'center',
+    },
+    footerTextContainer: {
+        marginLeft: -60,
+    },
+    footerText: {
+        textDecoration: 'none',
+        fontSize: '1rem',
+        color: 'white',
+        fontFamily: 'roboto',
+    }
 });
 
 Home.propTypes = {

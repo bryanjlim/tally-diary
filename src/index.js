@@ -12,7 +12,7 @@ ReactDOM.render(
             <Route path="/timeline" component={App} />
             <Route path="/insights" component={App} />
             <Route path="/settings" component={App} />
-            <Route path="/aboutus" component={App} />
+            <Route path="/about" component={App} />
             <Route path="/contact" component={App} />
             <Route path="/privacy-policy" component={App} />
             <Route path="*" component={NotFound404} />

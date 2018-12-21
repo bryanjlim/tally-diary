@@ -5,8 +5,8 @@ import CloseIcon from '@material-ui/icons/Close';
 import DriveHelper from './helpers/driveHelper';
 import Home from './pages/home/home';
 import PrivacyPolicy from './pages/privacy_policy/privacyPolicy';
-import { Contact } from './pages/contact/contact';
-import { AboutUs } from './pages/about_us/aboutUs';
+import Contact from './pages/contact/contact';
+import AboutUs from './pages/about_us/aboutUs';
 import Entry from './pages/entry/entry';
 import NewUserSetup from './pages/new_user_setup/newUserSetup';
 import Settings from './pages/settings/settings';
@@ -55,8 +55,15 @@ class App extends Component {
     const pathname = this.props.location.pathname;
 
     if(pathname === "/privacy-policy") {
-      return(<PrivacyPolicy />)
+      return(<PrivacyPolicy/>)
     }
+    if(pathname === "/about") {
+      return(<AboutUs/>)
+    }
+    if(pathname === "/contact") {
+      return(<Contact/>)
+    }
+    
     if (!this.state.isInitialized) {
       // Loading Circle
       return (<div className={classes.outerContainer}> 
@@ -120,11 +127,7 @@ class App extends Component {
       // Tally Diary Info (Home) Page
       return (
         <div>
-            {
-              (this.props.location.pathname === "/aboutus") ? <AboutUs /> :
-                (this.props.location.pathname === "/contact") ? <Contact /> :
-                  <Home signIn={this.signIn} />
-            }
+          <Home signIn={this.signIn} />
         </div>
       );
     }
