@@ -274,6 +274,22 @@ class Settings extends Component {
                             </Button>
                         </Card>
 
+                        <Card className={classes.card}>
+                            <h2 className={classes.cardTitle}>Useful Links</h2>
+                            <Button className={classes.accountButton} color="primary" 
+                                    onClick={evt => {evt.preventDefault(); window.location.href='/privacy-policy';}}>
+                                    Privacy Policy
+                            </Button>
+                            <Button className={classes.accountButton} color="primary" 
+                                    onClick={evt => {evt.preventDefault(); window.location.href='/about';}}>
+                                    About Us
+                            </Button>
+                            <Button className={classes.accountButton} color="primary" 
+                                    onClick={evt => {evt.preventDefault(); window.location.href='/contact';}}>
+                                    Contact Us
+                            </Button>
+                        </Card>
+
                         <Snackbar
                             open={this.state.showSuccessfulSave}
                             ContentProps={{
