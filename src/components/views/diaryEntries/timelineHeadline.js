@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {Card, CardContent, IconButton, Menu, MenuItem, withStyles} from '@material-ui/core';
+import {Card, CardContent, IconButton, Menu, MenuItem, withStyles, Typography} from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import DeleteDiaryEntry from './deleteDiaryEntry';
 
@@ -91,9 +91,7 @@ class TimelineHeadline extends Component {
             <Card className={classes.timelineCard}>
                 <CardContent>
                     <div className={classes.headlineText}>
-                        <b>
-                            {"Day " + daysAlive + (this.props.title ? " - " + this.props.title : " ")}
-                        </b>
+                        <Typography variant="h6">{"Day " + daysAlive + (this.props.title ? " - " + this.props.title : " ")}</Typography>
                     </div>
                     <div className={classes.headlineVertButton}>
                         <IconButton onClick={this.handleMenuOpen}>

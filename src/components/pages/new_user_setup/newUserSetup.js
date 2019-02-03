@@ -130,7 +130,7 @@ class NewUserSetup extends Component {
                                     select
                                 >
                                     <MenuItem value="light">Light</MenuItem>
-                                    {/* <MenuItem value="dark">Dark</MenuItem> */}
+                                    <MenuItem value="dark">Dark</MenuItem>
                                 </TextField>
                             </Grid>
                             <Grid item className={classes.settingsGridItem}>

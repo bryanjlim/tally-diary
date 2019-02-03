@@ -1,6 +1,7 @@
 /* global gapi */
 import React, { Component } from 'react';
-import { CircularProgress, withStyles, Snackbar, IconButton } from '@material-ui/core';
+import { CircularProgress, withStyles, Snackbar, IconButton, MuiThemeProvider, createMuiTheme } from '@material-ui/core';
+import blue from '@material-ui/core/colors/blue';
 import CloseIcon from '@material-ui/icons/Close';
 import DriveHelper from './helpers/driveHelper';
 import Home from './pages/home/home';
@@ -18,6 +19,19 @@ import diaryEntryStore from '../stores/diaryEntryStore';
 import PasswordUnlock from './views/passwordUnlock/passwordUnlock';
 import EntryViewer from './views/diaryEntries/entryViewer';
 import PropTypes from 'prop-types';
+
+const theme = createMuiTheme({
+  palette: {
+    type: 'dark',
+    primary: blue,
+    secondary: {
+      light: '#0066ff',
+      main: '#0044ff',
+      // dark: will be calculated from palette.secondary.main,
+      contrastText: '#ffcc00',
+    },
+  },
+});
 
 class App extends Component {
   constructor(props) {
@@ -86,41 +100,43 @@ class App extends Component {
       } else {
         return (
           // Tally Diary App
-          <Layout>
-            <div>
-                {
-                  (pathname === "/") ? 
-                  <Entry userStore={userPreferenceStore} diaryEntryStore={diaryEntryStore} adding={true} /> :
-                    (pathname === "/settings") ? 
-                    <Settings signOut={this.signOut} userStore={userPreferenceStore} diaryEntryStore={diaryEntryStore}/> :
-                      (pathname === "/insights") ? 
-                      <Insights diaryEntryStore={diaryEntryStore} userStore={userPreferenceStore}/> :
-                        (pathname === "/timeline") ? 
-                        <Timeline userStore={userPreferenceStore} diaryEntryStore={diaryEntryStore}
-                                  router={this.props.router}/> :
-                          <EntryViewer entryIndex={pathname.substring(10, pathname.length)} router={this.props.router}
-                                       diaryEntryStore={diaryEntryStore} userStore={userPreferenceStore}/>
-                }
-                <Snackbar
-                  open={this.state.showSignOutError}
-                  ContentProps={{
-                      'aria-describedby': 'message-id',
-                  }}
-                  message={<span>Error Signing Out: {this.state.signOutError}</span>}
-                  action={[
-                      <IconButton
-                          key="close"
-                          aria-label="Close"
-                          color="inherit"
-                          className={classes.close}
-                          onClick={() => {this.setState({showSignOutError: false})}}
-                      >
-                          <CloseIcon className={classes.icon} />
-                      </IconButton>
-                  ]}
-                />
-            </div>
-          </Layout>
+          <MuiThemeProvider theme={userPreferenceStore.preferences.primaryTheme == "dark" ? theme : null}>
+            <Layout>
+              <div>
+                  {
+                    (pathname === "/") ? 
+                    <Entry userStore={userPreferenceStore} diaryEntryStore={diaryEntryStore} adding={true} /> :
+                      (pathname === "/settings") ? 
+                      <Settings signOut={this.signOut} userStore={userPreferenceStore} diaryEntryStore={diaryEntryStore}/> :
+                        (pathname === "/insights") ? 
+                        <Insights diaryEntryStore={diaryEntryStore} userStore={userPreferenceStore}/> :
+                          (pathname === "/timeline") ? 
+                          <Timeline userStore={userPreferenceStore} diaryEntryStore={diaryEntryStore}
+                                    router={this.props.router}/> :
+                            <EntryViewer entryIndex={pathname.substring(10, pathname.length)} router={this.props.router}
+                                        diaryEntryStore={diaryEntryStore} userStore={userPreferenceStore}/>
+                  }
+                  <Snackbar
+                    open={this.state.showSignOutError}
+                    ContentProps={{
+                        'aria-describedby': 'message-id',
+                    }}
+                    message={<span>Error Signing Out: {this.state.signOutError}</span>}
+                    action={[
+                        <IconButton
+                            key="close"
+                            aria-label="Close"
+                            color="inherit"
+                            className={classes.close}
+                            onClick={() => {this.setState({showSignOutError: false})}}
+                        >
+                            <CloseIcon className={classes.icon} />
+                        </IconButton>
+                    ]}
+                  />
+              </div>
+            </Layout>
+          </MuiThemeProvider>
         );
       }
     } else {
@@ -256,7 +272,7 @@ class App extends Component {
 
 const styles = theme => ({
   outerContainer: {
-    backgroundColor: theme.palette.background.default,
+    backgroundColor: 'gray',
     fontFamily: 'Roboto',
     display: 'table',
     position: 'absolute',

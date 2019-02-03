@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {TextField, IconButton, Snackbar, Divider, Grid, Paper, Button, withStyles } from '@material-ui/core';
+import {TextField, IconButton, Snackbar, Divider, Grid, Paper, Button, withStyles, Typography } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import DriveHelper from '../../helpers/driveHelper';
 import Todo from '../../objects/todos/todo'; 
@@ -165,18 +165,18 @@ class Entry extends Component {
                 </div>
 
                 <Divider className={classes.spaceDivider}/>
-                    <h2 className={classes.chipHeader}>Tally Marks</h2>
+                    <Typography variant="h5" className={classes.chipHeader}>Tally Marks</Typography>
                     {
-                        this.state.tallies.length === 0 ? <i className={classes.noChipText}>There are no tallies to show</i> :
+                        this.state.tallies.length === 0 ? <Typography variant="caption" className={classes.noChipText}>There are no tallies to show</Typography> :
                         <div>{this.state.tallies.map((currentValue, index)=> 
                             {return <TallyMarkChip type={currentValue.type} text={currentValue.text} index={index} deleteTallyMark={this.deleteTallyMark}/>})}
                         </div> 
                     }
 
                 <Divider className={classes.spaceDivider}/>
-                    <h2 className={classes.chipHeader}>Todos</h2>
+                    <Typography variant="h5" className={classes.chipHeader}>Todos</Typography>
                     {
-                        this.state.todos.length === 0 ? <i className={classes.noChipText}>There are no todos to show</i> :
+                        this.state.todos.length === 0 ? <Typography variant="caption" className={classes.noChipText}>There are no todos to show</Typography>:
                         <div>{this.state.todos.map((currentValue, index)=> 
                             {return <TodoChip status={currentValue.status} text={currentValue.text} index={index} deleteTodo={this.deleteTodo}/>})}
                         </div> 

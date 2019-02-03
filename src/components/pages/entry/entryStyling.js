@@ -120,6 +120,7 @@ export default class EntryStyling {
             marginTop: '1em',
         },
         chipHeader: {
+            marginTop: '.3em',
             marginLeft: '1em',
             fontSize: '1.5em',
             color:theme.palette.primary.main,
@@ -129,6 +130,7 @@ export default class EntryStyling {
             },
         },
         noChipText: {
+            marginTop: '.5em',
             marginLeft: '1.5em',
             '@media (max-width: 420px)': { 
                 marginLeft: '.75em',

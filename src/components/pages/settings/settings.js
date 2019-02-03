@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import {TextField, MenuItem, Card, Button, Grid, Checkbox, Snackbar,
-        IconButton, withStyles, InputAdornment } from '@material-ui/core';
+import {TextField, MenuItem, Card, Button, Grid, Checkbox, FormControlLabel, Snackbar,
+        IconButton, withStyles, InputAdornment, Typography } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
@@ -163,11 +163,11 @@ class Settings extends Component {
                     {/* File Input */}
                     <input type="file" accept="text/json" style={{ display: 'none' }} id="fileInput" onChange={this.importData} />
 
-                    <h1 className={classes.title}>User Settings</h1>
+                    <Typography variant="h4" className={classes.title}>User Settings</Typography> 
 
                      <Card className={classes.card}>
                     
-                        <h2 className={classes.cardTitle}>User Information and Preferences</h2>
+                        <Typography variant="h5" className={classes.cardTitle}>User Information and Preferences</Typography> 
                             <Grid container className={classes.grid}>
                                 <Grid item className={classes.settingsGridItem}>
                                     <TextField
@@ -191,7 +191,7 @@ class Settings extends Component {
                                         select
                                     >
                                         <MenuItem value="light">Light</MenuItem>
-                                        {/* <MenuItem value="dark">Dark</MenuItem> */}
+                                        <MenuItem value="dark">Dark</MenuItem>
                                     </TextField>
                                 </Grid>
                                 <Grid item className={classes.settingsGridItem}>
@@ -213,14 +213,18 @@ class Settings extends Component {
                                 </Grid>
                                 <Grid container className={classes.bottomGrid}>
                                     <Grid item className={classes.settingsGridItem}>
-                                            <label htmlFor="usePassword">Password?</label>
-                                            <Checkbox
-                                                label="Password?"
-                                                name="usePassword"
-                                                color="primary"
-                                                checked={this.state.usePassword}
-                                                onChange={this.handleInputChange}
-                                            />
+                                        <FormControlLabel
+                                            control={
+                                                <Checkbox
+                                                    label="Password?"
+                                                    name="usePassword"
+                                                    color="primary"
+                                                    checked={this.state.usePassword}
+                                                    onChange={this.handleInputChange}
+                                                />
+                                            }
+                                            label="Use Password"
+                                        />
                                     </Grid> 
                                     {this.state.usePassword ? 
                                         <Grid item className={classes.settingsGridItem}>
@@ -251,7 +255,7 @@ class Settings extends Component {
                             <Button onClick={this.updateUserProperties} color="primary" className={classes.button}>Update</Button>
                         </Card>
                         <Card className={classes.card}>
-                            <h2 className={classes.cardTitle}>Account</h2>
+                            <Typography variant="h5" className={classes.cardTitle}>Account</Typography> 
                             <Button className={classes.accountButton} color="primary" onClick={evt => 
                                 {evt.preventDefault(); this.props.signOut();}}>
                                 Sign Out
@@ -263,7 +267,7 @@ class Settings extends Component {
                         </Card>
 
                         <Card className={classes.card}>
-                            <h2 className={classes.cardTitle}>Export and Import</h2>
+                            <Typography variant="h5" className={classes.cardTitle}>Export and Import</Typography> 
                             <Button className={classes.accountButton} color="primary" 
                                     onClick={evt => this.exportData(evt)}>
                                     Download Backup
@@ -275,7 +279,7 @@ class Settings extends Component {
                         </Card>
 
                         <Card className={classes.card}>
-                            <h2 className={classes.cardTitle}>Useful Links</h2>
+                            <Typography variant="h5" className={classes.cardTitle}>Useful Links</Typography> 
                             <Button className={classes.accountButton} color="primary" 
                                     onClick={evt => {evt.preventDefault(); window.location.href='/privacy-policy';}}>
                                     Privacy Policy
@@ -396,14 +400,16 @@ const styles = theme => ({
         color: theme.palette.primary.main,
         textAlign: 'center',
         '@media (max-width: 500px)': { 
-            fontSize: '1.7em',
+            fontSize: '2em',
         },
     },
     cardTitle: {
         color: theme.palette.primary.main, 
-        marginLeft: '1em',
+        marginLeft: '.7em',
+        marginTop: '.15em',
+        marginBottom: '.5em',
         '@media (max-width: 500px)': { 
-            fontSize: '1.3em',
+            fontSize: '1.5em',
             marginLeft: '.5em',
         },
     }, 

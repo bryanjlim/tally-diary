@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {withStyles} from '@material-ui/core';
+import {withStyles, Typography} from '@material-ui/core';
 import PropTypes from 'prop-types';
 
 const styles = theme => ({
@@ -16,8 +16,8 @@ class AppLaunches extends Component {
         return (
             <div className={classes.insightsItemText}>
                 {this.props.appLaunches == 1 ? 
-                <h2>You've launched Tally Diary Once</h2>
-              : <h2>You've launched Tally Diary {this.props.appLaunches} Times</h2>}
+                <Typography variant="h5">You've launched Tally Diary Once</Typography>
+              : <Typography variant="h5">You've launched Tally Diary {this.props.appLaunches} Times</Typography>}
             </div>
         );
     }

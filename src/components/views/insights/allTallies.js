@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {withStyles} from '@material-ui/core';
+import {withStyles, Typography} from '@material-ui/core';
 import PropTypes from 'prop-types';
 import TalliesView from '../tallies/talliesView';
 
@@ -18,6 +18,10 @@ const styles = theme => ({
         marginTop: 'auto',
         marginBottom: '.7em',
     },
+    yourTallies: {
+        marginBottom: '.5em',
+        marginTop: '-1em', 
+    }
 });
 class AllTallies extends Component {
     render() {
@@ -26,7 +30,7 @@ class AllTallies extends Component {
         return (
             <div>
                 <div className={classes.insightsItemText}>
-                <h2 className={classes.centerText}>Your Tallies</h2>
+                    <Typography variant="h5" className={classes.yourTallies}>Your Tallies</Typography>
                     <TalliesView currentFileName={null} 
                         currentEntryTallyMarks={[]} diaryEntryStore={this.props.diaryEntryStore}/>
                 </div>

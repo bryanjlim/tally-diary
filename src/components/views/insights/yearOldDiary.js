@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {withStyles, CardActions, Button} from '@material-ui/core';
+import {withStyles, CardActions, Button, Typography} from '@material-ui/core';
 import PropTypes from 'prop-types';
 import {Redirect} from 'react-router-dom';
 
@@ -9,6 +9,10 @@ const styles = theme => ({
         marginTop: 'auto',
         marginBottom: 'auto',
     },
+    title: {
+        marginTop: '.2em',
+        marginBottom: '.5em',
+    }
 });
 
 class YearOldDiary extends Component {
@@ -41,8 +45,8 @@ class YearOldDiary extends Component {
 
             return (
                 <div className={classes.insightsItemText}>
-                    <h2>You wrote a diary entry one year ago!</h2>
-                    <i>Day {this.props.title === '' ? daysAlive : daysAlive + "(" + this.props.title + ")"}</i>
+                    <Typography className={classes.title} variant="h5">You wrote a diary entry one year ago!</Typography>
+                    <Typography variant="caption">Day {this.props.title === '' ? daysAlive : daysAlive + "(" + this.props.title + ")"}</Typography>
                     <CardActions>
                         <Button onClick={this.viewSingleEntry} size="small" style={{marginLeft: 'auto', marginRight: 'auto',}}>View Entry</Button>
                     </CardActions>

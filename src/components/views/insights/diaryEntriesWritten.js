@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {withStyles} from '@material-ui/core';
+import {withStyles, Typography} from '@material-ui/core';
 import PropTypes from 'prop-types';
 
 const styles = theme => ({
@@ -8,6 +8,9 @@ const styles = theme => ({
         marginTop: 'auto',
         marginBottom: 'auto',
     },
+    diaryEntriesWritten: {
+        marginBottom: '.5em',
+    }
 });
 class DiaryEntriesWritten extends Component {
     render() {
@@ -15,8 +18,8 @@ class DiaryEntriesWritten extends Component {
 
         return (
             <div className={classes.insightsItemText}>
-                <h2>Diary Entries Written: {this.props.entryCount}</h2>
-                <i>This doesn't include deleted diary entries</i>
+                <Typography className={classes.diaryEntriesWritten} variant="h5">Diary Entries Written: {this.props.entryCount}</Typography>
+                <Typography variant="overline">This doesn't include deleted diary entries</Typography>
             </div>
         );
     }

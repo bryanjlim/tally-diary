@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import DriveHelper from '../../helpers/driveHelper';
-import {withStyles, IconButton, Grid} from '@material-ui/core';
+import {withStyles, IconButton, Grid, Typography} from '@material-ui/core';
 import TimelineCard  from '../../views/diaryEntries/timelineCard';
 import TimelineHeadline  from '../../views/diaryEntries/timelineHeadline';
 import {Redirect} from 'react-router-dom';
@@ -176,13 +176,13 @@ class Timeline extends Component {
                             </Grid>
                         </div>
                         <div className={classes.showingItalic}>
-                            <i>Showing {this.state.diaryEntriesToShow.length} entries</i>
+                            <Typography variant="caption">Showing {this.state.diaryEntriesToShow.length} entries</Typography>
                         </div>
                         {this.state.diaryEntriesToShow.map(this.eachDiaryEntryObject)}
                     </div>
                 );
             } else {
-                return(<div className={classes.centerText}><i>There are no diary entries to show. It's empty here....</i></div>);
+                return(<div className={classes.centerText}><Typography variant="caption">There are no diary entries to show. It's empty here....</Typography></div>);
             } 
         } 
     }
