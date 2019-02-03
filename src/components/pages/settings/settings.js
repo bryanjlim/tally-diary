@@ -80,14 +80,14 @@ class Settings extends Component {
         e.preventDefault();
 
         const updatedProperties = {
-            "firstName": "test",//this.state.firstName,
+            "firstName": this.state.firstName,
             "lastName": this.state.lastName,
             "dateOfBirth": this.state.dateOfBirth,
             "primaryTheme": this.state.primaryTheme,
             "secondaryColor": this.state.secondaryColor,
             "usePassword": this.state.usePassword,
             "password": this.state.password,
-            "appLaunches" : 1,
+            "appLaunches" : this.state.appLaunches,
         };
         
         DriveHelper.updateFile("0", updatedProperties).then(() => {
