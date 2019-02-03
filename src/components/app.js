@@ -1,7 +1,8 @@
 /* global gapi */
 import React, { Component } from 'react';
 import { CircularProgress, withStyles, Snackbar, IconButton, MuiThemeProvider, createMuiTheme } from '@material-ui/core';
-import blue from '@material-ui/core/colors/blue';
+import lightBlue from '@material-ui/core/colors/lightBlue';
+import pink from '@material-ui/core/colors/pink';
 import CloseIcon from '@material-ui/icons/Close';
 import DriveHelper from './helpers/driveHelper';
 import Home from './pages/home/home';
@@ -23,12 +24,11 @@ import PropTypes from 'prop-types';
 const theme = createMuiTheme({
   palette: {
     type: 'dark',
-    primary: blue,
+    primary: {
+      main: lightBlue[200],
+    },
     secondary: {
-      light: '#0066ff',
-      main: '#0044ff',
-      // dark: will be calculated from palette.secondary.main,
-      contrastText: '#ffcc00',
+      main: pink[300]
     },
   },
 });
