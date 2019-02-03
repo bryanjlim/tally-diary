@@ -272,12 +272,16 @@ class App extends Component {
 
 const styles = theme => ({
   outerContainer: {
-    backgroundColor: 'gray',
+    backgroundColor: '#D3D3D3',
     fontFamily: 'Roboto',
     display: 'table',
     position: 'absolute',
-    height: '98%',
-    width: '99%',
+    marginTop: -30,
+    marginBottom: -30,
+    marginLeft: -20,
+    marginRight: -20,
+    height: '103%',
+    width: '103%',
     overflow: 'hidden',
   },
   middleContainer: {
