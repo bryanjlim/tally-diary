@@ -11,7 +11,7 @@ import {ViewHeadline, ViewHeadlineOutlined, ViewList, ViewListOutlined} from '@m
 class Timeline extends Component {
 
     constructor(props) {
-        super(props); 
+        super(props);
 
         this.state = {
             cardView: true,
@@ -20,10 +20,13 @@ class Timeline extends Component {
             redirectIndex: -1,
         }
 
+        this.assignIndexes();
+
         this.deleteEntry = this.deleteEntry.bind(this);
         this.eachDiaryEntryObject = this.eachDiaryEntryObject.bind(this);
         this.viewSingleEntry = this.viewSingleEntry.bind(this);
         this.toggleView = this.toggleView.bind(this);
+        this.assignIndexes = this.assignIndexes.bind(this);
         this.filter = this.filter.bind(this);
     }
 
@@ -47,12 +50,19 @@ class Timeline extends Component {
         })
     }
 
+    assignIndexes() {
+        for(let i = 0; i < this.props.diaryEntryStore.entries.length; i++) {
+            this.props.diaryEntryStore.entries[i].index = i;
+        }
+    }
+
     filter(startDate, endDate, bodyTextFilter, todoFilter, tallyFilter,) {
+        this.assignIndexes();
         this.setState({diaryEntriesToShow: [], });
 
         for(let i = 0; i < this.props.diaryEntryStore.entries.length; i++) {
             let addEntry = true;
-            const entry = this.props.diaryEntryStore.entries[i]; 
+            const entry = this.props.diaryEntryStore.entries[i];
 
             // Determine if entry should be added to list of entries shown in timeline
             if(startDate !== null && endDate !== null) {
@@ -67,8 +77,8 @@ class Timeline extends Component {
                 if(new Date(entry.date) > new Date(endDate)) {
                     addEntry = false;
                 }
-            } 
-            
+            }
+
             if(entry.bodyText !== null && entry.bodyText !== undefined && bodyTextFilter !== '') {
                 if(!entry.bodyText.includes(bodyTextFilter)) {
                     addEntry = false;
@@ -111,8 +121,8 @@ class Timeline extends Component {
 
         return (
             <div className={classes.timelineCard}>
-            {this.state.cardView ? 
-                <TimelineCard 
+            {this.state.cardView ?
+                <TimelineCard
                     fileName={entry.fileName}
                     title={entry.title}
                     date={entry.date}
@@ -122,11 +132,11 @@ class Timeline extends Component {
                     todos={entry.todos}
                     tallies={entry.tallies}
                     birthDate={this.props.userStore.preferences.dateOfBirth}
-                    index={i}
+                    index={entry.index}
                     viewSingleEntry={this.viewSingleEntry}
                     deleteEntry={this.deleteEntry}
                 /> :
-                <TimelineHeadline 
+                <TimelineHeadline
                     fileName={entry.fileName}
                     title={entry.title}
                     date={entry.date}
@@ -136,12 +146,12 @@ class Timeline extends Component {
                     todos={entry.todos}
                     tallies={entry.tallies}
                     birthDate={this.props.userStore.preferences.dateOfBirth}
-                    index={i}
+                    index={entry.index}
                     viewSingleEntry={this.viewSingleEntry}
                     deleteEntry={this.deleteEntry}
                 />
             }
-            
+
             </div>
         );
     }
@@ -183,8 +193,8 @@ class Timeline extends Component {
                 );
             } else {
                 return(<div className={classes.centerText}><Typography variant="caption">There are no diary entries to show. It's empty here....</Typography></div>);
-            } 
-        } 
+            }
+        }
     }
 }
 
@@ -193,7 +203,7 @@ const styles = theme => ({
         marginLeft: 'auto',
         marginRight: 'auto',
         textAlign: 'center',
-    }, 
+    },
     centerTop: {
         marginLeft: 'auto',
         marginRight: 'auto',
@@ -207,7 +217,7 @@ const styles = theme => ({
     timelineCard: {
         marginLeft: 'auto',
         marginRight: 'auto',
-        paddingTop: 25, 
+        paddingTop: 25,
         minWidth: 275,
         maxWidth: 575,
         [theme.breakpoints.down('xs')]: {
