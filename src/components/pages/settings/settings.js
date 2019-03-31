@@ -317,7 +317,7 @@ class Settings extends Component {
                             ContentProps={{
                                 'aria-describedby': 'message-id',
                             }}
-                            message={<span>Downloading... Please ensure you are on tallydiary.me</span>}
+                            message={<span>Note: downloads only work on our tallydiary.com web app</span>}
                             action={[
                                 <IconButton
                                     key="close"
