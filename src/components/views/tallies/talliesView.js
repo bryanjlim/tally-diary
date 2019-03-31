@@ -106,6 +106,22 @@ class TalliesView extends React.Component {
             this.updateTalliesWithCurrentEntry();
         }
 
+        this.state.foodTallies.sort((a, b) => {
+            return b.count - a.count;
+        });
+        this.state.peopleTallies.sort((a, b) => {
+            return b.count - a.count;
+        });
+        this.state.activityTallies.sort((a, b) => {
+            return b.count - a.count;
+        });
+        this.state.locationTallies.sort((a, b) => {
+            return b.count - a.count;
+        });
+        this.state.otherTallies.sort((a, b) => {
+            return b.count - a.count;
+        });
+
         const { classes } = this.props;
         return (
             <div className={classes.wrapper}>
