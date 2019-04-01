@@ -56,7 +56,7 @@ class Timeline extends Component {
         }
     }
 
-    filter(startDate, endDate, bodyTextFilter, todoFilter, tallyFilter, restrictGoodDays, restrictBadDays) {
+    filter(startDate, endDate, bodyTextFilter, todoFilter, tallyFilter, restrictToGoodDays, restrictToBadDays) {
         this.assignIndexes();
         this.setState({diaryEntriesToShow: [], });
 
@@ -107,13 +107,13 @@ class Timeline extends Component {
                 }
             }
 
-            if(restrictGoodDays) {
+            if(restrictToGoodDays) {
                 if(!entry.isThumbUp) {
                     addEntry = false;
                 }
             }
 
-            if(restrictBadDays) {
+            if(restrictToBadDays) {
                 if(!entry.isThumbDown) {
                     addEntry = false;
                 }

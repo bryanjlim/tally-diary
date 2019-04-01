@@ -22,8 +22,8 @@ class AddFilters extends React.Component {
       bodyTextContains: "",
       containsTodo: "",
       containsTally: "",
-      restrictGoodDays: false,
-      restrictBadDays: false,
+      restrictToGoodDays: false,
+      restrictToBadDays: false,
     };
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleClose = this.handleClose.bind(this);
@@ -43,7 +43,7 @@ class AddFilters extends React.Component {
 
   handleSubmit() {
     this.props.filter(this.state.startDate, this.state.endDate, this.state.bodyTextContains,
-      this.state.containsTodo, this.state.containsTally, this.state.restrictGoodDays, this.state.restrictBadDays);
+      this.state.containsTodo, this.state.containsTally, this.state.restrictToGoodDays, this.state.restrictToBadDays);
     this.setState({
       open: false,
     });
@@ -60,34 +60,34 @@ class AddFilters extends React.Component {
   }
 
   toggleGoodDaysSwitch() {
-    const currentStatus = this.state.restrictGoodDays;
+    const currentStatus = this.state.restrictToGoodDays;
 
     if(!currentStatus) {
       this.setState({
-        restrictGoodDays: true,
-        restrictBadDays: false,
+        restrictToGoodDays: true,
+        restrictToBadDays: false,
       })
     } else {
       this.setState({
-        restrictGoodDays: false,
-        restrictBadDays: false,
+        restrictToGoodDays: false,
+        restrictToBadDays: false,
       })
     }
   }
 
   toggleBadDaysSwitch() {
-    const currentStatus = this.state.restrictBadDays;
+    const currentStatus = this.state.restrictToBadDays;
 
     if(!currentStatus) {
       this.setState({
-        restrictBadDays: true,
-        restrictGoodDays: false,
+        restrictToBadDays: true,
+        restrictToGoodDays: false,
         
       })
     } else {
       this.setState({
-        restrictBadDays: false,
-        restrictGoodDays: false,
+        restrictToBadDays: false,
+        restrictToGoodDays: false,
       })
     }
   }
@@ -163,15 +163,15 @@ class AddFilters extends React.Component {
               />
               <Typography>Restrict to Good Days</Typography>
               <Switch
-                checked={this.state.restrictGoodDays}
+                checked={this.state.restrictToGoodDays}
                 onChange={this.toggleGoodDaysSwitch}
-                value={this.state.restrictGoodDays}
+                value={this.state.restrictToGoodDays}
               />
               <Typography>Restrict to Bad Days</Typography>
               <Switch
-                checked={this.state.restrictBadDays}
+                checked={this.state.restrictToBadDays}
                 onChange={this.toggleBadDaysSwitch}
-                value={this.state.restrictBadDays}
+                value={this.state.restrictToBadDays}
               />
             </FormControl>
           </DialogContent>
