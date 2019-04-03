@@ -167,7 +167,7 @@ class App extends Component {
     const that = this;
     gapi.client.init({
       apiKey: 'AIzaSyAuKJs7B5EiTmFyjP8cg974vCsqS98QvYA',
-      clientId: '577206274010-4f6qsvjb1fqbq70ob8ium2eac4ikd8g8.apps.googleusercontent.com',
+      clientId: '577206274010-9oung4hgd77fij9e50kjbc32tlviai4e.apps.googleusercontent.com',
       discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"],
       scope: 'https://www.googleapis.com/auth/drive.appdata',
       ux_mode: 'redirect',
