@@ -4,11 +4,7 @@ import PropTypes from 'prop-types';
 import 'typeface-roboto';
 
 class AboutUs extends Component {
-
-    constructor(props) {
-        super(props);
-    }
-
+    
     handleButtonClick(e) {
         e.preventDefault(); 
         window.location.href='/';

@@ -5,10 +5,6 @@ import 'typeface-roboto';
 
 class PrivacyPolicy extends Component {
 
-    constructor(props) {
-        super(props);
-    }
-
     handleButtonClick(e) {
         e.preventDefault(); 
         window.location.href='/';
