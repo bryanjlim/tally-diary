@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {Card, CardActions, CardContent, CardHeader, IconButton, Button, Typography, Menu, MenuItem, withStyles} from '@material-ui/core';
+import {Card, CardActions, CardContent, CardHeader, IconButton, Button, Typography, Menu, withStyles} from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import DeleteDiaryEntry from './deleteDiaryEntry';
 

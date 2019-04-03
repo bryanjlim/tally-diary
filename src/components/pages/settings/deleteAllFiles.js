@@ -3,7 +3,7 @@ import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContent';
+import Typography from '@material-ui/core/Typography';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
 class DeleteAllFiles extends React.Component {
@@ -41,9 +41,9 @@ class DeleteAllFiles extends React.Component {
         >
           <DialogTitle >{"Confirmation Prompt"}</DialogTitle>
           <DialogContent>
-            <DialogContentText style={{fontFamily: 'roboto'}}>
+            <Typography>
                 This will delete all your files, including all diary entries and your settings. This cannot be undone. Do you wish to proceed?
-            </DialogContentText>
+            </Typography>
           </DialogContent>
           <DialogActions>
           <Button onClick={this.handleClose} color="primary">
