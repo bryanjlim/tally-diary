@@ -153,17 +153,19 @@ class Entry extends Component {
                         </Grid>
                     </Grid>
                 </div>
-
-                <Divider className={classes.spaceDivider}/>
-                    <Typography variant="h5" className={classes.chipHeader}>Tally Marks</Typography>
-                    {
-                        this.state.tallies.length === 0 ? <Typography variant="caption" className={classes.noChipText}>There are no tallies to show</Typography> :
-                        <div>{this.state.tallies.map((currentValue, index)=> 
+                
+                { 
+                    this.state.tallies.length > 0 ? 
+                    <div>
+                        <Divider className={classes.spaceDivider}/>
+                        <Typography variant="h5" className={classes.chipHeader}>Tally Marks</Typography>
+                        <div>{this.state.tallies.map((currentValue, index) => 
                             {return <TallyMarkChip type={currentValue.type} text={currentValue.text} index={index} deleteTallyMark={this.deleteTallyMark}/>})}
                         </div> 
-                    }
-
-                <Divider className={classes.spaceDivider}/>
+                        <Divider className={classes.spaceDivider}/>
+                    </div> :
+                    <div></div>
+                }
 
                 {this.props.adding ? 
                     <Button variant="contained" color="primary" size="large" className={classes.submitButton} onClick={this.addNewEntry}>
