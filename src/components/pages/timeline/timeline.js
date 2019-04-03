@@ -56,7 +56,7 @@ class Timeline extends Component {
         }
     }
 
-    filter(startDate, endDate, bodyTextFilter, todoFilter, tallyFilter, restrictToGoodDays, restrictToBadDays) {
+    filter(startDate, endDate, bodyTextFilter, tallyFilter, restrictToGoodDays, restrictToBadDays) {
         this.assignIndexes();
         this.setState({diaryEntriesToShow: [], });
 
@@ -81,17 +81,6 @@ class Timeline extends Component {
 
             if(entry.bodyText !== null && entry.bodyText !== undefined && bodyTextFilter !== '') {
                 if(!entry.bodyText.includes(bodyTextFilter)) {
-                    addEntry = false;
-                }
-            }
-            if(todoFilter !== '') {
-                let containsTodo = false;
-                for(let i = 0; i < entry.todos.length; i++) {
-                    if(entry.todos[i].text === todoFilter) {
-                        containsTodo = true;
-                    }
-                }
-                if(!containsTodo) {
                     addEntry = false;
                 }
             }
@@ -141,7 +130,6 @@ class Timeline extends Component {
                     mood={entry.mood}
                     weather={entry.weather}
                     bodyText={entry.bodyText}
-                    todos={entry.todos}
                     tallies={entry.tallies}
                     birthDate={this.props.userStore.preferences.dateOfBirth}
                     index={entry.index}
@@ -155,7 +143,6 @@ class Timeline extends Component {
                     mood={entry.mood}
                     weather={entry.weather}
                     bodyText={entry.bodyText}
-                    todos={entry.todos}
                     tallies={entry.tallies}
                     birthDate={this.props.userStore.preferences.dateOfBirth}
                     index={entry.index}

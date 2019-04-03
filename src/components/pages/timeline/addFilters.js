@@ -20,7 +20,6 @@ class AddFilters extends React.Component {
       startDate: null,
       endDate: null,
       bodyTextContains: "",
-      containsTodo: "",
       containsTally: "",
       restrictToGoodDays: false,
       restrictToBadDays: false,
@@ -43,7 +42,7 @@ class AddFilters extends React.Component {
 
   handleSubmit() {
     this.props.filter(this.state.startDate, this.state.endDate, this.state.bodyTextContains,
-      this.state.containsTodo, this.state.containsTally, this.state.restrictToGoodDays, this.state.restrictToBadDays);
+      this.state.containsTally, this.state.restrictToGoodDays, this.state.restrictToBadDays);
     this.setState({
       open: false,
     });
@@ -140,15 +139,6 @@ class AddFilters extends React.Component {
                 name="bodyTextContains"
                 onChange={this.handleInputChange}
                 value={this.state.bodyTextContains}
-                margin="normal"
-                variant="outlined"
-              />
-              <TextField
-                label="Contains Todo..."
-                id="containsTodo"
-                name="containsTodo"
-                onChange={this.handleInputChange}
-                value={this.state.containsTodo}
                 margin="normal"
                 variant="outlined"
               />

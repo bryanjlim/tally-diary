@@ -81,7 +81,7 @@ class AddTally extends React.Component {
       <div>
         <Button variant="contained" color="primary" onClick={this.handleClickOpen} 
           style={{fontSize: '.8em'}}>
-        Tallies
+        Add Tally
         </Button>
         <Dialog
           fullScreen={false}

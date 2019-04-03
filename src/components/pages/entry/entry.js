@@ -3,12 +3,9 @@ import PropTypes from 'prop-types';
 import {TextField, IconButton, Snackbar, Divider, Grid, Paper, Button, withStyles, Typography } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import DriveHelper from '../../helpers/driveHelper';
-import Todo from '../../objects/todos/todo'; 
-import TodoChip from '../../views/todo/todoChip';
 import TallyMark from '../../objects/tallies/tallyMark';
 import TallyMarkChip from '../../views/tallyMark/tallyMarkChip';
 import AddTally from './addTally';
-import AddTodo from './addTodo';
 import EntryStyling from './entryStyling';
 import {Save, ArrowBack, ArrowForward, ThumbDownOutlined, ThumbDown, ThumbUpOutlined, ThumbUp} from '@material-ui/icons';
 
@@ -29,7 +26,6 @@ class Entry extends Component {
                 dateOfBirth: this.props.userStore.preferences.dateOfBirth,
                 bodyText: '',
                 tallies: [],
-                todos: [],
                 isThumbUp: false, // Thumb indicates mood, can be up or down or neither
                 isThumbDown: false,
                 entryNumber: this.props.diaryEntryStore.entries.length + 1,
@@ -42,7 +38,6 @@ class Entry extends Component {
                 dateOfBirth: this.props.userStore.preferences.dateOfBirth,
                 bodyText: this.props.bodyText,
                 tallies: this.props.tallies,
-                todos: this.props.todos,
                 isThumbUp: this.props.isThumbUp,
                 isThumbDown: this.props.isThumbDown,
                 index: this.props.index,
@@ -56,8 +51,6 @@ class Entry extends Component {
         this.updateEntry = this.updateEntry.bind(this);
         this.addNewTallyMark = this.addNewTallyMark.bind(this);
         this.deleteTallyMark = this.deleteTallyMark.bind(this);
-        this.addTodo = this.addTodo.bind(this);
-        this.deleteTodo = this.deleteTodo.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.navigateBack = this.navigateBack.bind(this);
         this.navigateForward = this.navigateForward.bind(this);
@@ -139,15 +132,12 @@ class Entry extends Component {
                     />
                 </div>
                 
-                {/* Bottom Cluster (Add Tallies, Add Todos, Thumbs) */}
+                {/* Bottom Cluster (Add Tallies, Thumbs) */}
                 <div className={classes.bottomClusterGridContainer}>
                     <Grid container>
                         <Grid item className={classes.bottomClusterObject}>
                             <AddTally currentFileName={this.state.entryNumber} tallyMarks={this.state.tallies} 
                                       diaryEntryStore={this.props.diaryEntryStore} addNewTallyMark={this.addNewTallyMark}/>
-                        </Grid>
-                        <Grid item className={classes.bottomClusterObject}>
-                            <AddTodo addTodo={this.addTodo}/>
                         </Grid>
                         <Grid item className={classes.bottomClusterRightObject} style={{marginLeft: '1em'}}>
                             <IconButton className={classes.button} aria-label="Good Rating" 
@@ -173,15 +163,6 @@ class Entry extends Component {
                         </div> 
                     }
 
-                <Divider className={classes.spaceDivider}/>
-                    <Typography variant="h5" className={classes.chipHeader}>Todos</Typography>
-                    {
-                        this.state.todos.length === 0 ? <Typography variant="caption" className={classes.noChipText}>There are no todos to show</Typography>:
-                        <div>{this.state.todos.map((currentValue, index)=> 
-                            {return <TodoChip status={currentValue.status} text={currentValue.text} index={index} deleteTodo={this.deleteTodo}/>})}
-                        </div> 
-                    }
-                
                 <Divider className={classes.spaceDivider}/>
 
                 {this.props.adding ? 
@@ -272,18 +253,6 @@ class Entry extends Component {
         this.setState({tallies: array});
     }
 
-    addTodo(newTodoStatus, newTodoText) {
-        this.setState(prevState => ({
-            todos: [...prevState.todos, new Todo(newTodoStatus, newTodoText)]
-          }))
-    }
-
-    deleteTodo(index) {
-        const array = [...this.state.todos]; 
-        array.splice(index, 1);
-        this.setState({todos: array});
-    }
-
     addNewEntry(e) {
         e.preventDefault();
 
@@ -294,7 +263,6 @@ class Entry extends Component {
                 "date": this.state.date,
                 "bodyText": this.state.bodyText,
                 "tallies": this.state.tallies,  
-                "todos": this.state.todos,
                 "isThumbUp": this.state.isThumbUp, 
                 "isThumbDown": this.state.isThumbDown,
                 "entryNumber": this.state.entryNumber,
@@ -318,13 +286,10 @@ class Entry extends Component {
                 date: dateObject.getFullYear() + "-" + formattedMonth + "-" + formattedDate,
                 bodyText: '',
                 tallies: [],
-                todos: [],
                 isThumbUp: false,
                 isThumbDown: false,
                 newTallyMarkType: TallyMark.tallyTypeEnum.FOOD,
                 newTallyMarkText: '',
-                newTodoStatus: false,
-                newTodoText: '',
                 entryNumber: this.props.diaryEntryStore.entries.length + 1,
                 showSuccessfulSave: true,
             });
@@ -349,7 +314,6 @@ class Entry extends Component {
             "date": this.state.date,
             "bodyText": this.state.bodyText,
             "tallies": this.state.tallies, 
-            "todos": this.state.todos,
             "isThumbUp": this.state.isThumbUp, 
             "isThumbDown": this.state.isThumbDown,
             "entryNumber": this.props.entryNumber,

@@ -95,7 +95,7 @@ export default class EntryStyling {
             width: '100%',
         },
 
-        // Tally and Todo Buttons
+        // Tally Button
         bottomClusterGridContainer: {
             width: '95%',
             [theme.breakpoints.down('sm')]: {
@@ -115,7 +115,7 @@ export default class EntryStyling {
             float: 'right',
         }, 
 
-        // Tally Marks and Todos
+        // Tally Marks
         spaceDivider: {
             marginTop: '1em',
         },

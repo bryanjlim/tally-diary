@@ -27,7 +27,6 @@ class EntryViewer extends Component {
                 singleEntryIsThumbUp: this.props.diaryEntryStore.entries[entryIndex].isThumbUp,
                 singleEntryIsThumbDown: this.props.diaryEntryStore.entries[entryIndex].isThumbDown,
                 singleEntryBodyText: this.props.diaryEntryStore.entries[entryIndex].bodyText,
-                singleEntryTodos: this.props.diaryEntryStore.entries[entryIndex].todos,
                 singleEntryTallies: this.props.diaryEntryStore.entries[entryIndex].tallies,
                 finishedRedirecting: false,
             }
@@ -68,7 +67,6 @@ class EntryViewer extends Component {
             singleEntryIsThumbUp: this.props.diaryEntryStore.entries[this.props.entryIndex].isThumbUp,
             singleEntryIsThumbDown: this.props.diaryEntryStore.entries[this.props.entryIndex].isThumbDown,
             singleEntryBodyText: this.props.diaryEntryStore.entries[this.props.entryIndex].bodyText,
-            singleEntryTodos: this.props.diaryEntryStore.entries[this.props.entryIndex].todos,
             singleEntryTallies: this.props.diaryEntryStore.entries[this.props.entryIndex].tallies,
             finishedRedirecting: false,
         });
@@ -103,7 +101,6 @@ class EntryViewer extends Component {
                 isThumbUp={this.state.singleEntryIsThumbUp}
                 isThumbDown={this.state.singleEntryIsThumbDown}
                 bodyText={this.state.singleEntryBodyText}
-                todos={this.state.singleEntryTodos}
                 tallies={this.state.singleEntryTallies}
                 userStore={this.props.userStore}
                 diaryEntryStore={this.props.diaryEntryStore}

@@ -95,7 +95,7 @@ export default class DriveHelper {
     static postFile(fileName, fileData) {
         const contentType = 'application/json';
         const metadata = {
-            'name': fileName, // TODO: make file name the diary entry number
+            'name': fileName,
             'mimeType': contentType,
             'parents': ['appDataFolder']
         };
