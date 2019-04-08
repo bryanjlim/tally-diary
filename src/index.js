@@ -14,7 +14,6 @@ ReactDOM.render(
             <Route path="/about" component={App} />
             <Route path="/contact" component={App} />
             <Route path="/privacy-policy" component={App} />
-            <Route path="/get" component={App} />
             <Route path="*" component={NotFound404} />
         </Switch>
     </Router>, document.getElementById('root')

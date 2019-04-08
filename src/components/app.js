@@ -9,7 +9,6 @@ import Home from './pages/home/home';
 import PrivacyPolicy from './pages/privacy_policy/privacyPolicy';
 import Contact from './pages/contact/contact';
 import AboutUs from './pages/about_us/aboutUs';
-import Get from './pages/get/get';
 import Entry from './pages/entry/entry';
 import NewUserSetup from './pages/new_user_setup/newUserSetup';
 import Settings from './pages/settings/settings';
@@ -77,9 +76,6 @@ class App extends Component {
     }
     if(pathname === "/contact") {
       return(<Contact/>)
-    }
-    if(pathname === "/get") {
-      return(<Get/>)
     }
     
     if (!this.state.isInitialized) {
