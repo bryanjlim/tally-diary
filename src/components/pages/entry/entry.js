@@ -8,6 +8,7 @@ import TallyMarkChip from '../../views/tallyMark/tallyMarkChip';
 import AddTally from './addTally';
 import EntryStyling from './entryStyling';
 import {Save, ArrowBack, ArrowForward, ThumbDownOutlined, ThumbDown, ThumbUpOutlined, ThumbUp} from '@material-ui/icons';
+import ReactGA from 'react-ga';
 
 const styles = EntryStyling.styles;
 
@@ -258,6 +259,11 @@ class Entry extends Component {
     addNewEntry(e) {
         e.preventDefault();
 
+        ReactGA.event({
+            category: 'User',
+            action: 'Added Entry - Web'
+        });
+
         if(this.state.date) {
             // Updates Diary Entry Store global state with new entry
             this.props.diaryEntryStore.entries.push({
@@ -309,6 +315,11 @@ class Entry extends Component {
 
     updateEntry(e) {
         e.preventDefault();
+
+        ReactGA.event({
+            category: 'User',
+            action: 'Updated Entry - Web'
+        });
 
         // Updates Diary Entry Store global state with updated entry
         this.props.diaryEntryStore.entries[this.props.index] = {

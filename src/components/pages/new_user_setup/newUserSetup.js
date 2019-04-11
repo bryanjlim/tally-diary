@@ -15,7 +15,9 @@ import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import DriveHelper from "../../helpers/driveHelper";
 import PropTypes from "prop-types";
+import ReactGA from 'react-ga';
 import "typeface-roboto";
+
 
 class NewUserSetup extends Component {
   constructor(props) {
@@ -49,6 +51,12 @@ class NewUserSetup extends Component {
   }
 
   componentDidMount() {
+
+    ReactGA.event({
+      category: 'User',
+      action: 'Started Account Creation - Web'
+    });
+
     const basicProfileInfo = gapi.auth2
       .getAuthInstance()
       .currentUser.get()
@@ -89,6 +97,11 @@ class NewUserSetup extends Component {
 
   addUserProperties(e) {
     e.preventDefault();
+
+    ReactGA.event({
+      category: 'User',
+      action: 'Finished Account Creation - Web'
+  });
 
     if (!this.state.usePassword) {
       this.setState({ password: "" });

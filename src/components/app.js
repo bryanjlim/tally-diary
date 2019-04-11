@@ -20,6 +20,7 @@ import diaryEntryStore from '../stores/diaryEntryStore';
 import PasswordUnlock from './views/passwordUnlock/passwordUnlock';
 import EntryViewer from './views/diaryEntries/entryViewer';
 import PropTypes from 'prop-types';
+import ReactGA from 'react-ga';
 
 const theme = createMuiTheme({
   palette: {
@@ -55,6 +56,11 @@ class App extends Component {
   }
 
   componentDidMount() {
+    ReactGA.initialize('UA-138096084-1');
+    ReactGA.event({
+      category: 'User',
+      action: 'Launched App - Web'
+    });
     const script = document.createElement("script");
     script.onload = () => {
       this.loadClientWhenGapiReady(script);
@@ -64,6 +70,8 @@ class App extends Component {
   }
 
   render() {
+    ReactGA.pageview(window.location.pathname + window.location.search);  
+
     const { classes } = this.props;
 
     const pathname = this.props.location.pathname;
