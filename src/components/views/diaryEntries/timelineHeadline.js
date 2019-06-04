@@ -82,7 +82,7 @@ class TimelineHeadline extends Component {
 
     render() {
         const entryDate = new Date(this.props.date);
-        entryDate.setDate(entryDate.getDate() + 1);
+        entryDate.setDate(entryDate.getDate());
         const daysAlive = Math.round((entryDate - new Date(this.props.birthDate)) / (1000 * 60 * 60 * 24));
         const { classes } = this.props;
         const { anchorEl } = this.state;
