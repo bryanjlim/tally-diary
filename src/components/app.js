@@ -1,37 +1,44 @@
 /* global gapi */
-import React, { Component } from 'react';
-import { CircularProgress, withStyles, Snackbar, IconButton, MuiThemeProvider, createMuiTheme } from '@material-ui/core';
-import lightBlue from '@material-ui/core/colors/lightBlue';
-import pink from '@material-ui/core/colors/pink';
-import CloseIcon from '@material-ui/icons/Close';
-import DriveHelper from './helpers/driveHelper';
-import Home from './pages/home/home';
-import PrivacyPolicy from './pages/privacy_policy/privacyPolicy';
-import Contact from './pages/contact/contact';
-import AboutUs from './pages/about_us/aboutUs';
-import Entry from './pages/entry/entry';
-import NewUserSetup from './pages/new_user_setup/newUserSetup';
-import Settings from './pages/settings/settings';
-import Timeline from './pages/timeline/timeline';
-import Insights from './pages/insights/insights';
-import Layout from './layout';
-import userPreferenceStore from '../stores/userPreferenceStore';
-import diaryEntryStore from '../stores/diaryEntryStore';
-import PasswordUnlock from './views/passwordUnlock/passwordUnlock';
-import EntryViewer from './views/diaryEntries/entryViewer';
-import PropTypes from 'prop-types';
-import ReactGA from 'react-ga';
+import React, { Component } from "react";
+import {
+  CircularProgress,
+  withStyles,
+  Snackbar,
+  IconButton,
+  MuiThemeProvider,
+  createMuiTheme
+} from "@material-ui/core";
+import lightBlue from "@material-ui/core/colors/lightBlue";
+import pink from "@material-ui/core/colors/pink";
+import CloseIcon from "@material-ui/icons/Close";
+import DriveHelper from "./helpers/driveHelper";
+import Home from "./pages/home/home";
+import PrivacyPolicy from "./pages/privacy_policy/privacyPolicy";
+import Contact from "./pages/contact/contact";
+import AboutUs from "./pages/about_us/aboutUs";
+import Entry from "./pages/entry/entry";
+import NewUserSetup from "./pages/new_user_setup/newUserSetup";
+import Settings from "./pages/settings/settings";
+import Timeline from "./pages/timeline/timeline";
+import Insights from "./pages/insights/insights";
+import Layout from "./layout";
+import userPreferenceStore from "../stores/userPreferenceStore";
+import diaryEntryStore from "../stores/diaryEntryStore";
+import PasswordUnlock from "./views/passwordUnlock/passwordUnlock";
+import EntryViewer from "./views/diaryEntries/entryViewer";
+import PropTypes from "prop-types";
+import ReactGA from "react-ga";
 
 const theme = createMuiTheme({
   palette: {
-    type: 'dark',
+    type: "dark",
     primary: {
-      main: lightBlue[200],
+      main: lightBlue[200]
     },
     secondary: {
       main: pink[300]
-    },
-  },
+    }
+  }
 });
 
 class App extends Component {
@@ -44,7 +51,7 @@ class App extends Component {
       passwordChecked: false,
       justFinishedSetup: false,
       showSignOutError: false,
-      signOutError: '',
+      signOutError: ""
     };
     this.loadClientWhenGapiReady = this.loadClientWhenGapiReady.bind(this);
     this.initClient = this.initClient.bind(this);
@@ -52,14 +59,14 @@ class App extends Component {
     this.signIn = this.signIn.bind(this);
     this.signOut = this.signOut.bind(this);
     this.loadUserPreferencesStore = this.loadUserPreferencesStore.bind(this);
-    this.loadDiaryEntryStore = this.loadDiaryEntryStore.bind(this); 
+    this.loadDiaryEntryStore = this.loadDiaryEntryStore.bind(this);
   }
 
   componentDidMount() {
-    ReactGA.initialize('UA-138096084-1');
+    ReactGA.initialize("UA-138096084-1");
     ReactGA.event({
-      category: 'User',
-      action: 'Launched App - Web'
+      category: "User",
+      action: "Launched App - Web"
     });
     const script = document.createElement("script");
     script.onload = () => {
@@ -70,78 +77,122 @@ class App extends Component {
   }
 
   render() {
-    ReactGA.pageview(window.location.pathname + window.location.search);  
+    ReactGA.pageview(window.location.pathname + window.location.search);
 
     const { classes } = this.props;
 
     const pathname = this.props.location.pathname;
 
-    if(pathname === "/privacy-policy") {
-      return(<PrivacyPolicy/>)
+    if (pathname === "/privacy-policy") {
+      return <PrivacyPolicy />;
     }
-    if(pathname === "/about") {
-      return(<AboutUs/>)
+    if (pathname === "/about") {
+      return <AboutUs />;
     }
-    if(pathname === "/contact") {
-      return(<Contact/>)
+    if (pathname === "/contact") {
+      return <Contact />;
     }
-    
+
     if (!this.state.isInitialized) {
       // Loading Circle
-      return (<div className={classes.outerContainer}> 
-              <div className={classes.middleContainer}> 
-              <div className={classes.innerContainer}> 
-              <CircularProgress/></div></div></div>); 
+      return (
+        <div className={classes.outerContainer}>
+          <div className={classes.middleContainer}>
+            <div className={classes.innerContainer}>
+              <CircularProgress />
+            </div>
+          </div>
+        </div>
+      );
     }
     if (this.state.newUserSetup) {
       return (
-        <NewUserSetup doneWithSetup={(userData) => {
-          this.setState({ newUserSetup: false, justFinishedSetup: true, }); userPreferenceStore.preferences = userData; }} />
+        <NewUserSetup
+          doneWithSetup={userData => {
+            this.setState({ newUserSetup: false, justFinishedSetup: true });
+            userPreferenceStore.preferences = userData;
+          }}
+        />
       );
     }
     if (this.state.isSignedIn) {
-      if (userPreferenceStore.preferences.usePassword && !this.state.passwordChecked && !this.state.justFinishedSetup) {
+      if (
+        userPreferenceStore.preferences.usePassword &&
+        !this.state.passwordChecked &&
+        !this.state.justFinishedSetup
+      ) {
         // User needs to enter password
         return (
-          <PasswordUnlock userStore={userPreferenceStore} onPasswordChecked={this.onPasswordChecked}/>
+          <PasswordUnlock
+            userStore={userPreferenceStore}
+            onPasswordChecked={this.onPasswordChecked}
+          />
         );
       } else {
         return (
           // Tally Diary App
-          <MuiThemeProvider theme={userPreferenceStore.preferences.primaryTheme == "dark" ? theme : null}>
+          <MuiThemeProvider
+            theme={
+              userPreferenceStore.preferences.primaryTheme == "dark"
+                ? theme
+                : null
+            }
+          >
             <Layout>
               <div>
-                  {
-                    (pathname === "/") ? 
-                    <Entry userStore={userPreferenceStore} diaryEntryStore={diaryEntryStore} adding={true} /> :
-                      (pathname === "/settings") ? 
-                      <Settings signOut={this.signOut} userStore={userPreferenceStore} diaryEntryStore={diaryEntryStore}/> :
-                        (pathname === "/insights") ? 
-                        <Insights diaryEntryStore={diaryEntryStore} userStore={userPreferenceStore}/> :
-                          (pathname === "/timeline") ? 
-                          <Timeline userStore={userPreferenceStore} diaryEntryStore={diaryEntryStore}
-                                    router={this.props.router}/> :
-                            <EntryViewer entryIndex={pathname.substring(10, pathname.length)} router={this.props.router}
-                                        diaryEntryStore={diaryEntryStore} userStore={userPreferenceStore}/>
-                  }
-                  <Snackbar
-                    open={this.state.showSignOutError}
-                    ContentProps={{
-                        'aria-describedby': 'message-id',
-                    }}
-                    message={<span>Error Signing Out: {this.state.signOutError}</span>}
-                    action={[
-                        <IconButton
-                            key="close"
-                            aria-label="Close"
-                            color="inherit"
-                            className={classes.close}
-                            onClick={() => {this.setState({showSignOutError: false})}}
-                        >
-                            <CloseIcon className={classes.icon} />
-                        </IconButton>
-                    ]}
+                {pathname === "/" ? (
+                  <Entry
+                    userStore={userPreferenceStore}
+                    diaryEntryStore={diaryEntryStore}
+                    adding={true}
                   />
+                ) : pathname === "/settings" ? (
+                  <Settings
+                    signOut={this.signOut}
+                    userStore={userPreferenceStore}
+                    diaryEntryStore={diaryEntryStore}
+                  />
+                ) : pathname === "/insights" ? (
+                  <Insights
+                    diaryEntryStore={diaryEntryStore}
+                    userStore={userPreferenceStore}
+                  />
+                ) : pathname === "/timeline" ? (
+                  <Timeline
+                    userStore={userPreferenceStore}
+                    diaryEntryStore={diaryEntryStore}
+                    router={this.props.router}
+                  />
+                ) : (
+                  <EntryViewer
+                    entryIndex={pathname.substring(10, pathname.length)}
+                    router={this.props.router}
+                    diaryEntryStore={diaryEntryStore}
+                    userStore={userPreferenceStore}
+                  />
+                )}
+                <Snackbar
+                  open={this.state.showSignOutError}
+                  ContentProps={{
+                    "aria-describedby": "message-id"
+                  }}
+                  message={
+                    <span>Error Signing Out: {this.state.signOutError}</span>
+                  }
+                  action={[
+                    <IconButton
+                      key="close"
+                      aria-label="Close"
+                      color="inherit"
+                      className={classes.close}
+                      onClick={() => {
+                        this.setState({ showSignOutError: false });
+                      }}
+                    >
+                      <CloseIcon className={classes.icon} />
+                    </IconButton>
+                  ]}
+                />
               </div>
             </Layout>
           </MuiThemeProvider>
@@ -155,163 +206,218 @@ class App extends Component {
         </div>
       );
     }
-
   }
 
   /* GAPI */
 
-  loadClientWhenGapiReady = (script) => {
-    if (script.getAttribute('gapi_processed')) {
-      if (window.location.hostname === 'localhost') {
-        gapi.client.load("http://localhost:8080/_ah/api/discovery/v1/apis/metafields/v1/rest")
+  loadClientWhenGapiReady = script => {
+    if (script.getAttribute("gapi_processed")) {
+      if (window.location.hostname === "localhost") {
+        gapi.client.load(
+          "http://localhost:8080/_ah/api/discovery/v1/apis/metafields/v1/rest"
+        );
       }
-      gapi.load('client:auth2', this.initClient);
+      gapi.load("client:auth2", this.initClient);
     } else {
-      setTimeout(() => { this.loadClientWhenGapiReady(script) }, 50);
+      setTimeout(() => {
+        this.loadClientWhenGapiReady(script);
+      }, 50);
     }
-  }
+  };
 
   initClient = () => {
     const that = this;
-    gapi.client.init({
-      apiKey: 'AIzaSyAuKJs7B5EiTmFyjP8cg974vCsqS98QvYA',
-      clientId: '577206274010-9oung4hgd77fij9e50kjbc32tlviai4e.apps.googleusercontent.com',
-      discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"],
-      scope: 'https://www.googleapis.com/auth/drive.appdata',
-      ux_mode: 'redirect',
-    }).then(() => {
-      that.updateSignInStatus();
-      if (that.state.isSignedIn) {
-        DriveHelper.getFileCount().then((count) => {
-          if (count === 0) {
-            that.setState({ 
-              newUserSetup: true, 
-              isInitialized: true,
-            });
-          } else {
-            this.loadUserPreferencesStore().then(() => {
-              this.loadDiaryEntryStore().then(() => {
-                that.setState({ isInitialized: true });
+    gapi.client
+      .init({
+        apiKey: "AIzaSyAHaIp_y0a_Aq2P-Ocs3yRh5PPofYINm1Q",
+        clientId:
+          "522749181218-4abs5ni3cjhj3lpue8gfc5qqnp0v7p5o.apps.googleusercontent.com",
+        scope: "https://www.googleapis.com/auth/youtube.upload",
+        ux_mode: "redirect"
+      })
+      .then(() => {
+        that.updateSignInStatus();
+        if (that.state.isSignedIn) {
+          const authInstance = window.gapi.auth2.getAuthInstance();
+          authInstance.grantOfflineAccess().then(res => {
+            const data = {
+              client_id:
+                "522749181218-4abs5ni3cjhj3lpue8gfc5qqnp0v7p5o.apps.googleusercontent.com",
+              client_secret: "NtHD6zZnHoiztnQOXribnMVi",
+              code: res.code,
+              grant_type: "authorization_code",
+              redirect_uri: "http://localhost:3000"
+            };
+
+            fetch(
+              "https://www.googleapis.com/oauth2/v4/token",
+              {
+                method: "POST", // *GET, POST, PUT, DELETE, etc.
+                mode: "cors", // no-cors, *cors, same-origin
+                cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                credentials: "same-origin", // include, *same-origin, omit
+                headers: {
+                  "Content-Type": "application/json"
+                  // 'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                redirect: "follow", // manual, *follow, error
+                referrerPolicy: "no-referrer", // no-referrer, *client
+                body: JSON.stringify(data) // body data type must match "Content-Type" header})
+              }
+            ).then(res => {
+              res.json().then(token => {
+                console.log(token);
               });
-            }).catch((err) => console.log(err));
-          }
-        });
-      } else {
-        that.setState({ isInitialized: true });
-      }
-    }).catch((error) => {
-      console.log(error);
-    });
-  }
+            });
+          });
+          // DriveHelper.getFileCount().then((count) => {
+          //   if (count === 0) {
+          //     that.setState({
+          //       newUserSetup: true,
+          //       isInitialized: true,
+          //     });
+          //   } else {
+          //     this.loadUserPreferencesStore().then(() => {
+          //       this.loadDiaryEntryStore().then(() => {
+          //         that.setState({ isInitialized: true });
+          //       });
+          //     }).catch((err) => console.log(err));
+          //   }
+          // });
+        } else {
+          that.setState({ isInitialized: true });
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
 
   signIn() {
-    gapi.auth2.getAuthInstance().signIn({prompt: 'select_account'}).then(() => {
-      DriveHelper.getFileCount().then((count) => {
-        if (count === 0) {
-          this.setState({ newUserSetup: true });
-        } else {
-          this.loadUserPreferencesStore().then(() => {
-            this.loadDiaryEntryStore().then(() => {
-              this.setState({ isInitialized: true });
-              this.updateSignInStatus();
-            });
-          }).catch(err => console.log(err));
-        }
+    gapi.auth2
+      .getAuthInstance()
+      .signIn({ prompt: "select_account" })
+      .then(() => {
+        // DriveHelper.getFileCount().then((count) => {
+        //   if (count === 0) {
+        //     this.setState({ newUserSetup: true });
+        //   } else {
+        //     this.loadUserPreferencesStore().then(() => {
+        //       this.loadDiaryEntryStore().then(() => {
+        //         this.setState({ isInitialized: true });
+        //         this.updateSignInStatus();
+        //       });
+        //     }).catch(err => console.log(err));
+        //   }
+        // });
+        const authInstance = window.gapi.auth2.getAuthInstance();
+        authInstance.grantOfflineAccess().then(res => {
+          alert(JSON.stringify(res))
+        });
+      })
+      .catch(error => {
+        console.log(error);
+        window.location.reload();
       });
-    }).catch((error) => {
-      console.log(error);
-      window.location.reload();
-    })
   }
 
   signOut() {
-    gapi.auth2.getAuthInstance().signOut().then(() => {
-      window.location.href = '/';
-      this.updateSignInStatus();
-    }).catch((error) => {
-      this.setState({
-        showSignOutError: true,
-        signOutError: error,
+    gapi.auth2
+      .getAuthInstance()
+      .signOut()
+      .then(() => {
+        window.location.href = "/";
+        this.updateSignInStatus();
       })
-    })
+      .catch(error => {
+        this.setState({
+          showSignOutError: true,
+          signOutError: error
+        });
+      });
   }
 
   updateSignInStatus = () => {
-    this.setState({ isSignedIn: gapi.auth2.getAuthInstance().isSignedIn.get() });
+    this.setState({
+      isSignedIn: gapi.auth2.getAuthInstance().isSignedIn.get()
+    });
   };
 
   loadUserPreferencesStore = () => {
     return new Promise((resolve, reject) => {
-      DriveHelper.getUserData().then((res) => { 
-        userPreferenceStore.preferences = res;
-        userPreferenceStore.preferences.appLaunches += 1;
-        DriveHelper.updateUserData(userPreferenceStore.preferences);
-        resolve();
-      }).catch((err) => {
+      DriveHelper.getUserData()
+        .then(res => {
+          userPreferenceStore.preferences = res;
+          userPreferenceStore.preferences.appLaunches += 1;
+          DriveHelper.updateUserData(userPreferenceStore.preferences);
+          resolve();
+        })
+        .catch(err => {
           reject(err);
-      });
+        });
     });
   };
 
   loadDiaryEntryStore = () => {
     return new Promise((resolve, reject) => {
-      DriveHelper.getEntries().then((res) => {
-        let temp = res;
-        if(temp != null && temp != undefined && temp.length != undefined) {
-          temp.sort((a, b) => {
-            // Sorts diaries in descending order by date
-            return new Date(b.date).getTime() - new Date(a.date).getTime();
-          });
-        } else {
-          temp = [];
-        }
-        diaryEntryStore.entries = temp;
-        resolve();
-      }).catch(err => reject(err));
+      DriveHelper.getEntries()
+        .then(res => {
+          let temp = res;
+          if (temp != null && temp != undefined && temp.length != undefined) {
+            temp.sort((a, b) => {
+              // Sorts diaries in descending order by date
+              return new Date(b.date).getTime() - new Date(a.date).getTime();
+            });
+          } else {
+            temp = [];
+          }
+          diaryEntryStore.entries = temp;
+          resolve();
+        })
+        .catch(err => reject(err));
     });
-  }
+  };
 
   onPasswordChecked = () => {
     this.setState({
-      passwordChecked: true,
-    }); 
+      passwordChecked: true
+    });
   };
 }
 
 const styles = theme => ({
   outerContainer: {
-    backgroundColor: '#D3D3D3',
-    fontFamily: 'Roboto',
-    display: 'table',
-    position: 'absolute',
+    backgroundColor: "#D3D3D3",
+    fontFamily: "Roboto",
+    display: "table",
+    position: "absolute",
     marginTop: -30,
     marginBottom: -30,
     marginLeft: -20,
     marginRight: -20,
-    height: '103%',
-    width: '103%',
-    overflow: 'hidden',
+    height: "103%",
+    width: "103%",
+    overflow: "hidden"
   },
   middleContainer: {
-      display: 'table-cell',
-      verticalAlign: 'middle',
+    display: "table-cell",
+    verticalAlign: "middle"
   },
   innerContainer: {
-      textAlign: 'center',
+    textAlign: "center"
   },
   card: {
-    fontFamily: 'Roboto',
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    marginTop: '2em',
-    paddingBottom: '1em',
-    paddingLeft: '1em',
-  },
+    fontFamily: "Roboto",
+    marginLeft: "auto",
+    marginRight: "auto",
+    marginTop: "2em",
+    paddingBottom: "1em",
+    paddingLeft: "1em"
+  }
 });
 
 App.propTypes = {
-  classes: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired
 };
-
 
 export default withStyles(styles)(App);
