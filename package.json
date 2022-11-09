@@ -21,7 +21,7 @@
     "react-ga": "^2.5.7",
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
-    "react-scripts": "1.1.5",
+    "react-scripts": "5.0.1",
     "recompose": "^0.30.0",
     "typeface-roboto": "0.0.54",
     "url": "^0.11.0"
