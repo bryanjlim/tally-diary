@@ -1,0 +1,53 @@
+[debug] [2026-04-06T08:44:16.763Z] ----------------------------------------------------------------------
+[debug] [2026-04-06T08:44:16.766Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\bryan\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy --only hosting
+[debug] [2026-04-06T08:44:16.766Z] CLI Version:   15.13.0
+[debug] [2026-04-06T08:44:16.766Z] Platform:      win32
+[debug] [2026-04-06T08:44:16.766Z] Node Version:  v20.13.1
+[debug] [2026-04-06T08:44:16.766Z] Time:          Mon Apr 06 2026 01:44:16 GMT-0700 (Pacific Daylight Time)
+[debug] [2026-04-06T08:44:16.766Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-04-06T08:44:18.306Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-04-06T08:44:18.306Z] > authorizing via signed-in user (realbryanlim@gmail.com)
+[debug] [2026-04-06T08:44:18.306Z] [iam] checking project tally-diary for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2026-04-06T08:44:18.307Z] Checked if tokens are valid: false, expires at: 1742289431887
+[debug] [2026-04-06T08:44:18.308Z] Checked if tokens are valid: false, expires at: 1742289431887
+[debug] [2026-04-06T08:44:18.308Z] > refreshing access token with scopes: []
+[debug] [2026-04-06T08:44:18.309Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2026-04-06T08:44:18.309Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-04-06T08:44:18.476Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 400
+[debug] [2026-04-06T08:44:18.476Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-04-06T08:44:18.476Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/tally-diary:testIamPermissions [none]
+[debug] [2026-04-06T08:44:18.476Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/tally-diary:testIamPermissions  x-goog-user-project=tally-diary
+[debug] [2026-04-06T08:44:18.476Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/tally-diary:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2026-04-06T08:44:18.578Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/tally-diary:testIamPermissions 401
+[debug] [2026-04-06T08:44:18.578Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/tally-diary:testIamPermissions {"error":{"code":401,"message":"Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.","status":"UNAUTHENTICATED","details":[{"@type":"type.googleapis.com/google.rpc.ErrorInfo","reason":"ACCESS_TOKEN_TYPE_UNSUPPORTED","metadata":{"service":"cloudresourcemanager.googleapis.com","method":"google.cloudresourcemanager.v1.Projects.TestIamPermissions"}}]}}
+[debug] [2026-04-06T08:44:18.579Z] Got a 401 Unauthenticated error for a call that required authentication. Refreshing tokens.
+[debug] [2026-04-06T08:44:18.579Z] Checked if tokens are valid: false, expires at: 1742289431887
+[debug] [2026-04-06T08:44:18.579Z] Checked if tokens are valid: false, expires at: 1742289431887
+[debug] [2026-04-06T08:44:18.579Z] > refreshing access token with scopes: []
+[debug] [2026-04-06T08:44:18.579Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2026-04-06T08:44:18.579Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-04-06T08:44:18.644Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 400
+[debug] [2026-04-06T08:44:18.644Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-04-06T08:44:18.645Z] [iam] error while checking permissions, command may fail: Request to https://cloudresourcemanager.googleapis.com/v1/projects/tally-diary:testIamPermissions had HTTP Error: 401, Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+[debug] [2026-04-06T08:44:18.646Z] Checked if tokens are valid: false, expires at: 1742289431887
+[debug] [2026-04-06T08:44:18.646Z] Checked if tokens are valid: false, expires at: 1742289431887
+[debug] [2026-04-06T08:44:18.646Z] > refreshing access token with scopes: []
+[debug] [2026-04-06T08:44:18.646Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2026-04-06T08:44:18.646Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-04-06T08:44:18.721Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 400
+[debug] [2026-04-06T08:44:18.722Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-04-06T08:44:18.722Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/tally-diary [none]
+[debug] [2026-04-06T08:44:18.809Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/tally-diary 401
+[debug] [2026-04-06T08:44:18.809Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/tally-diary {"error":{"code":401,"message":"Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.","status":"UNAUTHENTICATED"}}
+[debug] [2026-04-06T08:44:18.809Z] Got a 401 Unauthenticated error for a call that required authentication. Refreshing tokens.
+[debug] [2026-04-06T08:44:18.809Z] Checked if tokens are valid: false, expires at: 1742289431887
+[debug] [2026-04-06T08:44:18.809Z] Checked if tokens are valid: false, expires at: 1742289431887
+[debug] [2026-04-06T08:44:18.809Z] > refreshing access token with scopes: []
+[debug] [2026-04-06T08:44:18.809Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2026-04-06T08:44:18.809Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-04-06T08:44:18.883Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 400
+[debug] [2026-04-06T08:44:18.884Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-04-06T08:44:18.884Z] Request to https://firebase.googleapis.com/v1beta1/projects/tally-diary had HTTP Error: 401, Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+[error] 
+[error] Error: Assertion failed: resolving hosting target of a site with no site name or target name. This should have caused an error earlier

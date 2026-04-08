@@ -1,0 +1,142 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+	--font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+
+	/* Light mode (default) — indigo palette inspired by the logo */
+	--color-background: hsl(0 0% 100%);
+	--color-foreground: hsl(230 25% 10%);
+	--color-card: hsl(0 0% 100%);
+	--color-card-foreground: hsl(230 25% 10%);
+	--color-popover: hsl(0 0% 100%);
+	--color-popover-foreground: hsl(230 25% 10%);
+	--color-primary: hsl(234 50% 55%);
+	--color-primary-foreground: hsl(0 0% 100%);
+	--color-secondary: hsl(230 30% 95%);
+	--color-secondary-foreground: hsl(230 25% 18%);
+	--color-muted: hsl(230 25% 95%);
+	--color-muted-foreground: hsl(230 10% 46%);
+	--color-accent: hsl(340 72% 52%);
+	--color-accent-foreground: hsl(0 0% 100%);
+	--color-destructive: hsl(0 72% 55%);
+	--color-destructive-foreground: hsl(0 0% 100%);
+	--color-border: hsl(230 20% 90%);
+	--color-input: hsl(230 20% 90%);
+	--color-ring: hsl(234 50% 55%);
+
+	--color-sidebar: hsl(230 30% 97%);
+	--color-sidebar-foreground: hsl(230 15% 30%);
+	--color-sidebar-border: hsl(230 18% 90%);
+	--color-sidebar-accent: hsl(230 20% 94%);
+	--color-sidebar-accent-foreground: hsl(230 20% 12%);
+
+	--radius-sm: 0.25rem;
+	--radius-md: 0.375rem;
+	--radius-lg: 0.5rem;
+	--radius-xl: 0.75rem;
+}
+
+/* Dark mode overrides */
+.dark {
+	--color-background: hsl(230 30% 6%);
+	--color-foreground: hsl(230 15% 88%);
+	--color-card: hsl(230 28% 9%);
+	--color-card-foreground: hsl(230 15% 88%);
+	--color-popover: hsl(230 28% 9%);
+	--color-popover-foreground: hsl(230 15% 88%);
+	--color-primary: hsl(234 55% 68%);
+	--color-primary-foreground: hsl(0 0% 100%);
+	--color-secondary: hsl(230 25% 14%);
+	--color-secondary-foreground: hsl(230 15% 88%);
+	--color-muted: hsl(230 25% 14%);
+	--color-muted-foreground: hsl(230 10% 55%);
+	--color-accent: hsl(340 72% 62%);
+	--color-accent-foreground: hsl(0 0% 100%);
+	--color-destructive: hsl(0 60% 50%);
+	--color-destructive-foreground: hsl(0 0% 100%);
+	--color-border: hsl(230 22% 16%);
+	--color-input: hsl(230 22% 16%);
+	--color-ring: hsl(234 55% 68%);
+
+	--color-sidebar: hsl(230 30% 7%);
+	--color-sidebar-foreground: hsl(230 12% 68%);
+	--color-sidebar-border: hsl(230 22% 14%);
+	--color-sidebar-accent: hsl(230 22% 11%);
+	--color-sidebar-accent-foreground: hsl(230 15% 88%);
+}
+
+* {
+	border-color: var(--color-border);
+}
+
+html {
+	scroll-behavior: smooth;
+}
+
+body {
+	background-color: var(--color-background);
+	color: var(--color-foreground);
+	font-family: var(--font-sans);
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+	width: 8px;
+	height: 8px;
+}
+::-webkit-scrollbar-track {
+	background: transparent;
+}
+::-webkit-scrollbar-thumb {
+	background: var(--color-muted-foreground);
+	border-radius: 9999px;
+	opacity: 0.3;
+}
+::-webkit-scrollbar-thumb:hover {
+	opacity: 0.5;
+}
+
+/* Glass morphism utility */
+.glass {
+	background: color-mix(in srgb, var(--color-card) 80%, transparent);
+	backdrop-filter: blur(12px);
+	-webkit-backdrop-filter: blur(12px);
+}
+
+/* Smooth transitions */
+.transition-theme {
+	transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Animations */
+@keyframes fade-in {
+	from { opacity: 0; transform: translateY(8px); }
+	to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-in-left {
+	from { opacity: 0; transform: translateX(-16px); }
+	to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes scale-in {
+	from { opacity: 0; transform: scale(0.95); }
+	to { opacity: 1; transform: scale(1); }
+}
+
+.animate-fade-in {
+	animation: fade-in 0.4s ease-out;
+}
+
+.animate-slide-in {
+	animation: slide-in-left 0.3s ease-out;
+}
+
+.animate-scale-in {
+	animation: scale-in 0.2s ease-out;
+}

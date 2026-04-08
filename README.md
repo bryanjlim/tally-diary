@@ -1,10 +1,42 @@
+# sv
 
-![Tally Diary Logo](https://bn1303files.storage.live.com/y4mqujQXhzvWUpQql8VCzF0gF2OaWbT-6HTcuDG_tDZNMEiFAvuPoaTo8yHWWkz6IkSOb7siv7NMt__2lmeQEteiIxZAseWZYGFXK5-MED94pHtLXz5rwHfklo99tA_LGfVKpDQJKTMQ7Gh--eHpCBiS3Ciyn8qBKLYao9-5fHMDAGOT3eCdnrVMzhuYwNiggE0BvmcUNopkK5OCApZxt1k6Q/TallyDiaryLogo.png?psid=1&width=257&height=116)
+Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
 
-## App Description
-A diary that helps you tally your life. How many times you’ve eaten at Chipotle? How many days you’ve been away from home? How many days you’ve felt unstoppable? Tally Diary helps you tally any range of items, even how many days it’s been since you were born! Or it can just act as your typical diary app. Diary entries are stored on a user's own cloud storage, so they're secure. Everything, from themes to cloud-sync to password protection, will be included. You don’t need a tally for the price, because it’s all going to be free.
+## Creating a project
 
-## Setup
-1. Ensure that NodeJS is installed
-2. Clone repository, navigate to the repository in terminal/cmd and enter "npm install"
-3. To run for the first time, navigate to the repository in terminal/cmd and enter "npm run start"
+If you're seeing this, you've probably already done this step. Congrats!
+
+```sh
+# create a new project
+npx sv create my-app
+```
+
+To recreate this project with the same configuration:
+
+```sh
+# recreate this project
+npx sv@0.13.2 create --template minimal --types ts --no-install tally-diary-svelte
+```
+
+## Developing
+
+Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+
+```sh
+npm run dev
+
+# or start the server and open the app in a new browser tab
+npm run dev -- --open
+```
+
+## Building
+
+To create a production version of your app:
+
+```sh
+npm run build
+```
+
+You can preview the production build with `npm run preview`.
+
+> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.

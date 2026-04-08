@@ -1,0 +1,6 @@
+
+[1m[37m===[39m Deploying to 'tally-diary'...[22m
+
+[36m[1mi [22m[39m deploying [1mhosting[22m
+
+[1m[31mError:[39m[22m Request to https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/tally-diary/versions had HTTP Error: 401, Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.

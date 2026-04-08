@@ -1,0 +1,143 @@
+[33mYou are using Node.js 20.13.1. Vite requires Node.js version 20.19+ or 22.12+. Please upgrade your Node.js version.[39m
+[36mvite v7.3.1 [32mbuilding ssr environment for production...[36m[39m
+transforming...
+[33m1:39:06 AM [vite-plugin-svelte] src/routes/timeline/+page.svelte:114:5 A form label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control[39m
+112:       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+113:         <div>
+114:           <label class="block text-xs text-muted-foreground mb-1">Start Date</label>
+                                                                                         ^
+115:           <input type="date" bind:value={filterStartDate} class="w-full px-3 py-1.5 rounded-lg border border-input bg-background text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring/40" />
+116:         </div>
+[33m1:39:06 AM [vite-plugin-svelte] src/routes/timeline/+page.svelte:118:5 A form label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control[39m
+116:         </div>
+117:         <div>
+118:           <label class="block text-xs text-muted-foreground mb-1">End Date</label>
+                                                                                       ^
+119:           <input type="date" bind:value={filterEndDate} class="w-full px-3 py-1.5 rounded-lg border border-input bg-background text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring/40" />
+120:         </div>
+[33m1:39:06 AM [vite-plugin-svelte] src/routes/timeline/+page.svelte:122:5 A form label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control[39m
+120:         </div>
+121:         <div class="relative">
+122:           <label class="block text-xs text-muted-foreground mb-1">Body Text</label>
+                                                                                        ^
+123:           <div class="relative">
+124:             <Search class="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
+[33m1:39:06 AM [vite-plugin-svelte] src/routes/timeline/+page.svelte:129:5 A form label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control[39m
+127:         </div>
+128:         <div>
+129:           <label class="block text-xs text-muted-foreground mb-1">Tally Filter</label>
+                                                                                           ^
+130:           <input type="text" bind:value={filterTally} placeholder="e.g., Chipotle" class="w-full px-3 py-1.5 rounded-lg border border-input bg-background text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/40" />
+131:         </div>
+[32mΓ£ô[39m 3777 modules transformed.
+rendering chunks...
+[36mvite v7.3.1 [32mbuilding client environment for production...[36m[39m
+transforming...
+[33m1:39:15 AM [vite-plugin-svelte] src/routes/timeline/+page.svelte:114:5 A form label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control[39m
+112:       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+113:         <div>
+114:           <label class="block text-xs text-muted-foreground mb-1">Start Date</label>
+                                                                                         ^
+115:           <input type="date" bind:value={filterStartDate} class="w-full px-3 py-1.5 rounded-lg border border-input bg-background text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring/40" />
+116:         </div>
+[33m1:39:15 AM [vite-plugin-svelte] src/routes/timeline/+page.svelte:118:5 A form label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control[39m
+116:         </div>
+117:         <div>
+118:           <label class="block text-xs text-muted-foreground mb-1">End Date</label>
+                                                                                       ^
+119:           <input type="date" bind:value={filterEndDate} class="w-full px-3 py-1.5 rounded-lg border border-input bg-background text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring/40" />
+120:         </div>
+[33m1:39:15 AM [vite-plugin-svelte] src/routes/timeline/+page.svelte:122:5 A form label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control[39m
+120:         </div>
+121:         <div class="relative">
+122:           <label class="block text-xs text-muted-foreground mb-1">Body Text</label>
+                                                                                        ^
+123:           <div class="relative">
+124:             <Search class="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
+[33m1:39:15 AM [vite-plugin-svelte] src/routes/timeline/+page.svelte:129:5 A form label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control[39m
+127:         </div>
+128:         <div>
+129:           <label class="block text-xs text-muted-foreground mb-1">Tally Filter</label>
+                                                                                           ^
+130:           <input type="text" bind:value={filterTally} placeholder="e.g., Chipotle" class="w-full px-3 py-1.5 rounded-lg border border-input bg-background text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/40" />
+131:         </div>
+[32mΓ£ô[39m 3793 modules transformed.
+rendering chunks...
+computing gzip size...
+[2m.svelte-kit/output/client/[22m[32m_app/version.json                       [39m[1m[2m 0.03 kB[22m[1m[22m[2m Γöé gzip:  0.05 kB[22m
+[2m.svelte-kit/output/client/[22m[32m.vite/manifest.json                     [39m[1m[2m 7.37 kB[22m[1m[22m[2m Γöé gzip:  1.00 kB[22m
+[2m.svelte-kit/output/client/[22m[35m_app/immutable/assets/0.LL7kvyYm.css    [39m[1m[2m35.13 kB[22m[1m[22m[2m Γöé gzip:  6.68 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/entry/start.C9CYk3WN.js  [39m[1m[2m 0.08 kB[22m[1m[22m[2m Γöé gzip:  0.09 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/CcNnRiv6.js       [39m[1m[2m 0.21 kB[22m[1m[22m[2m Γöé gzip:  0.15 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/BsT7O9sY.js       [39m[1m[2m 0.32 kB[22m[1m[22m[2m Γöé gzip:  0.25 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/S3lFHhzY.js       [39m[1m[2m 0.37 kB[22m[1m[22m[2m Γöé gzip:  0.26 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/nodes/1.BkoBUaW-.js      [39m[1m[2m 0.42 kB[22m[1m[22m[2m Γöé gzip:  0.28 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/Y1ZXjqcW.js       [39m[1m[2m 0.44 kB[22m[1m[22m[2m Γöé gzip:  0.29 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/DSeYQNzE.js       [39m[1m[2m 0.46 kB[22m[1m[22m[2m Γöé gzip:  0.32 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/B_UdVMrX.js       [39m[1m[2m 0.53 kB[22m[1m[22m[2m Γöé gzip:  0.34 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/C_PurgMi.js       [39m[1m[2m 0.54 kB[22m[1m[22m[2m Γöé gzip:  0.37 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/DrSJmzu8.js       [39m[1m[2m 0.59 kB[22m[1m[22m[2m Γöé gzip:  0.39 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/BGJJcwSw.js       [39m[1m[2m 0.60 kB[22m[1m[22m[2m Γöé gzip:  0.38 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/Bf3Nexyx.js       [39m[1m[2m 0.99 kB[22m[1m[22m[2m Γöé gzip:  0.51 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/DJoPq6Gh.js       [39m[1m[2m 1.04 kB[22m[1m[22m[2m Γöé gzip:  0.51 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/CbI6-5-6.js       [39m[1m[2m 1.08 kB[22m[1m[22m[2m Γöé gzip:  0.52 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/DBmXqRWU.js       [39m[1m[2m 4.36 kB[22m[1m[22m[2m Γöé gzip:  1.87 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/entry/app.DiJxVOZ2.js    [39m[1m[2m 6.18 kB[22m[1m[22m[2m Γöé gzip:  2.75 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/nodes/3.CCIbQQL7.js      [39m[1m[2m 6.31 kB[22m[1m[22m[2m Γöé gzip:  2.42 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/BInoPxJA.js       [39m[1m[2m 8.52 kB[22m[1m[22m[2m Γöé gzip:  3.81 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/nodes/2.DrLD3-VD.js      [39m[1m[2m 8.74 kB[22m[1m[22m[2m Γöé gzip:  3.22 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/nodes/6.K44wa1Ta.js      [39m[1m[2m11.06 kB[22m[1m[22m[2m Γöé gzip:  3.84 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/nodes/4.WeC0ov_P.js      [39m[1m[2m12.30 kB[22m[1m[22m[2m Γöé gzip:  4.30 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/nodes/5.Dm0TKQKf.js      [39m[1m[2m12.61 kB[22m[1m[22m[2m Γöé gzip:  3.98 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/nodes/0.C7wywpxf.js      [39m[1m[2m16.52 kB[22m[1m[22m[2m Γöé gzip:  5.27 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/B4_jdJ7B.js       [39m[1m[2m21.07 kB[22m[1m[22m[2m Γöé gzip:  8.77 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/C0AYtEDv.js       [39m[1m[2m24.72 kB[22m[1m[22m[2m Γöé gzip:  9.70 kB[22m
+[2m.svelte-kit/output/client/[22m[36m_app/immutable/chunks/mfqQEXFC.js       [39m[1m[2m26.48 kB[22m[1m[22m[2m Γöé gzip: 10.40 kB[22m
+[32mΓ£ô built in 9.44s[39m
+[2m.svelte-kit/output/server/[22m[32m.vite/manifest.json                             [39m[1m[2m  6.16 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[35m_app/immutable/assets/_layout.LL7kvyYm.css      [39m[1m[2m 35.13 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mentries/pages/timeline/_index_/_page.ts.js      [39m[1m[2m  0.05 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mchunks/false.js                                 [39m[1m[2m  0.05 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mentries/pages/_layout.ts.js                     [39m[1m[2m  0.07 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mentries/fallbacks/error.svelte.js               [39m[1m[2m  0.35 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36minternal.js                                     [39m[1m[2m  0.35 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mchunks/state.svelte.js                          [39m[1m[2m  0.45 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mchunks/environment.js                           [39m[1m[2m  0.62 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mchunks/index3.js                                [39m[1m[2m  0.94 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mchunks/utils.js                                 [39m[1m[2m  1.15 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mchunks/index.js                                 [39m[1m[2m  1.44 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mchunks/calendar.js                              [39m[1m[2m  1.76 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mchunks/book-open.js                             [39m[1m[2m  1.85 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mchunks/trash-2.js                               [39m[1m[2m  1.87 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mchunks/internal.js                              [39m[1m[2m  3.25 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mchunks/thumbs-up.js                             [39m[1m[2m  3.68 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mchunks/x.js                                     [39m[1m[2m  5.14 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mchunks/exports.js                               [39m[1m[2m  5.59 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mentries/pages/_page.svelte.js                   [39m[1m[2m  5.77 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mentries/pages/settings/_page.svelte.js          [39m[1m[2m  9.54 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mentries/pages/timeline/_index_/_page.svelte.js  [39m[1m[2m 11.37 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mentries/pages/insights/_page.svelte.js          [39m[1m[2m 12.47 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mentries/pages/timeline/_page.svelte.js          [39m[1m[2m 13.60 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mchunks/Icon.js                                  [39m[1m[2m 17.29 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mremote-entry.js                                 [39m[1m[2m 19.03 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mentries/pages/_layout.svelte.js                 [39m[1m[2m 22.42 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mchunks/shared.js                                [39m[1m[2m 27.07 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mchunks/index2.js                                [39m[1m[2m 41.14 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mchunks/root.js                                  [39m[1m[2m 81.97 kB[22m[1m[22m
+[2m.svelte-kit/output/server/[22m[36mindex.js                                        [39m[1m[2m125.79 kB[22m[1m[22m
+[32mΓ£ô built in 19.50s[39m
+
+Run npm run preview to preview your production build locally.
+
+> Using @sveltejs/adapter-static
+Overwriting build\index.html with fallback page. Consider using a different name for the fallback.
+  Wrote site to "build"
+  Γ£ö done

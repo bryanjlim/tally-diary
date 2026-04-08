@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "tally-diary",
     "public": "build",
     "ignore": [
       "firebase.json",
