@@ -35,8 +35,8 @@
 
 	function getDaysAlive(): number {
 		const dob = store.preferences.dateOfBirth;
-		if (!dob || !date) return 0;
-		return Math.round((new Date(date).getTime() - new Date(dob).getTime()) / (1000 * 60 * 60 * 24)) + 1;
+		if (!dob) return 0;
+		return Math.round((new Date(date + "T12:00:00").getTime() - new Date(dob + "T12:00:00").getTime()) / (1000 * 60 * 60 * 24)) + 1;
 	}
 
 	function toggleThumbUp() {

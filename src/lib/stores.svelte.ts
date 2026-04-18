@@ -67,7 +67,7 @@ function triggerBatchUpload(batchId: string, getEntries: () => DiaryEntry[]) {
 		}).catch(err => console.warn(`[Drive] Sync batch ${batchId} failed:`, err));
 		
 		delete uploadTimers[batchId];
-	}, 1000); // 1-second debounce
+	}, 200); // 200ms debounce to prevent aborted uploads on quick app exit
 }
 
 function driveWritePreferences(prefs: UserPreferences) {
@@ -144,8 +144,8 @@ function createDiaryStore() {
 		},
 
 		/** Sign out of Google Drive. Local data remains. */
-		signOut() {
-			drive.signOut();
+		async signOut() {
+			await drive.signOut();
 			signedIn = false;
 		},
 
@@ -164,8 +164,14 @@ function createDiaryStore() {
 						...e,
 						id: e.id || generateId()
 					}));
-					converted.sort(sortDiaryEntries);
-					entries = converted;
+					
+					// Merge local and remote
+					const combined = new Map<string, DiaryEntry>();
+					for (const e of converted) combined.set(e.id, e);
+					for (const e of entries) combined.set(e.id, e); // local overwrites remote if conflict
+					
+					const merged = Array.from(combined.values()).sort(sortDiaryEntries);
+					entries = merged;
 					saveEntries(entries);
 					console.log(`[Drive] Synced ${entries.length} entries from Drive`);
 				} else {
@@ -182,6 +188,45 @@ function createDiaryStore() {
 				}
 			} catch (e) {
 				console.warn('[Drive] Sync failed:', e);
+			} finally {
+				syncing = false;
+			}
+		},
+
+		/** Merge local UI and Drive, then FORCE upload all local states back to Drive to fix out-of-sync devices */
+		async forceSync() {
+			const token = drive.getToken();
+			if (!token) return false;
+			syncing = true;
+			try {
+				// 1. Fetch remote entries
+				const driveEntries = await drive.loadAllEntries(token);
+				const converted: DiaryEntry[] = driveEntries.map((e) => ({ ...e, id: e.id || generateId() }));
+				
+				// 2. Merge local and remote
+				const combined = new Map<string, DiaryEntry>();
+				for (const e of converted) combined.set(e.id, e);
+				for (const e of entries) combined.set(e.id, e);
+				
+				entries = Array.from(combined.values()).sort(sortDiaryEntries);
+				saveEntries(entries);
+				
+				// 3. Re-upload all batches to ensure Drive exactly matches our newly merged local state
+				const batches: Record<string, DiaryEntry[]> = {};
+				for (const e of entries) {
+					if (!e.batchId) e.batchId = getOpenBatchId();
+					if (!batches[e.batchId]) batches[e.batchId] = [];
+					batches[e.batchId].push(e);
+				}
+				
+				for (const [bId, arr] of Object.entries(batches)) {
+					await drive.writeBatch(bId, arr, token);
+				}
+				console.log(`[Drive] Force Sync complete! ${entries.length} total entries.`);
+				return true;
+			} catch (e) {
+				console.warn('[Drive] Force Sync failed:', e);
+				return false;
 			} finally {
 				syncing = false;
 			}

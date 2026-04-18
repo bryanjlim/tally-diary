@@ -25,11 +25,11 @@
 	function getDaysAlive(entryDate: string): number {
 		const dob = store.preferences.dateOfBirth;
 		if (!dob) return 0;
-		return Math.round((new Date(entryDate).getTime() - new Date(dob).getTime()) / (1000 * 60 * 60 * 24)) + 1;
+		return Math.round((new Date(entryDate + "T12:00:00").getTime() - new Date(dob + "T12:00:00").getTime()) / (1000 * 60 * 60 * 24)) + 1;
 	}
 
 	function formatDate(dateStr: string): string {
-		const d = new Date(dateStr);
+		const d = new Date(dateStr + "T12:00:00");
 		return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
 	}
 

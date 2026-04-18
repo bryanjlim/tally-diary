@@ -14,24 +14,16 @@ const DRIVE_API = 'https://www.googleapis.com/drive/v3';
 const UPLOAD_API = 'https://www.googleapis.com/upload/drive/v3';
 const BOUNDARY = '-------314159265358979323846';
 
+import { Capacitor } from '@capacitor/core';
+import { GoogleSignIn } from '@capawesome/capacitor-google-sign-in';
+
 let _accessToken: string | null = null;
-let _tokenClient: any = null;
 
 // ─── Auth ──────────────────────────────────────────────
 
-function loadGisScript(): Promise<void> {
-	return new Promise((resolve, reject) => {
-		if (typeof window === 'undefined') return reject('Not in browser');
-		if ((window as any).google?.accounts?.oauth2) return resolve();
-		const script = document.createElement('script');
-		script.src = 'https://accounts.google.com/gsi/client';
-		script.onload = () => resolve();
-		script.onerror = () => reject('Failed to load Google Identity Services');
-		document.head.appendChild(script);
-	});
-}
-
 const SIGNED_IN_KEY = 'tally-diary-signed-in';
+const CACHED_TOKEN_KEY = 'tally-diary-access-token';
+const CACHED_TOKEN_EXPIRY = 'tally-diary-token-expiry';
 
 /**
  * Prompt the user to sign in and obtain an access token.
@@ -39,63 +31,86 @@ const SIGNED_IN_KEY = 'tally-diary-signed-in';
 export async function authenticate(): Promise<string | null> {
 	if (_accessToken) return _accessToken;
 
-	await loadGisScript();
-
-	return new Promise((resolve) => {
-		_tokenClient = (window as any).google.accounts.oauth2.initTokenClient({
-			client_id: CLIENT_ID,
-			scope: SCOPES,
-			callback: (response: any) => {
-				if (response.access_token) {
-					_accessToken = response.access_token;
-					localStorage.setItem(SIGNED_IN_KEY, 'true');
-					resolve(response.access_token);
-				} else {
-					resolve(null);
-				}
-			},
-			error_callback: () => resolve(null),
+	try {
+		await GoogleSignIn.initialize({
+			clientId: CLIENT_ID,
+			scopes: [SCOPES],
+			...(!Capacitor.isNativePlatform() && { redirectUrl: window.location.origin })
 		});
-		_tokenClient.requestAccessToken({ prompt: '' });
-	});
+		const result = await GoogleSignIn.signIn();
+		if (result.accessToken) {
+			_accessToken = result.accessToken;
+			localStorage.setItem(SIGNED_IN_KEY, 'true');
+			if (!Capacitor.isNativePlatform()) {
+				localStorage.setItem(CACHED_TOKEN_KEY, _accessToken);
+				localStorage.setItem(CACHED_TOKEN_EXPIRY, (Date.now() + 3500 * 1000).toString()); // 1 hr minus buffer
+			}
+			return _accessToken;
+		}
+		return null;
+	} catch (e: any) {
+		console.error("[Auth] Google SignIn failed:", e);
+		return null;
+	}
 }
 
 /**
  * Try to silently re-authenticate without showing any popup.
- * Only works if the user has previously signed in and granted consent.
  * Returns the token or null if silent auth fails.
  */
 export async function trySilentAuth(): Promise<string | null> {
 	if (_accessToken) return _accessToken;
 	if (typeof window === 'undefined') return null;
 
-	// Only attempt if user has previously signed in
-	if (!localStorage.getItem(SIGNED_IN_KEY)) return null;
+	// Check if a Web session token was recently cached and is still valid
+	if (!Capacitor.isNativePlatform()) {
+		const cached = localStorage.getItem(CACHED_TOKEN_KEY);
+		const expiry = localStorage.getItem(CACHED_TOKEN_EXPIRY);
+		if (cached && expiry && Date.now() < parseInt(expiry, 10)) {
+			_accessToken = cached;
+			return _accessToken;
+		}
+	}
 
-	await loadGisScript();
-
-	return new Promise((resolve) => {
-		const timeoutId = setTimeout(() => resolve(null), 5000);
-
-		_tokenClient = (window as any).google.accounts.oauth2.initTokenClient({
-			client_id: CLIENT_ID,
-			scope: SCOPES,
-			callback: (response: any) => {
-				clearTimeout(timeoutId);
-				if (response.access_token) {
-					_accessToken = response.access_token;
-					resolve(response.access_token);
-				} else {
-					resolve(null);
-				}
-			},
-			error_callback: () => {
-				clearTimeout(timeoutId);
-				resolve(null);
-			},
+	try {
+		await GoogleSignIn.initialize({
+			clientId: CLIENT_ID,
+			scopes: [SCOPES],
+			...(!Capacitor.isNativePlatform() && { redirectUrl: window.location.origin })
 		});
-		_tokenClient.requestAccessToken({ prompt: 'none' });
-	});
+
+		// If we are on web and returning from an OAuth redirect
+		if (!Capacitor.isNativePlatform() && window.location.hash.includes('access_token')) {
+			try {
+				const redirectResult = await GoogleSignIn.handleRedirectCallback();
+				if (redirectResult?.accessToken) {
+					_accessToken = redirectResult.accessToken;
+					localStorage.setItem(SIGNED_IN_KEY, 'true');
+					localStorage.setItem(CACHED_TOKEN_KEY, _accessToken);
+					localStorage.setItem(CACHED_TOKEN_EXPIRY, (Date.now() + 3500 * 1000).toString());
+					return _accessToken;
+				}
+			} catch (err) {
+				console.warn("[Auth] Redirect callback parse failed:", err);
+			}
+		}
+
+		if (!localStorage.getItem(SIGNED_IN_KEY)) return null;
+
+		const result = await GoogleSignIn.signIn();
+		if (result.accessToken) {
+			_accessToken = result.accessToken;
+			if (!Capacitor.isNativePlatform()) {
+				localStorage.setItem(CACHED_TOKEN_KEY, _accessToken);
+				localStorage.setItem(CACHED_TOKEN_EXPIRY, (Date.now() + 3500 * 1000).toString());
+			}
+			return _accessToken;
+		}
+		return null;
+	} catch (e) {
+		console.warn("[Auth] Google Silent SignIn failed:", e);
+		return null;
+	}
 }
 
 /** Get the cached access token, or null if not signed in. */
@@ -115,18 +130,32 @@ export function hasSignedInBefore(): boolean {
 }
 
 /** Sign out — revoke the token. */
-export function signOut(): void {
+export async function signOut(): Promise<void> {
 	if (_accessToken) {
-		(window as any).google?.accounts?.oauth2?.revoke?.(_accessToken);
+		if (Capacitor.isNativePlatform()) {
+			try {
+				await GoogleSignIn.signOut();
+			} catch (e) {
+				console.warn("[Auth] Native Google SignOut warning:", e);
+			}
+		} else {
+			(window as any).google?.accounts?.oauth2?.revoke?.(_accessToken);
+			try {
+				await GoogleSignIn.signOut();
+			} catch(e) {}
+		}
 	}
 	_accessToken = null;
 	localStorage.removeItem(SIGNED_IN_KEY);
+	localStorage.removeItem(CACHED_TOKEN_KEY);
+	localStorage.removeItem(CACHED_TOKEN_EXPIRY);
 }
 
 // ─── Helpers ──────────────────────────────────────────
 
 async function driveRequest(path: string, token: string, options: RequestInit = {}): Promise<Response> {
 	const resp = await fetch(path, {
+		cache: 'no-store', // Always bypass browser cache for Drive sync
 		...options,
 		headers: {
 			Authorization: `Bearer ${token}`,
@@ -137,6 +166,8 @@ async function driveRequest(path: string, token: string, options: RequestInit = 
 	if (resp.status === 401) {
 		// Token expired — clear it
 		_accessToken = null;
+		localStorage.removeItem(CACHED_TOKEN_KEY);
+		localStorage.removeItem(CACHED_TOKEN_EXPIRY);
 		throw new Error('Token expired');
 	}
 

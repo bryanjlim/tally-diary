@@ -31,7 +31,7 @@
 	function getDaysAlive(): number {
 		const dob = store.preferences.dateOfBirth;
 		if (!dob) return 0;
-		const diff = new Date(date).getTime() - new Date(dob).getTime();
+		const diff = new Date(date + "T12:00:00").getTime() - new Date(dob + "T12:00:00").getTime();
 		return Math.round(diff / (1000 * 60 * 60 * 24)) + 1;
 	}
 

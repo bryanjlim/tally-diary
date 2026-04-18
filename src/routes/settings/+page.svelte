@@ -291,7 +291,7 @@
 	<div class="rounded-xl border border-border bg-card overflow-hidden">
 		<div class="p-5 border-b border-border">
 			<h3 class="text-base font-semibold text-foreground">
-				Export & Import
+				Data Management
 			</h3>
 		</div>
 		<div class="p-5 flex flex-wrap gap-3">
@@ -307,6 +307,19 @@
 			>
 				<Upload class="w-4 h-4" /> Import Backup
 			</button>
+			{#if store.signedIn}
+			<button
+				onclick={async () => {
+					toast('Merging data with Drive...');
+					const ok = await store.forceSync();
+					if (ok) toast('Successfully synced with Drive!');
+					else toast('Drive sync failed. Try again.');
+				}}
+				class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/10 text-blue-500 hover:bg-blue-500/20 text-sm font-medium transition-colors cursor-pointer"
+			>
+				<Upload class="w-4 h-4" /> Force Cloud Sync
+			</button>
+			{/if}
 		</div>
 	</div>
 
