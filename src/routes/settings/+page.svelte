@@ -1,38 +1,14 @@
 <script lang="ts">
 	import { store } from "$lib/stores.svelte";
-	import {
-		TALLY_CATEGORIES,
-		type DiaryEntry,
-		type TallyMark,
-		type TallyCategory,
-		generateId,
-	} from "$lib/types";
-	import {
-		Download,
-		Upload,
-		Trash2,
-		Calendar,
-		X,
-		FileArchive,
-		CheckCircle,
-		AlertTriangle,
-	} from "lucide-svelte";
+	import Toast from "$lib/Toast.svelte";
+	import { Download, Upload, Trash2, Calendar } from "lucide-svelte";
 
 	let dateOfBirth = $state(store.preferences.dateOfBirth || "2000-01-01");
 	let showSuccess = $state(false);
 	let successMessage = $state("");
 	let showDeleteConfirm = $state(false);
 	let fileInput: HTMLInputElement;
-	let legacyFileInput: HTMLInputElement;
 	let successTimeout: ReturnType<typeof setTimeout>;
-
-	// Legacy import state
-	let legacyResult = $state<{
-		entries: number;
-		prefs: boolean;
-		warnings: string[];
-	} | null>(null);
-	let legacyError = $state("");
 
 	function toast(msg: string) {
 		successMessage = msg;
@@ -83,153 +59,6 @@
 		showDeleteConfirm = false;
 		toast("All data deleted");
 	}
-
-	// --- Legacy import ---
-
-	function handleLegacyImport() {
-		legacyResult = null;
-		legacyError = "";
-		legacyFileInput?.click();
-	}
-
-	function normalizeTally(raw: any): TallyMark | null {
-		if (!raw || typeof raw !== "object") return null;
-		const type = raw.type as string;
-		const text = raw.text as string;
-		if (!type || !text) return null;
-		// Map to valid category or default to Other
-		const validType = TALLY_CATEGORIES.includes(type as TallyCategory)
-			? (type as TallyCategory)
-			: "Other";
-		return { type: validType, text };
-	}
-
-	function convertLegacyEntry(raw: any): {
-		entry: DiaryEntry;
-		warnings: string[];
-	} {
-		const warnings: string[] = [];
-
-		// Handle date — the old app's updateDateString() added +1 to the day
-		// Old dates look like "2019-05-02" but represent the day before
-		let date = raw.date || "";
-		if (typeof date === "string" && date.match(/^\d{4}-\d{2}-\d{2}$/)) {
-			// The old app added +1 day when saving, so subtract 1 to get the actual date
-			const d = new Date(date + "T12:00:00");
-			d.setDate(d.getDate() - 1);
-			const corrected = d.toISOString().split("T")[0];
-			if (corrected !== date) {
-				warnings.push(
-					`Date adjusted: ${date} → ${corrected} (old app +1 day offset)`,
-				);
-				date = corrected;
-			}
-		}
-
-		// Normalize tallies
-		const tallies: TallyMark[] = [];
-		if (Array.isArray(raw.tallies)) {
-			for (const t of raw.tallies) {
-				const normalized = normalizeTally(t);
-				if (normalized) tallies.push(normalized);
-				else
-					warnings.push(
-						`Skipped invalid tally: ${JSON.stringify(t)}`,
-					);
-			}
-		}
-
-		return {
-			entry: {
-				id: generateId(),
-				title: raw.title || raw.customTitle || "",
-				date,
-				bodyText: raw.bodyText || "",
-				tallies,
-				isThumbUp: !!raw.isThumbUp,
-				isThumbDown: !!raw.isThumbDown,
-				entryNumber: raw.entryNumber || 0,
-			},
-			warnings,
-		};
-	}
-
-	function onLegacyFileSelected(event: Event) {
-		const input = event.target as HTMLInputElement;
-		const file = input.files?.[0];
-		if (!file) return;
-
-		legacyResult = null;
-		legacyError = "";
-
-		const reader = new FileReader();
-		reader.onload = () => {
-			try {
-				const raw = JSON.parse(reader.result as string);
-				const allWarnings: string[] = [];
-				let entriesImported = 0;
-				let prefsImported = false;
-
-				if (Array.isArray(raw)) {
-					// It's an entries array (the old backup.json format)
-					for (const item of raw) {
-						const { entry, warnings } = convertLegacyEntry(item);
-						allWarnings.push(...warnings);
-						store.addEntry(entry);
-						entriesImported++;
-					}
-				} else if (typeof raw === "object") {
-					// Could be user preferences (file "0") or a single entry
-					if (
-						raw.dateOfBirth ||
-						raw.firstName ||
-						raw.appLaunches !== undefined
-					) {
-						// It's user preferences
-						if (raw.dateOfBirth) {
-							dateOfBirth = raw.dateOfBirth;
-							store.updatePreferences({
-								dateOfBirth: raw.dateOfBirth,
-								primaryTheme:
-									raw.primaryTheme === "dark"
-										? "dark"
-										: "light",
-							});
-							prefsImported = true;
-						}
-					} else if (
-						raw.bodyText !== undefined ||
-						raw.tallies !== undefined
-					) {
-						// Single entry object
-						const { entry, warnings } = convertLegacyEntry(raw);
-						allWarnings.push(...warnings);
-						store.addEntry(entry);
-						entriesImported++;
-					} else {
-						legacyError =
-							"Unrecognized file format. Expected an array of entries or a user preferences object.";
-						input.value = "";
-						return;
-					}
-				} else {
-					legacyError = "Invalid JSON format.";
-					input.value = "";
-					return;
-				}
-
-				legacyResult = {
-					entries: entriesImported,
-					prefs: prefsImported,
-					warnings: allWarnings,
-				};
-			} catch (e) {
-				legacyError = `Failed to parse file: ${e instanceof Error ? e.message : "Unknown error"}`;
-			}
-		};
-		reader.readAsText(file);
-		input.value = "";
-	}
 </script>
 
 <div class="animate-fade-in space-y-6">
@@ -244,13 +73,6 @@
 		class="hidden"
 		bind:this={fileInput}
 		onchange={onFileSelected}
-	/>
-	<input
-		type="file"
-		accept=".json,application/json"
-		class="hidden"
-		bind:this={legacyFileInput}
-		onchange={onLegacyFileSelected}
 	/>
 
 	<!-- User Info -->
@@ -381,22 +203,6 @@
 	</div>
 {/if}
 
-<!-- Success Toast -->
 {#if showSuccess}
-	<div class="fixed bottom-6 right-6 z-50 animate-fade-in">
-		<div
-			class="glass border border-border rounded-lg shadow-lg px-4 py-3 flex items-center gap-3"
-		>
-			<div class="w-2 h-2 rounded-full bg-green-500"></div>
-			<span class="text-sm font-medium text-foreground"
-				>{successMessage}</span
-			>
-			<button
-				onclick={() => (showSuccess = false)}
-				class="text-muted-foreground hover:text-foreground cursor-pointer"
-			>
-				<X class="w-4 h-4" />
-			</button>
-		</div>
-	</div>
+	<Toast message={successMessage} ondismiss={() => (showSuccess = false)} />
 {/if}

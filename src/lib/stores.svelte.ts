@@ -87,6 +87,20 @@ function createDiaryStore() {
 	let signedIn = $state(false);
 	let syncing = $state(false);
 
+	/** Fetch remote entries, merge with local (local wins on conflict), persist. Returns remote count. */
+	async function mergeRemoteEntries(token: string): Promise<number> {
+		const driveEntries = await drive.loadAllEntries(token);
+		const combined = new Map<string, DiaryEntry>();
+		for (const raw of driveEntries) {
+			const e: DiaryEntry = { ...raw, id: raw.id || generateId() };
+			combined.set(e.id, e);
+		}
+		for (const e of entries) combined.set(e.id, e);
+		entries = Array.from(combined.values()).sort(sortDiaryEntries);
+		saveEntries(entries);
+		return driveEntries.length;
+	}
+
 	function getOpenBatchId(): string {
 		const counts: Record<string, number> = {};
 		for (const e of entries) {
@@ -156,23 +170,8 @@ function createDiaryStore() {
 
 			syncing = true;
 			try {
-				// Load entries from all batch files
-				const driveEntries = await drive.loadAllEntries(token);
-				if (driveEntries.length > 0) {
-					// Add backward-compatibility ID fill
-					const converted: DiaryEntry[] = driveEntries.map((e) => ({
-						...e,
-						id: e.id || generateId()
-					}));
-					
-					// Merge local and remote
-					const combined = new Map<string, DiaryEntry>();
-					for (const e of converted) combined.set(e.id, e);
-					for (const e of entries) combined.set(e.id, e); // local overwrites remote if conflict
-					
-					const merged = Array.from(combined.values()).sort(sortDiaryEntries);
-					entries = merged;
-					saveEntries(entries);
+				const remoteCount = await mergeRemoteEntries(token);
+				if (remoteCount > 0) {
 					console.log(`[Drive] Synced ${entries.length} entries from Drive`);
 				} else {
 					// If drive has 0 batched files but local has entries without batchId, it means migration hasn't run yet.
@@ -199,19 +198,9 @@ function createDiaryStore() {
 			if (!token) return false;
 			syncing = true;
 			try {
-				// 1. Fetch remote entries
-				const driveEntries = await drive.loadAllEntries(token);
-				const converted: DiaryEntry[] = driveEntries.map((e) => ({ ...e, id: e.id || generateId() }));
-				
-				// 2. Merge local and remote
-				const combined = new Map<string, DiaryEntry>();
-				for (const e of converted) combined.set(e.id, e);
-				for (const e of entries) combined.set(e.id, e);
-				
-				entries = Array.from(combined.values()).sort(sortDiaryEntries);
-				saveEntries(entries);
-				
-				// 3. Re-upload all batches to ensure Drive exactly matches our newly merged local state
+				await mergeRemoteEntries(token);
+
+				// Re-upload all batches to ensure Drive exactly matches our newly merged local state
 				const batches: Record<string, DiaryEntry[]> = {};
 				for (const e of entries) {
 					if (!e.batchId) e.batchId = getOpenBatchId();

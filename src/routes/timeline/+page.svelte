@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { store } from '$lib/stores.svelte';
 	import { goto } from '$app/navigation';
-	import type { TallyCategory } from '$lib/types';
-	import { LayoutList, LayoutGrid, Filter, Trash2, ThumbsUp, ThumbsDown, ChevronRight, X, Search } from 'lucide-svelte';
+	import { daysAlive, categoryColors } from '$lib/types';
+	import { LayoutList, LayoutGrid, Filter, Trash2, ThumbsUp, ThumbsDown, ChevronRight, Search } from 'lucide-svelte';
 
 	let cardView = $state(true);
 	let showFilters = $state(false);
@@ -13,20 +13,6 @@
 	let filterGoodDays = $state(false);
 	let filterBadDays = $state(false);
 	let deleteIndex = $state(-1);
-
-	const categoryColors: Record<TallyCategory, string> = {
-		Food: 'bg-amber-500/15 text-amber-600 dark:text-amber-400',
-		Activity: 'bg-green-500/15 text-green-600 dark:text-green-400',
-		Location: 'bg-blue-500/15 text-blue-600 dark:text-blue-400',
-		Person: 'bg-purple-500/15 text-purple-600 dark:text-purple-400',
-		Other: 'bg-gray-500/15 text-gray-600 dark:text-gray-400',
-	};
-
-	function getDaysAlive(entryDate: string): number {
-		const dob = store.preferences.dateOfBirth;
-		if (!dob) return 0;
-		return Math.round((new Date(entryDate + "T12:00:00").getTime() - new Date(dob + "T12:00:00").getTime()) / (1000 * 60 * 60 * 24)) + 1;
-	}
 
 	function formatDate(dateStr: string): string {
 		const d = new Date(dateStr + "T12:00:00");
@@ -158,7 +144,7 @@
 						<div class="flex items-start justify-between gap-3">
 							<div class="min-w-0 flex-1">
 								<div class="flex items-center gap-2 mb-1">
-									<span class="text-xs font-semibold text-primary">Day {getDaysAlive(entry.date)}</span>
+									<span class="text-xs font-semibold text-primary">Day {daysAlive(entry.date, store.preferences.dateOfBirth)}</span>
 									<span class="text-xs text-muted-foreground">{formatDate(entry.date)}</span>
 									{#if entry.isThumbUp}
 										<ThumbsUp class="w-3.5 h-3.5 text-green-500" fill="currentColor" />
@@ -213,7 +199,7 @@
 						class="flex-1 flex items-center gap-3 px-4 py-3 text-left cursor-pointer min-w-0"
 						onclick={() => goto(`/timeline/${realIndex}`)}
 					>
-						<span class="text-xs font-semibold text-primary whitespace-nowrap">Day {getDaysAlive(entry.date)}</span>
+						<span class="text-xs font-semibold text-primary whitespace-nowrap">Day {daysAlive(entry.date, store.preferences.dateOfBirth)}</span>
 						<span class="text-xs text-muted-foreground whitespace-nowrap">{formatDate(entry.date)}</span>
 						{#if entry.title}
 							<span class="text-sm font-medium text-foreground truncate">{entry.title}</span>

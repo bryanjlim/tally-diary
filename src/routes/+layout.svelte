@@ -151,6 +151,70 @@
 	});
 </script>
 
+{#snippet navLinks()}
+	{#each navItems as item}
+		<button
+			onclick={() => navigate(item.href)}
+			class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200
+				{isActive(item.href)
+					? 'bg-primary/10 text-primary shadow-sm'
+					: 'text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'}"
+		>
+			<item.icon class="w-5 h-5" />
+			{item.label}
+		</button>
+	{/each}
+{/snippet}
+
+{#snippet footerControls()}
+	<!-- Google Drive status -->
+	{#if store.signedIn}
+		<div class="flex items-center gap-2 px-3 py-2 text-xs text-muted-foreground">
+			{#if store.syncing}
+				<Loader2 class="w-3.5 h-3.5 animate-spin text-primary" />
+				<span>Syncing...</span>
+			{:else}
+				<Cloud class="w-3.5 h-3.5 text-green-500" />
+				<span>Google Drive connected</span>
+			{/if}
+		</div>
+		<button
+			onclick={handleSignOut}
+			class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-sidebar-foreground hover:bg-sidebar-accent transition-colors w-full cursor-pointer"
+		>
+			<LogOut class="w-4 h-4" />
+			<span>Sign Out</span>
+		</button>
+	{:else}
+		<button
+			onclick={handleSignIn}
+			disabled={signingIn}
+			class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-sidebar-foreground hover:bg-sidebar-accent transition-colors w-full cursor-pointer disabled:opacity-50"
+		>
+			{#if signingIn}
+				<Loader2 class="w-4 h-4 animate-spin" />
+				<span>Signing in...</span>
+			{:else}
+				<CloudOff class="w-4 h-4" />
+				<span>Sign in with Google</span>
+			{/if}
+		</button>
+	{/if}
+	<!-- Theme toggle -->
+	<button
+		onclick={toggleTheme}
+		class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-sidebar-foreground hover:bg-sidebar-accent transition-colors w-full cursor-pointer"
+	>
+		{#if theme === 'dark'}
+			<Sun class="w-4 h-4" />
+			<span>Light Mode</span>
+		{:else}
+			<Moon class="w-4 h-4" />
+			<span>Dark Mode</span>
+		{/if}
+	</button>
+{/snippet}
+
 <svelte:head>
 	<title>Tally Diary</title>
 	<meta name="description" content="A diary that helps you tally your life" />
@@ -170,66 +234,10 @@
 			</h1>
 		</div>
 		<nav class="flex-1 py-4 px-3 space-y-1">
-			{#each navItems as item}
-				<button
-					onclick={() => navigate(item.href)}
-					class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200
-						{isActive(item.href) 
-							? 'bg-primary/10 text-primary shadow-sm' 
-							: 'text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'}"
-				>
-					<item.icon class="w-5 h-5" />
-					{item.label}
-				</button>
-			{/each}
+			{@render navLinks()}
 		</nav>
 		<div class="p-3 border-t border-sidebar-border space-y-1">
-			<!-- Google Drive status -->
-			{#if store.signedIn}
-				<div class="flex items-center gap-2 px-3 py-2 text-xs text-muted-foreground">
-					{#if store.syncing}
-						<Loader2 class="w-3.5 h-3.5 animate-spin text-primary" />
-						<span>Syncing...</span>
-					{:else}
-						<Cloud class="w-3.5 h-3.5 text-green-500" />
-						<span>Google Drive connected</span>
-					{/if}
-				</div>
-				<button
-					onclick={handleSignOut}
-					class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-sidebar-foreground hover:bg-sidebar-accent transition-colors w-full cursor-pointer"
-				>
-					<LogOut class="w-4 h-4" />
-					<span>Sign Out</span>
-				</button>
-			{:else}
-				<button
-					onclick={handleSignIn}
-					disabled={signingIn}
-					class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-sidebar-foreground hover:bg-sidebar-accent transition-colors w-full cursor-pointer disabled:opacity-50"
-				>
-					{#if signingIn}
-						<Loader2 class="w-4 h-4 animate-spin" />
-						<span>Signing in...</span>
-					{:else}
-						<CloudOff class="w-4 h-4" />
-						<span>Sign in with Google</span>
-					{/if}
-				</button>
-			{/if}
-			<!-- Theme toggle -->
-			<button
-				onclick={toggleTheme}
-				class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-sidebar-foreground hover:bg-sidebar-accent transition-colors w-full cursor-pointer"
-			>
-				{#if theme === 'dark'}
-					<Sun class="w-4 h-4" />
-					<span>Light Mode</span>
-				{:else}
-					<Moon class="w-4 h-4" />
-					<span>Dark Mode</span>
-				{/if}
-			</button>
+			{@render footerControls()}
 		</div>
 	</aside>
 
@@ -263,66 +271,10 @@
 				</button>
 			</div>
 			<nav class="py-4 px-3 space-y-1">
-				{#each navItems as item}
-					<button
-						onclick={() => navigate(item.href)}
-						class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200
-							{isActive(item.href) 
-								? 'bg-primary/10 text-primary' 
-								: 'text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'}"
-					>
-						<item.icon class="w-5 h-5" />
-						{item.label}
-					</button>
-				{/each}
+				{@render navLinks()}
 			</nav>
 			<div class="absolute bottom-0 left-0 right-0 p-3 border-t border-sidebar-border space-y-1">
-				<!-- Google Drive status (mobile) -->
-				{#if store.signedIn}
-					<div class="flex items-center gap-2 px-3 py-2 text-xs text-muted-foreground">
-						{#if store.syncing}
-							<Loader2 class="w-3.5 h-3.5 animate-spin text-primary" />
-							<span>Syncing...</span>
-						{:else}
-							<Cloud class="w-3.5 h-3.5 text-green-500" />
-							<span>Drive connected</span>
-						{/if}
-					</div>
-					<button
-						onclick={handleSignOut}
-						class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-sidebar-foreground hover:bg-sidebar-accent transition-colors w-full cursor-pointer"
-					>
-						<LogOut class="w-4 h-4" />
-						<span>Sign Out</span>
-					</button>
-				{:else}
-					<button
-						onclick={handleSignIn}
-						disabled={signingIn}
-						class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-sidebar-foreground hover:bg-sidebar-accent transition-colors w-full cursor-pointer disabled:opacity-50"
-					>
-						{#if signingIn}
-							<Loader2 class="w-4 h-4 animate-spin" />
-							<span>Signing in...</span>
-						{:else}
-							<CloudOff class="w-4 h-4" />
-							<span>Sign in with Google</span>
-						{/if}
-					</button>
-				{/if}
-				<!-- Theme toggle (mobile) -->
-				<button
-					onclick={toggleTheme}
-					class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-sidebar-foreground hover:bg-sidebar-accent transition-colors w-full cursor-pointer"
-				>
-					{#if theme === 'dark'}
-						<Sun class="w-4 h-4" />
-						<span>Light Mode</span>
-					{:else}
-						<Moon class="w-4 h-4" />
-						<span>Dark Mode</span>
-					{/if}
-				</button>
+				{@render footerControls()}
 			</div>
 		</aside>
 	</div>

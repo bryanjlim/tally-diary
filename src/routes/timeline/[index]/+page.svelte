@@ -2,7 +2,9 @@
 	import { store } from '$lib/stores.svelte';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
-	import { TALLY_CATEGORIES, type TallyMark, type TallyCategory } from '$lib/types';
+	import { type TallyMark, daysAlive, categoryColors } from '$lib/types';
+	import TallyDialog from '$lib/TallyDialog.svelte';
+	import Toast from '$lib/Toast.svelte';
 	import { ThumbsUp, ThumbsDown, Save, ArrowLeft, ArrowRight, ChevronLeft, Tag, X } from 'lucide-svelte';
 
 	const index = $derived(parseInt(page.params.index || '0'));
@@ -15,9 +17,6 @@
 	let isThumbUp = $state(false);
 	let isThumbDown = $state(false);
 	let showTallyDialog = $state(false);
-	let tallyCategory = $state<TallyCategory>('Food');
-	let tallyText = $state('');
-	let tallyError = $state('');
 	let showSuccess = $state(false);
 	let initialized = $state(false);
 
@@ -33,12 +32,6 @@
 		}
 	});
 
-	function getDaysAlive(): number {
-		const dob = store.preferences.dateOfBirth;
-		if (!dob) return 0;
-		return Math.round((new Date(date + "T12:00:00").getTime() - new Date(dob + "T12:00:00").getTime()) / (1000 * 60 * 60 * 24)) + 1;
-	}
-
 	function toggleThumbUp() {
 		isThumbUp = !isThumbUp;
 		if (isThumbUp) isThumbDown = false;
@@ -47,13 +40,6 @@
 	function toggleThumbDown() {
 		isThumbDown = !isThumbDown;
 		if (isThumbDown) isThumbUp = false;
-	}
-
-	function addTally() {
-		if (!tallyText.trim()) { tallyError = 'Please enter a label'; return; }
-		tallies = [...tallies, { type: tallyCategory, text: tallyText.trim() }];
-		tallyText = '';
-		tallyError = '';
 	}
 
 	function removeTally(i: number) {
@@ -77,14 +63,6 @@
 		initialized = false;
 		goto(`/timeline/${newIndex}`);
 	}
-
-	const categoryColors: Record<TallyCategory, string> = {
-		Food: 'bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/30',
-		Activity: 'bg-green-500/15 text-green-600 dark:text-green-400 border-green-500/30',
-		Location: 'bg-blue-500/15 text-blue-600 dark:text-blue-400 border-blue-500/30',
-		Person: 'bg-purple-500/15 text-purple-600 dark:text-purple-400 border-purple-500/30',
-		Other: 'bg-gray-500/15 text-gray-600 dark:text-gray-400 border-gray-500/30',
-	};
 </script>
 
 {#if !entry}
@@ -125,7 +103,7 @@
 			<div class="p-5 sm:p-6 space-y-5">
 				<div class="space-y-3">
 					<div class="flex items-baseline gap-3">
-						<span class="text-lg font-semibold text-primary whitespace-nowrap">Day {getDaysAlive()}</span>
+						<span class="text-lg font-semibold text-primary whitespace-nowrap">Day {daysAlive(date, store.preferences.dateOfBirth)}</span>
 						<div class="h-px flex-1 bg-gradient-to-r from-primary/30 to-transparent"></div>
 					</div>
 					<input type="text" bind:value={title} placeholder="Title..." class="w-full px-4 py-2.5 rounded-lg border border-input bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/40 text-lg" />
@@ -179,38 +157,9 @@
 		</div>
 	</div>
 
-	<!-- Tally Dialog -->
-	{#if showTallyDialog}
-		<div class="fixed inset-0 z-50 flex items-center justify-center p-4">
-			<button class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick={() => showTallyDialog = false} aria-label="Close"></button>
-			<div class="relative bg-card border border-border rounded-xl shadow-2xl w-full max-w-md animate-scale-in p-6 space-y-4">
-				<h3 class="text-lg font-semibold text-foreground">Add Tally Mark</h3>
-				<div>
-					<label for="edit-tally-cat" class="block text-sm font-medium text-muted-foreground mb-1.5">Category</label>
-					<select id="edit-tally-cat" bind:value={tallyCategory} class="w-full px-4 py-2 rounded-lg border border-input bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring/40">
-						{#each TALLY_CATEGORIES as cat}<option value={cat}>{cat}</option>{/each}
-					</select>
-				</div>
-				<div>
-					<label for="edit-tally-label" class="block text-sm font-medium text-muted-foreground mb-1.5">Label</label>
-					<input id="edit-tally-label" type="text" bind:value={tallyText} placeholder="e.g., Chipotle" class="w-full px-4 py-2 rounded-lg border border-input bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/40" onkeydown={(e) => { if (e.key === 'Enter') addTally(); }} />
-					{#if tallyError}<p class="text-xs text-destructive mt-1">{tallyError}</p>{/if}
-				</div>
-				<div class="flex gap-3 justify-end pt-2">
-					<button onclick={() => { showTallyDialog = false; tallyError = ''; }} class="px-4 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:bg-muted transition-colors cursor-pointer">Done</button>
-					<button onclick={addTally} class="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:brightness-110 transition-all cursor-pointer">Add</button>
-				</div>
-			</div>
-		</div>
-	{/if}
+	<TallyDialog bind:open={showTallyDialog} bind:tallies />
 
-	<!-- Success Toast -->
 	{#if showSuccess}
-		<div class="fixed bottom-6 right-6 z-50 animate-fade-in">
-			<div class="glass border border-border rounded-lg shadow-lg px-4 py-3 flex items-center gap-3">
-				<div class="w-2 h-2 rounded-full bg-green-500"></div>
-				<span class="text-sm font-medium text-foreground">Entry updated!</span>
-			</div>
-		</div>
+		<Toast message="Entry updated!" />
 	{/if}
 {/if}

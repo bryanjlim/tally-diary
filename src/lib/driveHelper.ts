@@ -118,17 +118,6 @@ export function getToken(): string | null {
 	return _accessToken;
 }
 
-/** Check if the user is currently signed in. */
-export function isSignedIn(): boolean {
-	return !!_accessToken;
-}
-
-/** Check if user has previously signed in (persisted). */
-export function hasSignedInBefore(): boolean {
-	if (typeof window === 'undefined') return false;
-	return !!localStorage.getItem(SIGNED_IN_KEY);
-}
-
 /** Sign out — revoke the token. */
 export async function signOut(): Promise<void> {
 	if (_accessToken) {

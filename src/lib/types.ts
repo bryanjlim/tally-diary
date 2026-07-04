@@ -16,35 +16,37 @@ export interface DiaryEntry {
 	isThumbDown: boolean;
 	entryNumber: number;
 	batchId?: string;
-	fileName?: string;
-	index?: number;
 }
 
 export interface UserPreferences {
-	firstName: string;
-	lastName: string;
 	dateOfBirth: string;
 	primaryTheme: 'light' | 'dark';
-	secondaryColor: string;
-	usePassword: boolean;
-	password: string;
-	appLaunches: number;
 }
 
 export const defaultPreferences: UserPreferences = {
-	firstName: '',
-	lastName: '',
 	dateOfBirth: '2000-01-01',
 	primaryTheme: 'dark',
-	secondaryColor: 'blue',
-	usePassword: false,
-	password: '',
-	appLaunches: 0,
+};
+
+/** Tally chip styling shared across entry pages and the timeline. */
+export const categoryColors: Record<TallyCategory, string> = {
+	Food: 'bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/30',
+	Activity: 'bg-green-500/15 text-green-600 dark:text-green-400 border-green-500/30',
+	Location: 'bg-blue-500/15 text-blue-600 dark:text-blue-400 border-blue-500/30',
+	Person: 'bg-purple-500/15 text-purple-600 dark:text-purple-400 border-purple-500/30',
+	Other: 'bg-gray-500/15 text-gray-600 dark:text-gray-400 border-gray-500/30',
 };
 
 /** Generate a unique ID for diary entries */
 export function generateId(): string {
-	return `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+	return crypto.randomUUID();
+}
+
+/** "Day N" counter: days between date of birth and the entry date, inclusive. */
+export function daysAlive(date: string, dob: string): number {
+	if (!dob) return 0;
+	const diff = new Date(date + 'T12:00:00').getTime() - new Date(dob + 'T12:00:00').getTime();
+	return Math.round(diff / 86400000) + 1;
 }
 
 export function sortDiaryEntries(a: DiaryEntry, b: DiaryEntry): number {
@@ -52,11 +54,10 @@ export function sortDiaryEntries(a: DiaryEntry, b: DiaryEntry): number {
 	const aTime = new Date(a.date).getTime();
 	const timeDiff = bTime - aTime;
 	if (timeDiff !== 0 && !isNaN(timeDiff)) return timeDiff;
-	
+
 	if (b.entryNumber !== undefined && a.entryNumber !== undefined && b.entryNumber !== a.entryNumber) {
 		return b.entryNumber - a.entryNumber;
 	}
 	if (b.id && a.id) return b.id.localeCompare(a.id);
 	return 0;
 }
-

@@ -1,6 +1,9 @@
 /**
  * One-time migration from old Tally Diary format to the new batched format.
  *
+ * KEEP: no metrics on how many clients still run the old app, so this must
+ * stay shipped indefinitely — do not delete in cleanup passes.
+ *
  * Migration is split into two phases:
  *   Phase 1: Read old data from Drive (file "1") → save to localStorage
  *   Phase 2: Chunk entries into 100-entry batches and upload to Drive.
