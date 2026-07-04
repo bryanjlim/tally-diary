@@ -9,11 +9,13 @@
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+		"cap:sync": "cap sync && node scripts/fix-ios-paths.mjs"
 	},
 	"devDependencies": {
-		"@capacitor/android": "6",
-		"@capacitor/cli": "6",
+		"@capacitor/android": "^8.0.0",
+		"@capacitor/cli": "^8.0.0",
+		"@capacitor/ios": "^8.0.0",
 		"@sveltejs/adapter-static": "^3.0.10",
 		"@sveltejs/kit": "^2.50.2",
 		"@sveltejs/vite-plugin-svelte": "^6.2.4",
@@ -27,8 +29,11 @@
 	},
 	"packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e",
 	"dependencies": {
-		"@capacitor/app": "^8.1.0",
-		"@capacitor/core": "^8.3.0",
+		"@capacitor/app": "^8.0.0",
+		"@capacitor/core": "^8.0.0",
+		"@capacitor/haptics": "^8.0.0",
+		"@capacitor/splash-screen": "^8.0.0",
+		"@capacitor/status-bar": "^8.0.0",
 		"@capawesome/capacitor-google-sign-in": "^0.1.2"
 	}
 }

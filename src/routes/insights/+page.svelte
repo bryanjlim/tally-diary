@@ -1,17 +1,18 @@
 <script lang="ts">
 	import { store } from '$lib/stores.svelte';
 	import { goto } from '$app/navigation';
-	import type { TallyCategory } from '$lib/types';
+	import { TALLY_CATEGORIES, categoryIcons, type TallyCategory } from '$lib/types';
+	import TallyMarks from '$lib/TallyMarks.svelte';
 	import { BookOpen, Hash, Calendar, TrendingUp, ChevronDown, ChevronUp } from 'lucide-svelte';
 
 	interface TallyAgg { text: string; count: number; }
 
 	const categoryColors: Record<TallyCategory, string> = {
-		Food: 'text-amber-500',
-		Activity: 'text-green-500',
-		Location: 'text-blue-500',
-		Person: 'text-purple-500',
-		Other: 'text-gray-500',
+		Food: 'text-amber-600 dark:text-amber-400',
+		Activity: 'text-green-600 dark:text-green-400',
+		Location: 'text-blue-600 dark:text-blue-400',
+		Person: 'text-purple-600 dark:text-purple-400',
+		Other: 'text-gray-600 dark:text-gray-400',
 	};
 
 	function getEntriesCount(): number {
@@ -120,15 +121,17 @@
 			</div>
 		</div>
 
-		{#each ['Food', 'Activity', 'Location', 'Person', 'Other'] as category}
-			{@const items = tallyAggs[category as TallyCategory]}
+		{#each TALLY_CATEGORIES as category}
+			{@const items = tallyAggs[category]}
+			{@const Icon = categoryIcons[category]}
 			<div class="border-b border-border last:border-b-0">
 				<button
 					onclick={() => toggleCategory(category)}
 					class="w-full flex items-center justify-between px-5 py-3 hover:bg-muted/50 transition-colors cursor-pointer"
 				>
-					<div class="flex items-center gap-2">
-						<span class="{categoryColors[category as TallyCategory]} font-medium text-sm">{category}</span>
+					<div class="flex items-center gap-2 {categoryColors[category]}">
+						<Icon class="w-4 h-4" />
+						<span class="font-medium text-sm">{category}</span>
 						<span class="text-xs text-muted-foreground">({items.length})</span>
 					</div>
 					{#if expandedCategories[category]}
@@ -143,9 +146,14 @@
 							<p class="text-xs text-muted-foreground py-1">No tallies yet</p>
 						{:else}
 							{#each items as item}
-								<div class="flex items-center justify-between py-1">
-									<span class="text-sm text-foreground">{item.text}</span>
-									<span class="text-sm font-semibold text-muted-foreground tabular-nums">{item.count}</span>
+								<div class="flex items-center justify-between gap-3 py-1">
+									<span class="text-sm text-foreground truncate">{item.text}</span>
+									<span class="flex items-center gap-2 shrink-0">
+										<span class={categoryColors[category]}>
+											<TallyMarks count={item.count} />
+										</span>
+										<span class="text-sm font-semibold text-muted-foreground tabular-nums w-8 text-right">{item.count}</span>
+									</span>
 								</div>
 							{/each}
 						{/if}

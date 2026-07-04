@@ -22,3 +22,9 @@ Thumbs.db
 # Vite
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# Firebase deploy cache
+.firebase
+
+# Android Studio project files
+android/.idea

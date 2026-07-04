@@ -8,6 +8,8 @@
 	import { browser } from '$app/environment';
 	import { Capacitor } from '@capacitor/core';
 	import { App } from '@capacitor/app';
+	import { StatusBar, Style } from '@capacitor/status-bar';
+	import { SplashScreen } from '@capacitor/splash-screen';
 
 	let { children } = $props();
 	let mobileOpen = $state(false);
@@ -28,6 +30,17 @@
 	$effect(() => {
 		if (typeof document !== 'undefined') {
 			document.documentElement.classList.toggle('dark', theme === 'dark');
+		}
+		if (browser && Capacitor.isNativePlatform()) {
+			// Style.Dark = light text on dark background
+			StatusBar.setStyle({ style: theme === 'dark' ? Style.Dark : Style.Light }).catch(() => {});
+		}
+	});
+
+	// Native: dismiss splash as soon as the web view has rendered
+	$effect(() => {
+		if (browser && Capacitor.isNativePlatform()) {
+			SplashScreen.hide();
 		}
 	});
 

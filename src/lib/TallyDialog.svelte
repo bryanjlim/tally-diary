@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { TALLY_CATEGORIES, type TallyMark, type TallyCategory } from './types';
+	import { TALLY_CATEGORIES, categoryColors, categoryIcons, type TallyMark, type TallyCategory } from './types';
+	import { Haptics, ImpactStyle } from '@capacitor/haptics';
 
 	let { open = $bindable(), tallies = $bindable() }: { open: boolean; tallies: TallyMark[] } = $props();
 
@@ -15,6 +16,7 @@
 		tallies = [...tallies, { type: category, text: text.trim() }];
 		text = '';
 		error = '';
+		Haptics.impact({ style: ImpactStyle.Light }).catch(() => {});
 	}
 
 	function close() {
@@ -30,16 +32,23 @@
 			<h3 class="text-lg font-semibold text-foreground">Add Tally Mark</h3>
 
 			<div>
-				<label for="tally-category" class="block text-sm font-medium text-muted-foreground mb-1.5">Category</label>
-				<select
-					id="tally-category"
-					bind:value={category}
-					class="w-full px-4 py-2 rounded-lg border border-input bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring/40"
-				>
+				<span id="tally-category-label" class="block text-sm font-medium text-muted-foreground mb-1.5">Category</span>
+				<div class="flex flex-wrap gap-2" role="group" aria-labelledby="tally-category-label">
 					{#each TALLY_CATEGORIES as cat}
-						<option value={cat}>{cat}</option>
+						{@const Icon = categoryIcons[cat]}
+						<button
+							onclick={() => (category = cat)}
+							class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-all cursor-pointer
+								{category === cat
+									? categoryColors[cat]
+									: 'border-border text-muted-foreground hover:bg-muted hover:text-foreground'}"
+							aria-pressed={category === cat}
+						>
+							<Icon class="w-3.5 h-3.5" />
+							{cat}
+						</button>
 					{/each}
-				</select>
+				</div>
 			</div>
 
 			<div>

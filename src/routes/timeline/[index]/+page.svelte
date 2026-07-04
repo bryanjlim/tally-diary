@@ -2,7 +2,7 @@
 	import { store } from '$lib/stores.svelte';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
-	import { type TallyMark, daysAlive, categoryColors } from '$lib/types';
+	import { type TallyMark, daysAlive, categoryColors, categoryIcons } from '$lib/types';
 	import TallyDialog from '$lib/TallyDialog.svelte';
 	import Toast from '$lib/Toast.svelte';
 	import { ThumbsUp, ThumbsDown, Save, ArrowLeft, ArrowRight, ChevronLeft, Tag, X } from 'lucide-svelte';
@@ -18,17 +18,17 @@
 	let isThumbDown = $state(false);
 	let showTallyDialog = $state(false);
 	let showSuccess = $state(false);
-	let initialized = $state(false);
+	let initializedIndex = $state(-1);
 
 	$effect(() => {
-		if (entry && !initialized) {
+		if (entry && initializedIndex !== index) {
 			title = entry.title || '';
 			date = entry.date || '';
 			bodyText = entry.bodyText || '';
 			tallies = [...(entry.tallies || [])];
 			isThumbUp = entry.isThumbUp || false;
 			isThumbDown = entry.isThumbDown || false;
-			initialized = true;
+			initializedIndex = index;
 		}
 	});
 
@@ -60,7 +60,6 @@
 	}
 
 	function navigateTo(newIndex: number) {
-		initialized = false;
 		goto(`/timeline/${newIndex}`);
 	}
 </script>
@@ -120,7 +119,7 @@
 				</div>
 
 				<div class="flex items-center gap-3 flex-wrap">
-					<button onclick={() => showTallyDialog = true} class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground font-medium text-sm hover:brightness-110 transition-all shadow-sm cursor-pointer">
+					<button onclick={() => showTallyDialog = true} class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border bg-background font-medium text-sm text-foreground hover:bg-muted transition-colors cursor-pointer">
 						<Tag class="w-4 h-4" /> Add Tally
 					</button>
 					<div class="flex items-center gap-1 ml-auto">
@@ -138,8 +137,10 @@
 						<h4 class="text-sm font-medium text-muted-foreground mb-2">Tally Marks</h4>
 						<div class="flex flex-wrap gap-2">
 							{#each tallies as tally, i}
+								{@const Icon = categoryIcons[tally.type]}
 								<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border {categoryColors[tally.type]}">
-									{tally.type} &middot; {tally.text}
+									<Icon class="w-3 h-3" />
+									{tally.text}
 									<button onclick={() => removeTally(i)} class="hover:brightness-125 cursor-pointer"><X class="w-3.5 h-3.5" /></button>
 								</span>
 							{/each}

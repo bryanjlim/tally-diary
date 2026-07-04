@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Tally Diary</string>
+    <string name="title_activity_main">Tally Diary</string>
+    <string name="package_name">com.tallydiary.app</string>
+    <string name="custom_url_scheme">com.tallydiary.app</string>
+    <string name="server_client_id">577206274010-9oung4hgd77fij9e50kjbc32tlviai4e.apps.googleusercontent.com</string>
+</resources>

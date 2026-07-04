@@ -1,3 +1,5 @@
+import { Utensils, Zap, MapPin, User, Tag } from 'lucide-svelte';
+
 export const TALLY_CATEGORIES = ['Food', 'Activity', 'Location', 'Person', 'Other'] as const;
 export type TallyCategory = typeof TALLY_CATEGORIES[number];
 
@@ -35,6 +37,15 @@ export const categoryColors: Record<TallyCategory, string> = {
 	Location: 'bg-blue-500/15 text-blue-600 dark:text-blue-400 border-blue-500/30',
 	Person: 'bg-purple-500/15 text-purple-600 dark:text-purple-400 border-purple-500/30',
 	Other: 'bg-gray-500/15 text-gray-600 dark:text-gray-400 border-gray-500/30',
+};
+
+/** Icon per tally category, shown on chips and category pickers. */
+export const categoryIcons: Record<TallyCategory, typeof Tag> = {
+	Food: Utensils,
+	Activity: Zap,
+	Location: MapPin,
+	Person: User,
+	Other: Tag,
 };
 
 /** Generate a unique ID for diary entries */

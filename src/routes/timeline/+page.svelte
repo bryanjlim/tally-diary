@@ -2,7 +2,7 @@
 	import { store } from '$lib/stores.svelte';
 	import { goto } from '$app/navigation';
 	import { daysAlive, categoryColors } from '$lib/types';
-	import { LayoutList, LayoutGrid, Filter, Trash2, ThumbsUp, ThumbsDown, ChevronRight, Search } from 'lucide-svelte';
+	import { LayoutList, LayoutGrid, Filter, Trash2, ThumbsUp, ThumbsDown, Search } from 'lucide-svelte';
 
 	let cardView = $state(true);
 	let showFilters = $state(false);
@@ -136,13 +136,13 @@
 		<div class="space-y-4">
 			{#each filteredEntries() as entry, i}
 				{@const realIndex = store.entries.indexOf(entry)}
-				<div class="rounded-xl border border-border bg-card hover:border-primary/30 transition-all duration-200 hover:shadow-md group">
+				<div class="relative rounded-xl border border-border bg-card hover:border-primary/30 transition-all duration-200 hover:shadow-md group">
 					<button
 						class="w-full text-left p-5 cursor-pointer"
 						onclick={() => goto(`/timeline/${realIndex}`)}
 					>
 						<div class="flex items-start justify-between gap-3">
-							<div class="min-w-0 flex-1">
+							<div class="min-w-0 flex-1 pr-8">
 								<div class="flex items-center gap-2 mb-1">
 									<span class="text-xs font-semibold text-primary">Day {daysAlive(entry.date, store.preferences.dateOfBirth)}</span>
 									<span class="text-xs text-muted-foreground">{formatDate(entry.date)}</span>
@@ -174,18 +174,15 @@
 									</div>
 								{/if}
 							</div>
-							<ChevronRight class="w-5 h-5 text-muted-foreground group-hover:text-primary shrink-0 mt-1 transition-colors" />
 						</div>
 					</button>
-					<div class="px-5 pb-3 flex justify-end">
-						<button
-							onclick={() => confirmDelete(realIndex)}
-							class="p-1.5 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors cursor-pointer"
-							aria-label="Delete entry"
-						>
-							<Trash2 class="w-4 h-4" />
-						</button>
-					</div>
+					<button
+						onclick={() => confirmDelete(realIndex)}
+						class="absolute top-4 right-4 p-1.5 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors cursor-pointer"
+						aria-label="Delete entry"
+					>
+						<Trash2 class="w-4 h-4" />
+					</button>
 				</div>
 			{/each}
 		</div>
