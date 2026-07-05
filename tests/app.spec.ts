@@ -170,6 +170,11 @@ test('insights shows streaks, good days, correlations, milestones, and heatmap',
 	await expect(page.getByText('More words')).toBeVisible();
 	await page.reload();
 	await expect(page.getByText('More words')).toBeVisible();
+	// Year selector: previous calendar year shows the anniversary entry's cell
+	await page.getByLabel('Heatmap year').selectOption(String(Number(y) - 1));
+	await expect(page.locator('[data-testid="heatmap"] title', { hasText: `${Number(y) - 1}-${m}-${d}` })).toHaveCount(1);
+	// legacy entry (Jan 15 of last year) is on the same grid
+	await expect(page.locator('[data-testid="heatmap"] title', { hasText: `${Number(y) - 1}-01-15` })).toHaveCount(1);
 	// On This Day anniversary shows a body preview and links to the entry
 	await expect(page.getByText('1 year ago')).toBeVisible();
 	await expect(page.getByText('A memorable day worth revisiting.')).toBeVisible();

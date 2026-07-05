@@ -66,6 +66,17 @@
 	const tallyAggs = $derived(getAggregateTallies());
 	const totalTallies = $derived(Object.values(tallyAggs).reduce((sum, arr) => sum + arr.length, 0));
 
+	// null = rolling past 365 days
+	let heatmapYear = $state<number | null>(null);
+	const heatmapYears = $derived.by(() => {
+		const years = new Set<number>();
+		for (const e of store.entries) {
+			const m = /^(\d{4})-/.exec(e.date || '');
+			if (m) years.add(Number(m[1]));
+		}
+		return [...years].sort((a, b) => b - a);
+	});
+
 	const HEATMAP_MODE_KEY = 'tally-diary-heatmap-mode';
 	let heatmapMode = $state<'mood' | 'length'>(
 		browser && localStorage.getItem(HEATMAP_MODE_KEY) === 'length' ? 'length' : 'mood'
@@ -179,8 +190,18 @@
 	{#if store.entries.length > 0}
 		<div class="rounded-xl border border-border bg-card p-5">
 			<div class="flex items-center justify-between gap-3 flex-wrap">
-				{@render sectionHeader(CalendarDays, 'bg-primary/10 text-primary', 'Past Year', 'One square per day')}
+				{@render sectionHeader(CalendarDays, 'bg-primary/10 text-primary', heatmapYear ? String(heatmapYear) : 'Past Year', 'One square per day')}
 				<div class="flex items-center gap-1">
+					<select
+						bind:value={heatmapYear}
+						aria-label="Heatmap year"
+						class="mr-1 px-2 py-1 rounded-lg border border-input bg-background text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-ring/40 cursor-pointer"
+					>
+						<option value={null}>Past year</option>
+						{#each heatmapYears as y}
+							<option value={y}>{y}</option>
+						{/each}
+					</select>
 					<button
 						onclick={() => setHeatmapMode('mood')}
 						class="px-2.5 py-1 rounded-lg text-xs font-medium transition-colors cursor-pointer {heatmapMode === 'mood' ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}"
@@ -196,7 +217,7 @@
 				</div>
 			</div>
 			<div class="mt-4">
-				<Heatmap entries={store.entries} mode={heatmapMode} />
+				<Heatmap entries={store.entries} mode={heatmapMode} year={heatmapYear} />
 			</div>
 		</div>
 	{/if}

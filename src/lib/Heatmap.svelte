@@ -4,7 +4,8 @@
 	// mode 'length': 0 no entry, 1-4 words-per-day bucket relative to the busiest day
 	import type { DiaryEntry } from './types';
 
-	let { entries, mode = 'mood' }: { entries: DiaryEntry[]; mode?: 'mood' | 'length' } = $props();
+	// year: null = rolling past 365 days; a number = that calendar year (Jan 1 – Dec 31)
+	let { entries, mode = 'mood', year = null }: { entries: DiaryEntry[]; mode?: 'mood' | 'length'; year?: number | null } = $props();
 
 	const CELL = 11;
 	const GAP = 3;
@@ -31,10 +32,30 @@
 		return m;
 	});
 
-	// Quartile thresholds over nonzero word counts, so intensity reflects the
-	// user's own distribution instead of being flattened by one outlier day
+	const iso = (d: Date) =>
+		`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+
+	const range = $derived.by(() => {
+		if (year) {
+			return { start: new Date(year, 0, 1, 12), end: new Date(year, 11, 31, 12) };
+		}
+		const end = new Date();
+		end.setHours(12, 0, 0, 0);
+		const start = new Date(end);
+		start.setDate(start.getDate() - 364);
+		return { start, end };
+	});
+
+	// Quartile thresholds over nonzero word counts within the visible window,
+	// so intensity reflects the user's own distribution instead of being
+	// flattened by one outlier day
 	const quartiles = $derived.by(() => {
-		const counts = [...byDate.values()].map((v) => v.words).filter((w) => w > 0).sort((a, b) => a - b);
+		const lo = iso(range.start);
+		const hi = iso(range.end);
+		const counts = [...byDate.entries()]
+			.filter(([key, v]) => key >= lo && key <= hi && v.words > 0)
+			.map(([, v]) => v.words)
+			.sort((a, b) => a - b);
 		if (!counts.length) return null;
 		const q = (p: number) => counts[Math.floor(p * (counts.length - 1))];
 		return { q1: q(0.25), q2: q(0.5), q3: q(0.75) };
@@ -48,16 +69,15 @@
 	}
 
 	const cells = $derived.by(() => {
-		const end = new Date();
-		end.setHours(12, 0, 0, 0);
-		const start = new Date(end);
-		start.setDate(start.getDate() - 364);
-		start.setDate(start.getDate() - start.getDay()); // align to that week's Sunday
+		const { start, end } = range;
+		const aligned = new Date(start);
+		aligned.setDate(aligned.getDate() - aligned.getDay()); // align to that week's Sunday
 
 		const out: { x: number; y: number; fill: string; label: string }[] = [];
-		const d = new Date(start);
+		const d = new Date(aligned);
 		for (let i = 0; d <= end; i++, d.setDate(d.getDate() + 1)) {
-			const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+			if (d < start) continue; // alignment padding before Jan 1 — leave blank
+			const key = iso(d);
 			const day = byDate.get(key);
 			let fill: string;
 			let label: string;
