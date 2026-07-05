@@ -1,15 +1,19 @@
 <script lang="ts">
 	import { store } from '$lib/stores.svelte';
 	import { goto } from '$app/navigation';
+	import { page } from '$app/state';
 	import { daysAlive, categoryColors } from '$lib/types';
 	import { LayoutList, LayoutGrid, Filter, Trash2, ThumbsUp, ThumbsDown, Search } from 'lucide-svelte';
 
+	// Deep link from Insights: /timeline?tally=Chipotle pre-applies the tally filter
+	const tallyParam = page.url.searchParams.get('tally') || '';
+
 	let cardView = $state(true);
-	let showFilters = $state(false);
+	let showFilters = $state(!!tallyParam);
 	let filterStartDate = $state('');
 	let filterEndDate = $state('');
 	let filterText = $state('');
-	let filterTally = $state('');
+	let filterTally = $state(tallyParam);
 	let filterGoodDays = $state(false);
 	let filterBadDays = $state(false);
 	let deleteIndex = $state(-1);

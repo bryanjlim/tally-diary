@@ -146,15 +146,19 @@
 							<p class="text-xs text-muted-foreground py-1">No tallies yet</p>
 						{:else}
 							{#each items as item}
-								<div class="flex items-center justify-between gap-3 py-1">
-									<span class="text-sm text-foreground truncate">{item.text}</span>
+								<button
+									onclick={() => goto(`/timeline?tally=${encodeURIComponent(item.text)}`)}
+									class="w-full flex items-center justify-between gap-3 py-1 px-2 -mx-2 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer group"
+									title="Show entries with this tally"
+								>
+									<span class="text-sm text-foreground truncate group-hover:text-primary transition-colors">{item.text}</span>
 									<span class="flex items-center gap-2 shrink-0">
 										<span class={categoryColors[category]}>
 											<TallyMarks count={item.count} />
 										</span>
 										<span class="text-sm font-semibold text-muted-foreground tabular-nums w-8 text-right">{item.count}</span>
 									</span>
-								</div>
+								</button>
 							{/each}
 						{/if}
 					</div>
