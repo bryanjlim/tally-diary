@@ -120,6 +120,39 @@ test('theme toggle switches palette and native color-scheme', async ({ page }) =
 	expect(await page.evaluate(() => getComputedStyle(document.documentElement).colorScheme)).toBe('light');
 });
 
+test('backup export/import round-trip does not duplicate entries', async ({ page }) => {
+	await seed(page);
+	await page.goto('/settings');
+
+	const downloadPromise = page.waitForEvent('download');
+	await page.getByRole('button', { name: 'Download Backup' }).click();
+	const backup = await (await downloadPromise).path();
+
+	// Re-importing your own backup must merge by id, not append duplicates
+	await page.locator('input[type="file"]').setInputFiles(backup);
+	await expect(page.getByText('Entries imported!')).toBeVisible();
+	const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('tally-diary-entries') || '[]'));
+	expect(stored).toHaveLength(3);
+
+	// A genuinely new entry in the file still imports
+	await page.evaluate(() => {
+		const input = document.querySelector('input[type="file"]') as HTMLInputElement;
+		const file = new File(
+			[JSON.stringify([{ id: 'brand-new', title: 'New from file', date: '2026-06-20', bodyText: '', tallies: [], isThumbUp: false, isThumbDown: false, entryNumber: 4 }])],
+			'extra.json',
+			{ type: 'application/json' }
+		);
+		const dt = new DataTransfer();
+		dt.items.add(file);
+		input.files = dt.files;
+		input.dispatchEvent(new Event('change', { bubbles: true }));
+	});
+	await expect(page.getByText('Entries imported!')).toBeVisible();
+	const after = await page.evaluate(() => JSON.parse(localStorage.getItem('tally-diary-entries') || '[]'));
+	expect(after).toHaveLength(4);
+	expect(after.map((e: { id: string }) => e.id)).toContain('brand-new');
+});
+
 test('app loads offline after first visit (service worker)', async ({ page, context }) => {
 	await seed(page);
 	await page.goto('/');

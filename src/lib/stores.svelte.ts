@@ -272,8 +272,11 @@ function createDiaryStore() {
 		importData(json: string) {
 			try {
 				const imported = JSON.parse(json) as DiaryEntry[];
+				// Merge by id, local wins — same convention as the Drive sync merge
+				const existingIds = new Set(entries.map(e => e.id));
 				imported.forEach(entry => {
 					if (!entry.id) entry.id = generateId();
+					if (existingIds.has(entry.id)) return;
 					if (!entry.batchId) entry.batchId = getOpenBatchId();
 					entries.push(entry);
 					triggerBatchUpload(entry.batchId, () => entries);
