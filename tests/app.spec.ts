@@ -120,6 +120,49 @@ test('theme toggle switches palette and native color-scheme', async ({ page }) =
 	expect(await page.evaluate(() => getComputedStyle(document.documentElement).colorScheme)).toBe('light');
 });
 
+test('insights shows streaks, good days, correlations, milestones, and heatmap', async ({ page }) => {
+	// 14 consecutive days ending today: 10 thumbs-up, 4 thumbs-down.
+	// 'Gym' appears on 5 of the thumbs-up days → strong positive correlation.
+	const local = (offset: number) => {
+		const d = new Date();
+		d.setDate(d.getDate() - offset);
+		return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+	};
+	const days = Array.from({ length: 14 }, (_, i) => {
+		const down = i % 4 === 3; // offsets 3, 7, 11 → 3 down… plus one more below
+		return entry({
+			title: `Day minus ${i}`,
+			date: local(i),
+			tallies: i % 2 === 0 && i < 10 ? [{ type: 'Activity', text: 'Gym' }] : [],
+			isThumbUp: !down && i !== 13,
+			isThumbDown: down || i === 13,
+			entryNumber: 14 - i
+		});
+	});
+	// Anniversary: same month/day, one year earlier
+	const [y, m, d] = local(0).split('-');
+	days.push(entry({ title: 'Last year today', date: `${Number(y) - 1}-${m}-${d}`, entryNumber: 0 }));
+	await seed(page, days);
+
+	await page.goto('/insights');
+	// Streak: 14 consecutive days
+	await expect(page.getByText('Longest: 14 days')).toBeVisible();
+	// Good days: 10 up / 14 rated = 71% (exact — the correlations subtitle also mentions 71%)
+	await expect(page.getByText('71%', { exact: true })).toBeVisible();
+	// Correlation: Gym on 5 rated days, all thumbs-up → 100% good
+	await expect(page.getByText('What Makes a Good Day')).toBeVisible();
+	await expect(page.locator('#correlations').getByText('Gym')).toBeVisible();
+	await expect(page.locator('#correlations').getByText('100% good')).toBeVisible();
+	// Milestones & heatmap render
+	await expect(page.getByText('Milestones')).toBeVisible();
+	await expect(page.getByText(/entries until your/)).toBeVisible();
+	await expect(page.getByTestId('heatmap')).toBeVisible();
+	// On This Day anniversary links to the entry
+	await expect(page.getByText('1 year ago')).toBeVisible();
+	await page.getByText('Last year today').click();
+	await expect(page.getByPlaceholder('Title...')).toHaveValue('Last year today');
+});
+
 test('backup export/import round-trip does not duplicate entries', async ({ page }) => {
 	await seed(page);
 	await page.goto('/settings');

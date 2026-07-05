@@ -36,7 +36,7 @@ const ENTRIES = [
 	entry(4, 'Long rainy workday', 'Back-to-back meetings and the rain never let up. Skipped the gym, ate leftovers at my desk. Tomorrow will be better.', [T('Location', 'Office'), T('Food', 'Leftovers')], 'down'),
 	entry(5, 'Morning gym streak: week 3', 'Sixth session in a row. Finally hit a comfortable pace on the rower. Grabbed Chipotle with Alex on the way home.', [T('Activity', 'Gym'), T('Person', 'Alex'), T('Food', 'Chipotle')], 'up'),
 	entry(7, 'Farmers market haul', 'Stocked up on tomatoes and fresh bread. Ran into Priya and caught up over coffee for two hours.', [T('Location', 'Farmers market'), T('Person', 'Priya'), T('Food', 'Coffee')], null),
-	entry(9, 'Gym + meal prep', 'Leg day, then prepped lunches for the week. Future me says thanks.', [T('Activity', 'Gym'), T('Activity', 'Meal prep'), T('Location', 'Home')], null),
+	entry(9, 'Gym + meal prep', 'Leg day, then prepped lunches for the week. Future me says thanks.', [T('Activity', 'Gym'), T('Activity', 'Meal prep'), T('Location', 'Home')], 'up'),
 	entry(12, 'Dinner at the new ramen place', 'The tonkotsu lived up to the hype. Sam rated it a 9/10, and Sam is stingy with 9s.', [T('Food', 'Ramen'), T('Person', 'Sam'), T('Location', 'Downtown')], 'up'),
 	entry(14, 'Reading in the park', 'Two chapters under a tree. A dog stole my spot when I got up. Fair.', [T('Activity', 'Reading'), T('Location', 'Park')], null),
 	entry(16, 'Gym, then game night', 'Quick session after work, then board games at Alex’s. Lost Catan on the final turn. Rematch demanded.', [T('Activity', 'Gym'), T('Person', 'Alex'), T('Activity', 'Board games')], 'up'),
@@ -102,11 +102,15 @@ for (const device of DEVICES) {
 	await page.waitForFunction(() => document.querySelector('input[placeholder="Title..."]')?.value);
 	await shot('entry-detail');
 
-	// 4. Insights — expand the two richest categories
+	// 4. Insights — top (stats, on-this-day, heatmap), then the analysis sections
 	await page.goto(BASE + '/insights');
 	await page.getByRole('button', { name: /^Activity/ }).click();
 	await page.getByRole('button', { name: /^Food/ }).click();
+	// expanding auto-scrolls the main container; return to the top for the hero shot
+	await page.evaluate(() => document.querySelector('main')?.scrollTo(0, 0));
 	await shot('insights');
+	await page.evaluate(() => document.querySelector('#correlations')?.scrollIntoView());
+	await shot('insights-detail');
 
 	await context.close();
 	console.log(`${device.name}: 4 screenshots at ${device.viewport.width * device.deviceScaleFactor}x${device.viewport.height * device.deviceScaleFactor}`);
