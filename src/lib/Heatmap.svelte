@@ -31,11 +31,20 @@
 		return m;
 	});
 
-	const maxWords = $derived(Math.max(1, ...[...byDate.values()].map((v) => v.words)));
+	// Quartile thresholds over nonzero word counts, so intensity reflects the
+	// user's own distribution instead of being flattened by one outlier day
+	const quartiles = $derived.by(() => {
+		const counts = [...byDate.values()].map((v) => v.words).filter((w) => w > 0).sort((a, b) => a - b);
+		if (!counts.length) return null;
+		const q = (p: number) => counts[Math.floor(p * (counts.length - 1))];
+		return { q1: q(0.25), q2: q(0.5), q3: q(0.75) };
+	});
 
 	function lengthLevel(words: number): number {
-		const r = words / maxWords;
-		return r > 0.66 ? 4 : r > 0.33 ? 3 : words > 0 ? 2 : 1;
+		if (words <= 0 || !quartiles) return 1;
+		const { q1, q2, q3 } = quartiles;
+		if (q1 === q3) return 3; // no spread — every writing day is equally typical
+		return words > q3 ? 4 : words > q2 ? 3 : words > q1 ? 2 : 1;
 	}
 
 	const cells = $derived.by(() => {
