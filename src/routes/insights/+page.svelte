@@ -166,6 +166,9 @@
 					>
 						<span class="text-xs font-semibold text-primary">{a.yearsAgo} {a.yearsAgo === 1 ? 'year' : 'years'} ago</span>
 						<span class="ml-2 text-sm font-medium text-foreground group-hover:text-primary transition-colors">{a.title}</span>
+						{#if a.preview}
+							<p class="mt-0.5 text-sm text-muted-foreground line-clamp-2">{a.preview}</p>
+						{/if}
 					</button>
 				{/each}
 			</div>

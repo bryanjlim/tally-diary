@@ -141,7 +141,7 @@ test('insights shows streaks, good days, correlations, milestones, and heatmap',
 	});
 	// Anniversary: same month/day, one year earlier
 	const [y, m, d] = local(0).split('-');
-	days.push(entry({ title: 'Last year today', date: `${Number(y) - 1}-${m}-${d}`, entryNumber: 0 }));
+	days.push(entry({ title: 'Last year today', date: `${Number(y) - 1}-${m}-${d}`, bodyText: 'A memorable day worth revisiting.', entryNumber: 0 }));
 	// Legacy-format date (old app stored non-ISO dates) — must be normalized on load
 	days.push(entry({ title: 'Legacy entry', date: `1/15/${Number(y) - 1}`, entryNumber: 0 }));
 	await seed(page, days);
@@ -170,8 +170,9 @@ test('insights shows streaks, good days, correlations, milestones, and heatmap',
 	await expect(page.getByText('More words')).toBeVisible();
 	await page.reload();
 	await expect(page.getByText('More words')).toBeVisible();
-	// On This Day anniversary links to the entry
+	// On This Day anniversary shows a body preview and links to the entry
 	await expect(page.getByText('1 year ago')).toBeVisible();
+	await expect(page.getByText('A memorable day worth revisiting.')).toBeVisible();
 	await page.getByText('Last year today').click();
 	await expect(page.getByPlaceholder('Title...')).toHaveValue('Last year today');
 });

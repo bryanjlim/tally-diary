@@ -156,6 +156,7 @@ export function tallyTrends(entries: DiaryEntry[]): { movers: Mover[]; lapsed: L
 export interface Anniversary {
 	index: number;
 	title: string;
+	preview: string;
 	yearsAgo: number;
 	date: string;
 }
@@ -167,7 +168,13 @@ export function onThisDay(entries: DiaryEntry[]): Anniversary[] {
 	entries.forEach((e, index) => {
 		const [y, m, d] = (e.date || '').split('-');
 		if (m === tm && d === td && y < ty) {
-			out.push({ index, title: e.title || e.date, yearsAgo: Number(ty) - Number(y), date: e.date });
+			out.push({
+				index,
+				title: e.title || e.date,
+				preview: e.bodyText?.trim() ?? '',
+				yearsAgo: Number(ty) - Number(y),
+				date: e.date
+			});
 		}
 	});
 	return out.sort((a, b) => a.yearsAgo - b.yearsAgo);
