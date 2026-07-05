@@ -14,8 +14,14 @@ const DRIVE_API = 'https://www.googleapis.com/drive/v3';
 const UPLOAD_API = 'https://www.googleapis.com/upload/drive/v3';
 const BOUNDARY = '-------314159265358979323846';
 
-import { Capacitor } from '@capacitor/core';
+import { Capacitor, registerPlugin } from '@capacitor/core';
 import { GoogleSignIn } from '@capawesome/capacitor-google-sign-in';
+
+/** Local Android plugin: silently re-authorizes the Drive scope (no UI) once granted. */
+interface SilentAuthPlugin {
+	authorize(): Promise<{ accessToken: string | null; needsAuth: boolean }>;
+}
+const SilentAuth = registerPlugin<SilentAuthPlugin>('SilentAuth');
 
 let _accessToken: string | null = null;
 
@@ -76,13 +82,26 @@ export async function trySilentAuth(): Promise<string | null> {
 	// Not a returning user — nothing to restore.
 	if (!localStorage.getItem(SIGNED_IN_KEY)) return null;
 
-	// Native: the sign-in plugin's signIn() always shows the account chooser and
-	// there is no silent-refresh API, so do NOT prompt on launch. The app runs in
-	// local mode and the sidebar shows "Sign in with Google" until the user taps
-	// it; entries are always saved locally in the meantime.
-	// ponytail: true silent refresh needs a refresh token — an authorize-only
-	// native method or a token-exchange backend. Cached token above covers quick
-	// relaunches within the token's ~1 hr lifetime.
+	// Android: silently re-authorize the Drive scope with no UI via our native
+	// SilentAuthPlugin. Works once the user has granted the scope through the
+	// interactive sign-in; Google caches the grant so this needs no prompt.
+	if (Capacitor.getPlatform() === 'android') {
+		try {
+			const res = await SilentAuth.authorize();
+			if (res.accessToken) {
+				cacheToken(res.accessToken);
+				return _accessToken;
+			}
+		} catch (e) {
+			console.warn('[Auth] Silent authorize failed:', e);
+		}
+		return null; // scope not granted yet — sidebar shows the sign-in button
+	}
+
+	// iOS: no silent-authorize method yet, and the sign-in plugin's signIn()
+	// always shows UI, so don't prompt on launch. Runs in local mode until the
+	// user taps sign-in; entries are always saved locally. The cached token above
+	// still covers quick relaunches within the token's ~1 hr lifetime.
 	if (Capacitor.isNativePlatform()) return null;
 
 	// Web: implicit-flow silent renewal via redirect (no interaction if the
