@@ -25,6 +25,14 @@ const SIGNED_IN_KEY = 'tally-diary-signed-in';
 const CACHED_TOKEN_KEY = 'tally-diary-access-token';
 const CACHED_TOKEN_EXPIRY = 'tally-diary-token-expiry';
 
+/** Persist a fresh access token so quick relaunches can reuse it without any UI. */
+function cacheToken(token: string) {
+	_accessToken = token;
+	localStorage.setItem(SIGNED_IN_KEY, 'true');
+	localStorage.setItem(CACHED_TOKEN_KEY, token);
+	localStorage.setItem(CACHED_TOKEN_EXPIRY, (Date.now() + 3500 * 1000).toString()); // ~1 hr minus buffer
+}
+
 /**
  * Prompt the user to sign in and obtain an access token.
  */
@@ -39,12 +47,7 @@ export async function authenticate(): Promise<string | null> {
 		});
 		const result = await GoogleSignIn.signIn();
 		if (result.accessToken) {
-			_accessToken = result.accessToken;
-			localStorage.setItem(SIGNED_IN_KEY, 'true');
-			if (!Capacitor.isNativePlatform()) {
-				localStorage.setItem(CACHED_TOKEN_KEY, _accessToken);
-				localStorage.setItem(CACHED_TOKEN_EXPIRY, (Date.now() + 3500 * 1000).toString()); // 1 hr minus buffer
-			}
+			cacheToken(result.accessToken);
 			return _accessToken;
 		}
 		return null;
@@ -62,32 +65,40 @@ export async function trySilentAuth(): Promise<string | null> {
 	if (_accessToken) return _accessToken;
 	if (typeof window === 'undefined') return null;
 
-	// Check if a Web session token was recently cached and is still valid
-	if (!Capacitor.isNativePlatform()) {
-		const cached = localStorage.getItem(CACHED_TOKEN_KEY);
-		const expiry = localStorage.getItem(CACHED_TOKEN_EXPIRY);
-		if (cached && expiry && Date.now() < parseInt(expiry, 10)) {
-			_accessToken = cached;
-			return _accessToken;
-		}
+	// Reuse a recently cached access token on every platform — never shows UI.
+	const cached = localStorage.getItem(CACHED_TOKEN_KEY);
+	const expiry = localStorage.getItem(CACHED_TOKEN_EXPIRY);
+	if (cached && expiry && Date.now() < parseInt(expiry, 10)) {
+		_accessToken = cached;
+		return _accessToken;
 	}
 
+	// Not a returning user — nothing to restore.
+	if (!localStorage.getItem(SIGNED_IN_KEY)) return null;
+
+	// Native: the sign-in plugin's signIn() always shows the account chooser and
+	// there is no silent-refresh API, so do NOT prompt on launch. The app runs in
+	// local mode and the sidebar shows "Sign in with Google" until the user taps
+	// it; entries are always saved locally in the meantime.
+	// ponytail: true silent refresh needs a refresh token — an authorize-only
+	// native method or a token-exchange backend. Cached token above covers quick
+	// relaunches within the token's ~1 hr lifetime.
+	if (Capacitor.isNativePlatform()) return null;
+
+	// Web: implicit-flow silent renewal via redirect (no interaction if the
+	// Google session is still alive).
 	try {
 		await GoogleSignIn.initialize({
 			clientId: CLIENT_ID,
 			scopes: [SCOPES],
-			...(!Capacitor.isNativePlatform() && { redirectUrl: window.location.origin })
+			redirectUrl: window.location.origin
 		});
 
-		// If we are on web and returning from an OAuth redirect
-		if (!Capacitor.isNativePlatform() && window.location.hash.includes('access_token')) {
+		if (window.location.hash.includes('access_token')) {
 			try {
 				const redirectResult = await GoogleSignIn.handleRedirectCallback();
 				if (redirectResult?.accessToken) {
-					_accessToken = redirectResult.accessToken;
-					localStorage.setItem(SIGNED_IN_KEY, 'true');
-					localStorage.setItem(CACHED_TOKEN_KEY, _accessToken);
-					localStorage.setItem(CACHED_TOKEN_EXPIRY, (Date.now() + 3500 * 1000).toString());
+					cacheToken(redirectResult.accessToken);
 					return _accessToken;
 				}
 			} catch (err) {
@@ -95,15 +106,9 @@ export async function trySilentAuth(): Promise<string | null> {
 			}
 		}
 
-		if (!localStorage.getItem(SIGNED_IN_KEY)) return null;
-
 		const result = await GoogleSignIn.signIn();
 		if (result.accessToken) {
-			_accessToken = result.accessToken;
-			if (!Capacitor.isNativePlatform()) {
-				localStorage.setItem(CACHED_TOKEN_KEY, _accessToken);
-				localStorage.setItem(CACHED_TOKEN_EXPIRY, (Date.now() + 3500 * 1000).toString());
-			}
+			cacheToken(result.accessToken);
 			return _accessToken;
 		}
 		return null;
