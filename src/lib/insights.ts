@@ -199,10 +199,13 @@ export function milestones(entries: DiaryEntry[], dob: string): string[] {
 
 // ─── Writing stats ─────────────────────────────────────
 
-export function writingStats(entries: DiaryEntry[]): { total: number; avg: number } {
+export function writingStats(entries: DiaryEntry[]): { total: number; avg: number; longest: number } {
 	let total = 0;
+	let longest = 0;
 	for (const e of entries) {
-		if (e.bodyText?.trim()) total += e.bodyText.trim().split(/\s+/).length;
+		const words = e.bodyText?.trim() ? e.bodyText.trim().split(/\s+/).length : 0;
+		total += words;
+		if (words > longest) longest = words;
 	}
-	return { total, avg: entries.length ? Math.round(total / entries.length) : 0 };
+	return { total, avg: entries.length ? Math.round(total / entries.length) : 0, longest };
 }

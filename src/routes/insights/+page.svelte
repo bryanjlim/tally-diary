@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { store } from '$lib/stores.svelte';
 	import { goto } from '$app/navigation';
+	import { browser } from '$app/environment';
 	import { TALLY_CATEGORIES, categoryIcons, type TallyCategory } from '$lib/types';
 	import TallyMarks from '$lib/TallyMarks.svelte';
 	import Heatmap from '$lib/Heatmap.svelte';
@@ -65,6 +66,15 @@
 	const tallyAggs = $derived(getAggregateTallies());
 	const totalTallies = $derived(Object.values(tallyAggs).reduce((sum, arr) => sum + arr.length, 0));
 
+	const HEATMAP_MODE_KEY = 'tally-diary-heatmap-mode';
+	let heatmapMode = $state<'mood' | 'length'>(
+		browser && localStorage.getItem(HEATMAP_MODE_KEY) === 'length' ? 'length' : 'mood'
+	);
+	function setHeatmapMode(mode: 'mood' | 'length') {
+		heatmapMode = mode;
+		if (browser) localStorage.setItem(HEATMAP_MODE_KEY, mode);
+	}
+
 	const streak = $derived(streaks(store.entries));
 	const words = $derived(writingStats(store.entries));
 	const goodDays = $derived(goodDayStats(store.entries));
@@ -104,7 +114,7 @@
 				<h3 class="text-sm font-medium text-muted-foreground">Entries Written</h3>
 			</div>
 			<p class="text-4xl font-bold text-foreground">{store.entries.length}</p>
-			<p class="text-xs text-muted-foreground mt-1">{words.total.toLocaleString()} words · ≈{words.avg} per entry</p>
+			<p class="text-xs text-muted-foreground mt-1">{words.total.toLocaleString()} words · ≈{words.avg} per entry{words.longest > 0 ? ` · longest ${words.longest.toLocaleString()}` : ''}</p>
 		</div>
 
 		<div class="rounded-xl border border-border bg-card p-5 glass">
@@ -165,9 +175,25 @@
 	<!-- Past Year Heatmap -->
 	{#if store.entries.length > 0}
 		<div class="rounded-xl border border-border bg-card p-5">
-			{@render sectionHeader(CalendarDays, 'bg-primary/10 text-primary', 'Past Year', 'One square per day')}
+			<div class="flex items-center justify-between gap-3 flex-wrap">
+				{@render sectionHeader(CalendarDays, 'bg-primary/10 text-primary', 'Past Year', 'One square per day')}
+				<div class="flex items-center gap-1">
+					<button
+						onclick={() => setHeatmapMode('mood')}
+						class="px-2.5 py-1 rounded-lg text-xs font-medium transition-colors cursor-pointer {heatmapMode === 'mood' ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}"
+					>
+						Mood
+					</button>
+					<button
+						onclick={() => setHeatmapMode('length')}
+						class="px-2.5 py-1 rounded-lg text-xs font-medium transition-colors cursor-pointer {heatmapMode === 'length' ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}"
+					>
+						Words
+					</button>
+				</div>
+			</div>
 			<div class="mt-4">
-				<Heatmap entries={store.entries} />
+				<Heatmap entries={store.entries} mode={heatmapMode} />
 			</div>
 		</div>
 	{/if}

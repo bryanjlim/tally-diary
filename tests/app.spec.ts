@@ -157,6 +157,11 @@ test('insights shows streaks, good days, correlations, milestones, and heatmap',
 	await expect(page.getByText('Milestones')).toBeVisible();
 	await expect(page.getByText(/entries until your/)).toBeVisible();
 	await expect(page.getByTestId('heatmap')).toBeVisible();
+	// Heatmap mode toggle: words-per-day gradient with its own legend, persisted
+	await page.getByRole('button', { name: 'Words', exact: true }).click();
+	await expect(page.getByText('More words')).toBeVisible();
+	await page.reload();
+	await expect(page.getByText('More words')).toBeVisible();
 	// On This Day anniversary links to the entry
 	await expect(page.getByText('1 year ago')).toBeVisible();
 	await page.getByText('Last year today').click();
