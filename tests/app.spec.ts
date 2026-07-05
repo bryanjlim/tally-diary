@@ -142,6 +142,8 @@ test('insights shows streaks, good days, correlations, milestones, and heatmap',
 	// Anniversary: same month/day, one year earlier
 	const [y, m, d] = local(0).split('-');
 	days.push(entry({ title: 'Last year today', date: `${Number(y) - 1}-${m}-${d}`, entryNumber: 0 }));
+	// Legacy-format date (old app stored non-ISO dates) — must be normalized on load
+	days.push(entry({ title: 'Legacy entry', date: `1/15/${Number(y) - 1}`, entryNumber: 0 }));
 	await seed(page, days);
 
 	await page.goto('/insights');
@@ -157,6 +159,12 @@ test('insights shows streaks, good days, correlations, milestones, and heatmap',
 	await expect(page.getByText('Milestones')).toBeVisible();
 	await expect(page.getByText(/entries until your/)).toBeVisible();
 	await expect(page.getByTestId('heatmap')).toBeVisible();
+	// Legacy date was normalized: no "Invalid Date" anywhere, entry persisted as ISO
+	await expect(page.getByText(/Invalid Date/)).toHaveCount(0);
+	const legacyDate = await page.evaluate(() =>
+		JSON.parse(localStorage.getItem('tally-diary-entries') || '[]').find((e: { title: string }) => e.title === 'Legacy entry')?.date
+	);
+	expect(legacyDate).toBe(`${Number(y) - 1}-01-15`);
 	// Heatmap mode toggle: words-per-day gradient with its own legend, persisted
 	await page.getByRole('button', { name: 'Words', exact: true }).click();
 	await expect(page.getByText('More words')).toBeVisible();

@@ -1,4 +1,4 @@
-import { type DiaryEntry, type UserPreferences, defaultPreferences, generateId, sortDiaryEntries } from './types';
+import { type DiaryEntry, type UserPreferences, defaultPreferences, generateId, normalizeDate, sortDiaryEntries } from './types';
 import * as drive from './driveHelper';
 
 const ENTRIES_KEY = 'tally-diary-entries';
@@ -12,11 +12,16 @@ function loadEntries(): DiaryEntry[] {
 		const data = localStorage.getItem(ENTRIES_KEY);
 		if (data) {
 			const entries = JSON.parse(data) as DiaryEntry[];
-			// Ensure all entries have IDs (backfill for old data)
+			// Backfill IDs and repair legacy date formats, persisting once if anything changed
+			let changed = false;
 			for (const e of entries) {
-				if (!e.id) e.id = generateId();
+				if (!e.id) { e.id = generateId(); changed = true; }
+				const norm = normalizeDate(e.date || '');
+				if (norm !== e.date) { e.date = norm; changed = true; }
 			}
-			return entries.sort(sortDiaryEntries);
+			entries.sort(sortDiaryEntries);
+			if (changed) localStorage.setItem(ENTRIES_KEY, JSON.stringify(entries));
+			return entries;
 		}
 	} catch (e) {
 		console.error('Error loading entries:', e);
@@ -92,7 +97,7 @@ function createDiaryStore() {
 		const driveEntries = await drive.loadAllEntries(token);
 		const combined = new Map<string, DiaryEntry>();
 		for (const raw of driveEntries) {
-			const e: DiaryEntry = { ...raw, id: raw.id || generateId() };
+			const e: DiaryEntry = { ...raw, id: raw.id || generateId(), date: normalizeDate(raw.date || '') };
 			combined.set(e.id, e);
 		}
 		for (const e of entries) combined.set(e.id, e);
@@ -276,6 +281,7 @@ function createDiaryStore() {
 				const existingIds = new Set(entries.map(e => e.id));
 				imported.forEach(entry => {
 					if (!entry.id) entry.id = generateId();
+					entry.date = normalizeDate(entry.date || '');
 					if (existingIds.has(entry.id)) return;
 					existingIds.add(entry.id);
 					if (!entry.batchId) entry.batchId = getOpenBatchId();

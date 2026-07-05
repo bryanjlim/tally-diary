@@ -11,7 +11,7 @@
  */
 
 import * as drive from './driveHelper';
-import { TALLY_CATEGORIES, type DiaryEntry, type TallyMark, type TallyCategory, generateId, sortDiaryEntries } from './types';
+import { TALLY_CATEGORIES, type DiaryEntry, type TallyMark, type TallyCategory, generateId, normalizeDate, sortDiaryEntries } from './types';
 import { store } from './stores.svelte';
 
 const MIGRATION_KEY = 'tally-diary-migration-batch-done';
@@ -42,7 +42,7 @@ function convertEntry(raw: any): DiaryEntry {
 	return {
 		id: generateId(),
 		title: raw.title || raw.customTitle || '',
-		date: raw.date || '',
+		date: normalizeDate(raw.date || ''),
 		bodyText: raw.bodyText || '',
 		tallies,
 		isThumbUp: !!raw.isThumbUp,

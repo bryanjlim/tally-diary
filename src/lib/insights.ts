@@ -47,6 +47,7 @@ export function goodDayStats(entries: DiaryEntry[]): GoodDayStats | null {
 	const byMonth = new Map<string, { up: number; total: number }>();
 	for (const e of rated) {
 		const key = e.date.slice(0, 7);
+		if (!/^\d{4}-\d{2}$/.test(key)) continue; // unparseable legacy date — skip month grouping
 		const m = byMonth.get(key) ?? { up: 0, total: 0 };
 		m.total++;
 		if (e.isThumbUp) m.up++;

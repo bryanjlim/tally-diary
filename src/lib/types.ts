@@ -53,6 +53,20 @@ export function generateId(): string {
 	return crypto.randomUUID();
 }
 
+/**
+ * Normalize any parseable date string to local YYYY-MM-DD.
+ * Legacy app data carries dates in other formats (e.g. "6/15/2019");
+ * everything downstream (heatmap keys, month grouping, daysAlive) assumes ISO.
+ * Unparseable strings are returned unchanged.
+ */
+export function normalizeDate(s: string): string {
+	if (!s || /^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+	if (/^\d{4}-\d{2}-\d{2}T/.test(s)) return s.slice(0, 10);
+	const d = new Date(s);
+	if (isNaN(d.getTime())) return s;
+	return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
 /** "Day N" counter: days between date of birth and the entry date, inclusive. */
 export function daysAlive(date: string, dob: string): number {
 	if (!dob) return 0;
