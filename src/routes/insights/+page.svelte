@@ -8,8 +8,8 @@
 	interface TallyAgg { text: string; count: number; }
 
 	const categoryColors: Record<TallyCategory, string> = {
-		Food: 'text-amber-600 dark:text-amber-400',
-		Activity: 'text-green-600 dark:text-green-400',
+		Food: 'text-amber-700 dark:text-amber-400',
+		Activity: 'text-green-700 dark:text-green-400',
 		Location: 'text-blue-600 dark:text-blue-400',
 		Person: 'text-purple-600 dark:text-purple-400',
 		Other: 'text-gray-600 dark:text-gray-400',

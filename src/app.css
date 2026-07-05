@@ -74,6 +74,13 @@
 
 html {
 	scroll-behavior: smooth;
+	/* Render native widgets (date picker, checkboxes, scrollbars) in the matching palette */
+	color-scheme: light;
+	accent-color: var(--color-primary);
+}
+
+html.dark {
+	color-scheme: dark;
 }
 
 body {

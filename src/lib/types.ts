@@ -32,8 +32,8 @@ export const defaultPreferences: UserPreferences = {
 
 /** Tally chip styling shared across entry pages and the timeline. */
 export const categoryColors: Record<TallyCategory, string> = {
-	Food: 'bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/30',
-	Activity: 'bg-green-500/15 text-green-600 dark:text-green-400 border-green-500/30',
+	Food: 'bg-amber-500/15 text-amber-700 dark:text-amber-400 border-amber-500/30',
+	Activity: 'bg-green-500/15 text-green-700 dark:text-green-400 border-green-500/30',
 	Location: 'bg-blue-500/15 text-blue-600 dark:text-blue-400 border-blue-500/30',
 	Person: 'bg-purple-500/15 text-purple-600 dark:text-purple-400 border-purple-500/30',
 	Other: 'bg-gray-500/15 text-gray-600 dark:text-gray-400 border-gray-500/30',
