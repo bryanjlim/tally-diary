@@ -28,3 +28,7 @@ vite.config.ts.timestamp-*
 
 # Android Studio project files
 android/.idea
+
+# Playwright
+test-results
+playwright-report
