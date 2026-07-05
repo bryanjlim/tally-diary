@@ -134,11 +134,13 @@ test('backup export/import round-trip does not duplicate entries', async ({ page
 	const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('tally-diary-entries') || '[]'));
 	expect(stored).toHaveLength(3);
 
-	// A genuinely new entry in the file still imports
+	// A genuinely new entry still imports — but only once, even if the file
+	// itself contains the same id twice
 	await page.evaluate(() => {
 		const input = document.querySelector('input[type="file"]') as HTMLInputElement;
+		const newEntry = { id: 'brand-new', title: 'New from file', date: '2026-06-20', bodyText: '', tallies: [], isThumbUp: false, isThumbDown: false, entryNumber: 4 };
 		const file = new File(
-			[JSON.stringify([{ id: 'brand-new', title: 'New from file', date: '2026-06-20', bodyText: '', tallies: [], isThumbUp: false, isThumbDown: false, entryNumber: 4 }])],
+			[JSON.stringify([newEntry, newEntry])],
 			'extra.json',
 			{ type: 'application/json' }
 		);

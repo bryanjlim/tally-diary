@@ -53,10 +53,11 @@
 		input.value = "";
 	}
 
-	function deleteAllData() {
-		store.deleteAllData();
-		dateOfBirth = "2000-01-01";
+	async function deleteAllData() {
 		showDeleteConfirm = false;
+		toast("Deleting all data...");
+		await store.deleteAllData();
+		dateOfBirth = "2000-01-01";
 		toast("All data deleted");
 	}
 </script>

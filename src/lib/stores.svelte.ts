@@ -277,6 +277,7 @@ function createDiaryStore() {
 				imported.forEach(entry => {
 					if (!entry.id) entry.id = generateId();
 					if (existingIds.has(entry.id)) return;
+					existingIds.add(entry.id);
 					if (!entry.batchId) entry.batchId = getOpenBatchId();
 					entries.push(entry);
 					triggerBatchUpload(entry.batchId, () => entries);
@@ -289,21 +290,18 @@ function createDiaryStore() {
 			}
 		},
 
-		deleteAllData() {
+		async deleteAllData() {
 			const token = drive.getToken();
 			if (token) {
-				// Delete all batch files in Drive
-				const counts: Record<string, boolean> = {};
-				for (const e of entries) {
-					if (e.batchId && !counts[e.batchId]) {
-						counts[e.batchId] = true;
-						
-						// Quick delete file lookup
-						const fileName = `entries_batch_${e.batchId}`;
-						drive.getFileId(fileName, token).then(id => {
-							if (id) drive.deleteFile(id, token);
-						});
+				// Wipe everything the app has ever written to appDataFolder:
+				// batch files, preferences, and legacy files
+				try {
+					const files = await drive.listAllFiles(token);
+					for (let i = 0; i < files.length; i += 10) {
+						await Promise.all(files.slice(i, i + 10).map(f => drive.deleteFile(f.id, token)));
 					}
+				} catch (e) {
+					console.warn('[Store] Drive wipe failed:', e);
 				}
 			}
 			entries = [];

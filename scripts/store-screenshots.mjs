@@ -11,7 +11,8 @@ mkdirSync(OUT, { recursive: true });
 const day = (offset) => {
 	const d = new Date();
 	d.setDate(d.getDate() - offset);
-	return d.toISOString().slice(0, 10);
+	// Local date, not toISOString (UTC), so entries never land on "tomorrow"
+	return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 };
 
 let n = 0;
@@ -30,11 +31,11 @@ const T = (type, text) => ({ type, text });
 
 const ENTRIES = [
 	entry(0, 'Hiked Mt. Tam with Sam', 'Perfect weather. We took the coastal trail and got burritos after — earned every bite. Legs are toast but the view from the top was unreal.', [T('Activity', 'Hiking'), T('Person', 'Sam'), T('Food', 'Chipotle'), T('Location', 'Mt. Tam')], 'up'),
-	entry(1, 'Quiet Sunday reset', 'Slept in, made pho from scratch, finished the last hundred pages of my book. Exactly the recharge day I needed.', [T('Activity', 'Reading'), T('Food', 'Pho'), T('Location', 'Home')], 'up'),
+	entry(1, 'Quiet reset day', 'Slept in, made pho from scratch, finished the last hundred pages of my book. Exactly the recharge day I needed.', [T('Activity', 'Reading'), T('Food', 'Pho'), T('Location', 'Home')], 'up'),
 	entry(2, 'Shipped the redesign', 'Three weeks of work went live today. The team pulled it off without a single rollback. Celebratory ramen with everyone after.', [T('Other', 'Milestone'), T('Person', 'Work team'), T('Food', 'Ramen')], 'up'),
-	entry(4, 'Long rainy Tuesday', 'Back-to-back meetings and the rain never let up. Skipped the gym, ate leftovers at my desk. Tomorrow will be better.', [T('Location', 'Office'), T('Food', 'Leftovers')], 'down'),
+	entry(4, 'Long rainy workday', 'Back-to-back meetings and the rain never let up. Skipped the gym, ate leftovers at my desk. Tomorrow will be better.', [T('Location', 'Office'), T('Food', 'Leftovers')], 'down'),
 	entry(5, 'Morning gym streak: week 3', 'Sixth session in a row. Finally hit a comfortable pace on the rower. Grabbed Chipotle with Alex on the way home.', [T('Activity', 'Gym'), T('Person', 'Alex'), T('Food', 'Chipotle')], 'up'),
-	entry(7, 'Farmers market Saturday', 'Stocked up on tomatoes and fresh bread. Ran into Priya and caught up over coffee for two hours.', [T('Location', 'Farmers market'), T('Person', 'Priya'), T('Food', 'Coffee')], null),
+	entry(7, 'Farmers market haul', 'Stocked up on tomatoes and fresh bread. Ran into Priya and caught up over coffee for two hours.', [T('Location', 'Farmers market'), T('Person', 'Priya'), T('Food', 'Coffee')], null),
 	entry(9, 'Gym + meal prep', 'Leg day, then prepped lunches for the week. Future me says thanks.', [T('Activity', 'Gym'), T('Activity', 'Meal prep'), T('Location', 'Home')], null),
 	entry(12, 'Dinner at the new ramen place', 'The tonkotsu lived up to the hype. Sam rated it a 9/10, and Sam is stingy with 9s.', [T('Food', 'Ramen'), T('Person', 'Sam'), T('Location', 'Downtown')], 'up'),
 	entry(14, 'Reading in the park', 'Two chapters under a tree. A dog stole my spot when I got up. Fair.', [T('Activity', 'Reading'), T('Location', 'Park')], null),
@@ -43,7 +44,7 @@ const ENTRIES = [
 	entry(21, 'Slow work-from-home day', 'Focus was hard to find. Reset with a long walk and an early night.', [T('Location', 'Home'), T('Activity', 'Walking')], null),
 	entry(24, 'Gym personal best', 'New deadlift PR. Wrote it on the fridge whiteboard like a trophy.', [T('Activity', 'Gym'), T('Other', 'PR')], 'up'),
 	entry(27, 'Coffee with Priya', 'Talked about her move and the trip we keep not planning. October. We swore this time.', [T('Person', 'Priya'), T('Food', 'Coffee'), T('Location', 'Cafe')], null),
-	entry(30, 'Month-end reflection', 'Twelve gym sessions, three books started, one finished. The tallies do not lie.', [T('Activity', 'Reading'), T('Activity', 'Gym'), T('Location', 'Home')], 'up'),
+	entry(30, 'Monthly reflection', 'Twelve gym sessions, three books started, one finished. The tallies do not lie.', [T('Activity', 'Reading'), T('Activity', 'Gym'), T('Location', 'Home')], 'up'),
 	entry(365, 'One year ago: moved into the new place', 'Boxes everywhere, pizza on the floor, and that feeling that everything was about to change. It did.', [T('Location', 'New apartment'), T('Food', 'Pizza'), T('Other', 'Moving day')], 'up')
 ];
 

@@ -197,16 +197,25 @@ export async function readFile(fileName: string, token: string): Promise<any | n
 
 /** List all entry files (name starts with "entries_batch_") in appDataFolder. */
 export async function listBatchFiles(token: string): Promise<{ id: string; name: string }[]> {
+	return listFiles(token, "name contains 'entries_batch_'");
+}
+
+/** List every file the app has created in appDataFolder (batches, preferences, legacy). */
+export async function listAllFiles(token: string): Promise<{ id: string; name: string }[]> {
+	return listFiles(token);
+}
+
+async function listFiles(token: string, q?: string): Promise<{ id: string; name: string }[]> {
 	const allFiles: { id: string; name: string }[] = [];
 	let pageToken: string | undefined;
 
 	do {
 		const params = new URLSearchParams({
-			q: "name contains 'entries_batch_'",
 			spaces: 'appDataFolder',
 			fields: 'nextPageToken, files(id, name)',
 			pageSize: '100',
 		});
+		if (q) params.set('q', q);
 		if (pageToken) params.set('pageToken', pageToken);
 
 		const resp = await driveRequest(`${DRIVE_API}/files?${params}`, token);

@@ -26,31 +26,36 @@ Character limits noted per field; all copy below fits its limit.
 
 ## Full description (both stores, ≤4000 chars)
 
-> Tally Diary is a journal that counts. Write about your day, then tag it with quick "tally marks" — the food you ate, the people you saw, the places you went, the things you did. Over time, your diary becomes a living scoreboard of your life: how many times you hit the gym this year, how often you've had ramen, how many days you've spent with your best friend.
->
-> **Your day, by the numbers**
-> Every entry shows your "Day N" — the number of days you've been alive. Day 10,341 sounds a lot more momentous than just another Tuesday.
->
-> **Tally what matters**
-> Add tally marks in five categories — Food, Activity, Location, Person, and Other — with two taps. The Insights page draws them as real hand-drawn tally strokes, bundled in fives, and tapping any tally jumps straight to every entry it appears in.
->
-> **Mark the good days (and the bad ones)**
-> A simple thumbs up or down on each entry lets you filter your timeline to just the good days — or study the rough ones.
->
-> **One year ago today**
-> Insights resurfaces the entry you wrote exactly a year ago. Past you has things to tell present you.
->
-> **Private by design**
-> Tally Diary has no servers and collects nothing. Your entries live on your device and sync to a hidden, app-private folder in *your own* Google Drive — a space no other app (and not even you, through the Drive UI) can browse. Sign-in is optional: skip it entirely and everything stays on-device.
->
-> **Works offline, everywhere**
-> Local-first storage means the app opens instantly and works with no connection — on your phone, tablet, or as an installable app on your computer. Drive sync catches up quietly whenever you're back online.
->
-> **Also nice**
-> • Beautiful dark and light themes that follow your device
-> • Search and filter your timeline by text, tally, date range, or good/bad days
-> • Full backup export and import — your data is a plain JSON file you can keep anywhere
-> • No accounts, no ads, no analytics, no subscriptions
+Plain text — both stores render this verbatim (no Markdown/HTML), so headers are
+set off with blank lines only. Paste exactly what's inside the block:
+
+```
+Tally Diary is a journal that counts. Write about your day, then tag it with quick "tally marks" — the food you ate, the people you saw, the places you went, the things you did. Over time, your diary becomes a living scoreboard of your life: how many times you hit the gym this year, how often you've had ramen, how many days you've spent with your best friend.
+
+YOUR DAY, BY THE NUMBERS
+Every entry shows your "Day N" — the number of days you've been alive. Day 10,341 sounds a lot more momentous than just another Tuesday.
+
+TALLY WHAT MATTERS
+Add tally marks in five categories — Food, Activity, Location, Person, and Other — with two taps. The Insights page draws them as real hand-drawn tally strokes, bundled in fives, and tapping any tally jumps straight to every entry it appears in.
+
+MARK THE GOOD DAYS (AND THE BAD ONES)
+A simple thumbs up or down on each entry lets you filter your timeline to just the good days — or study the rough ones.
+
+ONE YEAR AGO TODAY
+Insights resurfaces the entry you wrote exactly a year ago. Past you has things to tell present you.
+
+PRIVATE BY DESIGN
+Tally Diary has no servers and collects nothing. Your entries live on your device and sync to a hidden, app-private folder in your own Google Drive — a space no other app (and not even you, through the Drive UI) can browse. Sign-in is optional: skip it entirely and everything stays on-device.
+
+WORKS OFFLINE, EVERYWHERE
+Local-first storage means the app opens instantly and works with no connection — on your phone, tablet, or as an installable app on your computer. Drive sync catches up quietly whenever you're back online.
+
+ALSO NICE
+• Beautiful dark and light themes that follow your device
+• Search and filter your timeline by text, tally, date range, or good/bad days
+• Full backup export and import — your data is a plain JSON file you can keep anywhere
+• No accounts, no ads, no analytics, no subscriptions
+```
 
 ## Apple keywords (≤100 chars)
 
