@@ -39,26 +39,77 @@ function cacheToken(token: string) {
 	localStorage.setItem(CACHED_TOKEN_EXPIRY, (Date.now() + 3500 * 1000).toString()); // ~1 hr minus buffer
 }
 
+function loadGisScript(): Promise<void> {
+	return new Promise((resolve, reject) => {
+		if (typeof window === 'undefined') return reject(new Error('Not in browser'));
+		if ((window as any).google?.accounts?.oauth2) return resolve();
+		const existingScript = document.querySelector('script[src="https://accounts.google.com/gsi/client"]');
+		if (existingScript) {
+			existingScript.addEventListener('load', () => resolve());
+			existingScript.addEventListener('error', () => reject(new Error('Failed to load Google Identity Services')));
+			return;
+		}
+		const script = document.createElement('script');
+		script.src = 'https://accounts.google.com/gsi/client';
+		script.async = true;
+		script.defer = true;
+		script.onload = () => resolve();
+		script.onerror = () => reject(new Error('Failed to load Google Identity Services'));
+		document.head.appendChild(script);
+	});
+}
+
 /**
  * Prompt the user to sign in and obtain an access token.
  */
 export async function authenticate(): Promise<string | null> {
 	if (_accessToken) return _accessToken;
 
-	try {
-		await GoogleSignIn.initialize({
-			clientId: CLIENT_ID,
-			scopes: [SCOPES],
-			...(!Capacitor.isNativePlatform() && { redirectUrl: window.location.origin })
-		});
-		const result = await GoogleSignIn.signIn();
-		if (result.accessToken) {
-			cacheToken(result.accessToken);
-			return _accessToken;
+	if (Capacitor.isNativePlatform()) {
+		try {
+			await GoogleSignIn.initialize({
+				clientId: CLIENT_ID,
+				scopes: [SCOPES]
+			});
+			const result = await GoogleSignIn.signIn();
+			if (result.accessToken) {
+				cacheToken(result.accessToken);
+				return _accessToken;
+			}
+			return null;
+		} catch (e: any) {
+			console.error("[Auth] Google SignIn failed:", e);
+			return null;
 		}
-		return null;
-	} catch (e: any) {
-		console.error("[Auth] Google SignIn failed:", e);
+	}
+
+	// Web: Google Identity Services (GIS) token client popup
+	try {
+		await loadGisScript();
+		return new Promise((resolve) => {
+			const client = (window as any).google.accounts.oauth2.initTokenClient({
+				client_id: CLIENT_ID,
+				scope: SCOPES,
+				callback: (response: any) => {
+					if (response.access_token) {
+						cacheToken(response.access_token);
+						resolve(response.access_token);
+					} else {
+						if (response.error) {
+							console.error("[Auth] GIS error:", response);
+						}
+						resolve(null);
+					}
+				},
+				error_callback: (err: any) => {
+					console.error("[Auth] GIS error callback:", err);
+					resolve(null);
+				}
+			});
+			client.requestAccessToken({ prompt: 'consent' });
+		});
+	} catch (e) {
+		console.error("[Auth] Web Google SignIn failed:", e);
 		return null;
 	}
 }
@@ -104,35 +155,32 @@ export async function trySilentAuth(): Promise<string | null> {
 	// still covers quick relaunches within the token's ~1 hr lifetime.
 	if (Capacitor.isNativePlatform()) return null;
 
-	// Web: implicit-flow silent renewal via redirect (no interaction if the
-	// Google session is still alive).
+	// Web: silently request token without prompting for consent if Google session active
 	try {
-		await GoogleSignIn.initialize({
-			clientId: CLIENT_ID,
-			scopes: [SCOPES],
-			redirectUrl: window.location.origin
-		});
-
-		if (window.location.hash.includes('access_token')) {
-			try {
-				const redirectResult = await GoogleSignIn.handleRedirectCallback();
-				if (redirectResult?.accessToken) {
-					cacheToken(redirectResult.accessToken);
-					return _accessToken;
+		await loadGisScript();
+		return new Promise((resolve) => {
+			const timeout = setTimeout(() => resolve(null), 5000);
+			const client = (window as any).google.accounts.oauth2.initTokenClient({
+				client_id: CLIENT_ID,
+				scope: SCOPES,
+				callback: (response: any) => {
+					clearTimeout(timeout);
+					if (response.access_token) {
+						cacheToken(response.access_token);
+						resolve(response.access_token);
+					} else {
+						resolve(null);
+					}
+				},
+				error_callback: () => {
+					clearTimeout(timeout);
+					resolve(null);
 				}
-			} catch (err) {
-				console.warn("[Auth] Redirect callback parse failed:", err);
-			}
-		}
-
-		const result = await GoogleSignIn.signIn();
-		if (result.accessToken) {
-			cacheToken(result.accessToken);
-			return _accessToken;
-		}
-		return null;
+			});
+			client.requestAccessToken({ prompt: '' });
+		});
 	} catch (e) {
-		console.warn("[Auth] Google Silent SignIn failed:", e);
+		console.warn("[Auth] Web Google Silent SignIn failed:", e);
 		return null;
 	}
 }
@@ -152,9 +200,8 @@ export async function signOut(): Promise<void> {
 				console.warn("[Auth] Native Google SignOut warning:", e);
 			}
 		} else {
-			(window as any).google?.accounts?.oauth2?.revoke?.(_accessToken);
 			try {
-				await GoogleSignIn.signOut();
+				(window as any).google?.accounts?.oauth2?.revoke?.(_accessToken, () => {});
 			} catch(e) {}
 		}
 	}
