@@ -2,14 +2,13 @@
 import { build, files, prerendered, version } from '$service-worker';
 
 const CACHE = `tally-diary-${version}`;
-// '/' is the SPA fallback page; serving it from cache makes any route work offline
-const ASSETS = [...new Set([...build, ...files, ...prerendered, '/'])];
+const IMMUTABLE_ASSETS = new Set(build);
 
 self.addEventListener('install', (event) => {
 	event.waitUntil(
 		caches
 			.open(CACHE)
-			.then((cache) => cache.addAll(ASSETS))
+			.then((cache) => cache.addAll([...build, ...files, ...prerendered, '/']))
 			.then(() => self.skipWaiting())
 	);
 });
@@ -28,34 +27,71 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
 	if (event.request.method !== 'GET') return;
 	const url = new URL(event.request.url);
-	// Never intercept cross-origin (Drive API, OAuth, fonts) — always live network
+	// Never intercept cross-origin (Drive API, OAuth, Google GIS, fonts) — always live network
 	if (url.origin !== location.origin) return;
 
+	// 1. Navigation requests (HTML pages): Network-first, fallback to cached SPA shell offline
+	if (event.request.mode === 'navigate') {
+		event.respondWith(
+			(async () => {
+				try {
+					const response = await fetch(event.request);
+					if (response.status === 200) {
+						const cache = await caches.open(CACHE);
+						cache.put('/', response.clone());
+					}
+					return response;
+				} catch (err) {
+					const cache = await caches.open(CACHE);
+					const shell = await cache.match('/');
+					if (shell) return shell;
+					throw err;
+				}
+			})()
+		);
+		return;
+	}
+
+	// 2. Hashed immutable build assets: Cache-first
+	if (IMMUTABLE_ASSETS.has(url.pathname)) {
+		event.respondWith(
+			(async () => {
+				const cache = await caches.open(CACHE);
+				const cached = await cache.match(url.pathname);
+				if (cached) return cached;
+
+				const response = await fetch(event.request);
+				if (response.status === 200) {
+					const contentType = response.headers.get('content-type') || '';
+					if (!contentType.includes('text/html')) {
+						cache.put(url.pathname, response.clone());
+					}
+				}
+				return response;
+			})()
+		);
+		return;
+	}
+
+	// 3. Static files & other assets: Network-first with cache fallback
 	event.respondWith(
 		(async () => {
 			const cache = await caches.open(CACHE);
-
-			// Immutable build assets: cache-first
-			if (ASSETS.includes(url.pathname)) {
-				const cached = await cache.match(url.pathname);
-				if (cached) return cached;
-			}
-
-			// Everything else: network-first, cache fallback
+			const cached = await cache.match(event.request);
 			try {
 				const response = await fetch(event.request);
-				if (response.status === 200) cache.put(event.request, response.clone());
+				if (response.status === 200) {
+					const contentType = response.headers.get('content-type') || '';
+					if (!contentType.includes('text/html')) {
+						cache.put(event.request, response.clone());
+					}
+				}
 				return response;
 			} catch (err) {
-				const cached = await cache.match(event.request);
 				if (cached) return cached;
-				// Offline navigation to a client-side route: serve the SPA shell
-				if (event.request.mode === 'navigate') {
-					const shell = await cache.match('/');
-					if (shell) return shell;
-				}
 				throw err;
 			}
 		})()
 	);
 });
+
