@@ -39,7 +39,11 @@ self.addEventListener('fetch', (event) => {
 					if (response.status === 200) {
 						const cache = await caches.open(CACHE);
 						cache.put('/', response.clone());
+						return response;
 					}
+					const cache = await caches.open(CACHE);
+					const shell = await cache.match('/');
+					if (shell) return shell;
 					return response;
 				} catch (err) {
 					const cache = await caches.open(CACHE);

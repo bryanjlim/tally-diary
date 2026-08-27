@@ -2,7 +2,7 @@
 	import { store } from '$lib/stores.svelte';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
-	import { daysAlive, categoryColors } from '$lib/types';
+	import { daysAlive, getCategoryColor } from '$lib/types';
 	import { LayoutList, LayoutGrid, Filter, Trash2, ThumbsUp, ThumbsDown, Search } from 'lucide-svelte';
 
 	// Deep link from Insights: /timeline?tally=Chipotle pre-applies the tally filter
@@ -19,7 +19,8 @@
 	let deleteIndex = $state(-1);
 
 	function formatDate(dateStr: string): string {
-		const d = new Date(dateStr + "T12:00:00");
+		const d = new Date((dateStr || '') + "T12:00:00");
+		if (isNaN(d.getTime())) return dateStr || '';
 		return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
 	}
 
@@ -29,11 +30,14 @@
 	}
 
 	function filteredEntries() {
-		return store.entries.filter((entry, _i) => {
+		const entries = Array.isArray(store.entries) ? store.entries : [];
+		return entries.filter((entry, _i) => {
+			if (!entry) return false;
 			if (filterStartDate && new Date(entry.date) < new Date(filterStartDate)) return false;
 			if (filterEndDate && new Date(entry.date) > new Date(filterEndDate)) return false;
 			if (filterText && entry.bodyText && !entry.bodyText.toLowerCase().includes(filterText.toLowerCase())) return false;
-			if (filterTally && !entry.tallies.some(t => t.text.toLowerCase().includes(filterTally.toLowerCase()))) return false;
+			const tallies = Array.isArray(entry.tallies) ? entry.tallies : [];
+			if (filterTally && !tallies.some(t => t && t.text && t.text.toLowerCase().includes(filterTally.toLowerCase()))) return false;
 			if (filterGoodDays && !entry.isThumbUp) return false;
 			if (filterBadDays && !entry.isThumbDown) return false;
 			return true;
@@ -165,10 +169,10 @@
 								{#if entry.bodyText}
 									<p class="text-sm text-muted-foreground mt-1 line-clamp-2">{truncate(entry.bodyText, 150)}</p>
 								{/if}
-								{#if entry.tallies.length > 0}
+								{#if Array.isArray(entry.tallies) && entry.tallies.length > 0}
 									<div class="flex flex-wrap gap-1.5 mt-2">
 										{#each entry.tallies.slice(0, 5) as tally}
-											<span class="text-[10px] font-medium px-2 py-0.5 rounded-full {categoryColors[tally.type]}">
+											<span class="text-[10px] font-medium px-2 py-0.5 rounded-full {getCategoryColor(tally.type)}">
 												{tally.text}
 											</span>
 										{/each}

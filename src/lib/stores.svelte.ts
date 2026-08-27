@@ -1,4 +1,4 @@
-import { type DiaryEntry, type UserPreferences, defaultPreferences, generateId, normalizeDate, sortDiaryEntries } from './types';
+import { type DiaryEntry, type UserPreferences, defaultPreferences, generateId, normalizeDate, sortDiaryEntries, sanitizeEntry, sanitizePreferences } from './types';
 import * as drive from './driveHelper';
 
 const ENTRIES_KEY = 'tally-diary-entries';
@@ -11,17 +11,12 @@ function loadEntries(): DiaryEntry[] {
 	try {
 		const data = localStorage.getItem(ENTRIES_KEY);
 		if (data) {
-			const entries = JSON.parse(data) as DiaryEntry[];
-			// Backfill IDs and repair legacy date formats, persisting once if anything changed
-			let changed = false;
-			for (const e of entries) {
-				if (!e.id) { e.id = generateId(); changed = true; }
-				const norm = normalizeDate(e.date || '');
-				if (norm !== e.date) { e.date = norm; changed = true; }
+			const parsed = JSON.parse(data);
+			if (Array.isArray(parsed)) {
+				const entries = parsed.map(sanitizeEntry);
+				entries.sort(sortDiaryEntries);
+				return entries;
 			}
-			entries.sort(sortDiaryEntries);
-			if (changed) localStorage.setItem(ENTRIES_KEY, JSON.stringify(entries));
-			return entries;
 		}
 	} catch (e) {
 		console.error('Error loading entries:', e);
@@ -33,7 +28,9 @@ function loadPreferences(): UserPreferences {
 	if (typeof window === 'undefined') return { ...defaultPreferences };
 	try {
 		const data = localStorage.getItem(PREFS_KEY);
-		if (data) return JSON.parse(data) as UserPreferences;
+		if (data) {
+			return sanitizePreferences(JSON.parse(data));
+		}
 	} catch (e) {
 		console.error('Error loading preferences:', e);
 	}
@@ -96,14 +93,19 @@ function createDiaryStore() {
 	async function mergeRemoteEntries(token: string): Promise<number> {
 		const driveEntries = await drive.loadAllEntries(token);
 		const combined = new Map<string, DiaryEntry>();
-		for (const raw of driveEntries) {
-			const e: DiaryEntry = { ...raw, id: raw.id || generateId(), date: normalizeDate(raw.date || '') };
-			combined.set(e.id, e);
+		if (Array.isArray(driveEntries)) {
+			for (const raw of driveEntries) {
+				const e = sanitizeEntry(raw);
+				combined.set(e.id, e);
+			}
 		}
-		for (const e of entries) combined.set(e.id, e);
+		for (const e of entries) {
+			const clean = sanitizeEntry(e);
+			combined.set(clean.id, clean);
+		}
 		entries = Array.from(combined.values()).sort(sortDiaryEntries);
 		saveEntries(entries);
-		return driveEntries.length;
+		return Array.isArray(driveEntries) ? driveEntries.length : 0;
 	}
 
 	function getOpenBatchId(): string {
@@ -121,10 +123,16 @@ function createDiaryStore() {
 
 	return {
 		get entries() { return entries; },
-		set entries(val: DiaryEntry[]) { entries = val; saveEntries(val); },
+		set entries(val: DiaryEntry[]) {
+			entries = Array.isArray(val) ? val.map(sanitizeEntry).sort(sortDiaryEntries) : [];
+			saveEntries(entries);
+		},
 
 		get preferences() { return preferences; },
-		set preferences(val: UserPreferences) { preferences = val; savePreferences(val); },
+		set preferences(val: UserPreferences) {
+			preferences = sanitizePreferences(val);
+			savePreferences(preferences);
+		},
 
 		get signedIn() { return signedIn; },
 		get syncing() { return syncing; },
@@ -179,14 +187,13 @@ function createDiaryStore() {
 				if (remoteCount > 0) {
 					console.log(`[Drive] Synced ${entries.length} entries from Drive`);
 				} else {
-					// If drive has 0 batched files but local has entries without batchId, it means migration hasn't run yet.
 					console.log(`[Drive] No batch files found. (Migration will handle any legacy formats).`);
 				}
 
 				// Load preferences from Drive
 				const drivePrefs = await drive.readPreferences(token);
 				if (drivePrefs) {
-					preferences = { ...defaultPreferences, ...drivePrefs };
+					preferences = sanitizePreferences({ ...defaultPreferences, ...drivePrefs });
 					savePreferences(preferences);
 					console.log('[Drive] Synced preferences from Drive');
 				}
@@ -226,8 +233,8 @@ function createDiaryStore() {
 			}
 		},
 
-		addEntry(entry: DiaryEntry) {
-			if (!entry.id) entry.id = generateId();
+		addEntry(rawEntry: DiaryEntry) {
+			const entry = sanitizeEntry(rawEntry);
 			if (!entry.batchId) entry.batchId = getOpenBatchId();
 			entries.push(entry);
 			entries.sort(sortDiaryEntries);
@@ -235,13 +242,11 @@ function createDiaryStore() {
 			triggerBatchUpload(entry.batchId, () => entries);
 		},
 
-		updateEntry(index: number, entry: DiaryEntry) {
+		updateEntry(index: number, rawEntry: DiaryEntry) {
 			if (index >= 0 && index < entries.length) {
 				const existing = entries[index];
-				// Preserve IDs
+				const entry = sanitizeEntry(rawEntry);
 				if (!entry.id && existing.id) entry.id = existing.id;
-				
-				// Ensure it has a batchId
 				if (!entry.batchId) {
 					entry.batchId = existing.batchId || getOpenBatchId();
 				}
@@ -265,7 +270,7 @@ function createDiaryStore() {
 		},
 
 		updatePreferences(prefs: Partial<UserPreferences>) {
-			preferences = { ...preferences, ...prefs };
+			preferences = sanitizePreferences({ ...preferences, ...prefs });
 			savePreferences(preferences);
 			driveWritePreferences(preferences);
 		},
@@ -276,12 +281,12 @@ function createDiaryStore() {
 
 		importData(json: string) {
 			try {
-				const imported = JSON.parse(json) as DiaryEntry[];
+				const rawImported = JSON.parse(json);
+				if (!Array.isArray(rawImported)) return false;
+				const imported = rawImported.map(sanitizeEntry);
 				// Merge by id, local wins — same convention as the Drive sync merge
 				const existingIds = new Set(entries.map(e => e.id));
 				imported.forEach(entry => {
-					if (!entry.id) entry.id = generateId();
-					entry.date = normalizeDate(entry.date || '');
 					if (existingIds.has(entry.id)) return;
 					existingIds.add(entry.id);
 					if (!entry.batchId) entry.batchId = getOpenBatchId();

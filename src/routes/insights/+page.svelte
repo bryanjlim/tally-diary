@@ -2,7 +2,7 @@
 	import { store } from '$lib/stores.svelte';
 	import { goto } from '$app/navigation';
 	import { browser } from '$app/environment';
-	import { TALLY_CATEGORIES, categoryIcons, type TallyCategory } from '$lib/types';
+	import { TALLY_CATEGORIES, categoryIcons, getCategoryColor, getCategoryIcon, type TallyCategory } from '$lib/types';
 	import TallyMarks from '$lib/TallyMarks.svelte';
 	import Heatmap from '$lib/Heatmap.svelte';
 	import {
@@ -31,21 +31,17 @@
 
 	interface TallyAgg { text: string; count: number; }
 
-	const categoryColors: Record<TallyCategory, string> = {
-		Food: 'text-amber-700 dark:text-amber-400',
-		Activity: 'text-green-700 dark:text-green-400',
-		Location: 'text-blue-600 dark:text-blue-400',
-		Person: 'text-purple-600 dark:text-purple-400',
-		Other: 'text-gray-600 dark:text-gray-400',
-	};
-
 	function getAggregateTallies(): Record<TallyCategory, TallyAgg[]> {
 		const result: Record<string, TallyAgg[]> = {
 			Food: [], Activity: [], Location: [], Person: [], Other: [],
 		};
-		for (const entry of store.entries) {
-			for (const tally of entry.tallies) {
-				const arr = result[tally.type];
+		const entries = Array.isArray(store.entries) ? store.entries : [];
+		for (const entry of entries) {
+			const tallies = Array.isArray(entry.tallies) ? entry.tallies : [];
+			for (const tally of tallies) {
+				if (!tally || !tally.text) continue;
+				const type: TallyCategory = TALLY_CATEGORIES.includes(tally.type) ? tally.type : 'Other';
+				const arr = result[type];
 				const existing = arr.find(t => t.text === tally.text);
 				if (existing) existing.count++;
 				else arr.push({ text: tally.text, count: 1 });
@@ -228,10 +224,10 @@
 			{@render sectionHeader(Smile, 'bg-green-500/10 text-green-500', 'What Makes a Good Day', `Tallies on your thumbs-up days · average day is ${correlations[0].baseline}% good`)}
 			<div class="mt-3 space-y-1">
 				{#each correlations as c}
-					{@const Icon = categoryIcons[c.type]}
+					{@const Icon = getCategoryIcon(c.type)}
 					{@const delta = c.pct - c.baseline}
 					<div class="flex items-center justify-between gap-3 py-1.5">
-						<span class="inline-flex items-center gap-2 {categoryColors[c.type]} min-w-0">
+						<span class="inline-flex items-center gap-2 {getCategoryColor(c.type)} min-w-0">
 							<Icon class="w-3.5 h-3.5 shrink-0" />
 							<span class="text-sm font-medium text-foreground truncate">{c.text}</span>
 						</span>
@@ -252,10 +248,10 @@
 			{@render sectionHeader(TrendingUp, 'bg-blue-500/10 text-blue-500', 'Tally Trends', 'Last 30 days vs the 30 before')}
 			<div class="mt-3 space-y-1">
 				{#each trends.movers as m}
-					{@const Icon = categoryIcons[m.type]}
+					{@const Icon = getCategoryIcon(m.type)}
 					{@const up = m.cur > m.prev}
 					<div class="flex items-center justify-between gap-3 py-1.5">
-						<span class="inline-flex items-center gap-2 {categoryColors[m.type]} min-w-0">
+						<span class="inline-flex items-center gap-2 {getCategoryColor(m.type)} min-w-0">
 							<Icon class="w-3.5 h-3.5 shrink-0" />
 							<span class="text-sm font-medium text-foreground truncate">{m.text}</span>
 						</span>
@@ -266,9 +262,9 @@
 					</div>
 				{/each}
 				{#each trends.lapsed as l}
-					{@const Icon = categoryIcons[l.type]}
+					{@const Icon = getCategoryIcon(l.type)}
 					<div class="flex items-center justify-between gap-3 py-1.5">
-						<span class="inline-flex items-center gap-2 {categoryColors[l.type]} min-w-0">
+						<span class="inline-flex items-center gap-2 {getCategoryColor(l.type)} min-w-0">
 							<Icon class="w-3.5 h-3.5 shrink-0" />
 							<span class="text-sm font-medium text-foreground truncate">{l.text}</span>
 						</span>
@@ -301,14 +297,14 @@
 		</div>
 
 		{#each TALLY_CATEGORIES as category}
-			{@const items = tallyAggs[category]}
-			{@const Icon = categoryIcons[category]}
+			{@const items = tallyAggs[category] || []}
+			{@const Icon = getCategoryIcon(category)}
 			<div class="border-b border-border last:border-b-0">
 				<button
 					onclick={() => toggleCategory(category)}
 					class="w-full flex items-center justify-between px-5 py-3 hover:bg-muted/50 transition-colors cursor-pointer"
 				>
-					<div class="flex items-center gap-2 {categoryColors[category]}">
+					<div class="flex items-center gap-2 {getCategoryColor(category)}">
 						<Icon class="w-4 h-4" />
 						<span class="font-medium text-sm">{category}</span>
 						<span class="text-xs text-muted-foreground">({items.length})</span>
@@ -332,7 +328,7 @@
 								>
 									<span class="text-sm text-foreground truncate group-hover:text-primary transition-colors">{item.text}</span>
 									<span class="flex items-center gap-2 shrink-0">
-										<span class={categoryColors[category]}>
+										<span class={getCategoryColor(category)}>
 											<TallyMarks count={item.count} />
 										</span>
 										<span class="text-sm font-semibold text-muted-foreground tabular-nums w-8 text-right">{item.count}</span>

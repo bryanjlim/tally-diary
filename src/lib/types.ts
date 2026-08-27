@@ -48,6 +48,72 @@ export const categoryIcons: Record<TallyCategory, typeof Tag> = {
 	Other: Tag,
 };
 
+/** Helper to get category color safely */
+export function getCategoryColor(type?: string): string {
+	if (!type) return categoryColors.Other;
+	return categoryColors[type as TallyCategory] || categoryColors.Other;
+}
+
+/** Helper to get category icon safely */
+export function getCategoryIcon(type?: string): typeof Tag {
+	if (!type) return Tag;
+	return categoryIcons[type as TallyCategory] || Tag;
+}
+
+/** Sanitize and guarantee a valid UserPreferences object */
+export function sanitizePreferences(raw: any): UserPreferences {
+	if (!raw || typeof raw !== 'object') return { ...defaultPreferences };
+	const dob = typeof raw.dateOfBirth === 'string' && raw.dateOfBirth.trim() ? raw.dateOfBirth.trim() : defaultPreferences.dateOfBirth;
+	const themeRaw = String(raw.primaryTheme || '').toLowerCase();
+	const primaryTheme: 'light' | 'dark' = themeRaw === 'light' ? 'light' : 'dark';
+	return {
+		dateOfBirth: dob,
+		primaryTheme,
+	};
+}
+
+/** Sanitize and guarantee a valid DiaryEntry object */
+export function sanitizeEntry(raw: any): DiaryEntry {
+	if (!raw || typeof raw !== 'object') {
+		return {
+			id: generateId(),
+			title: '',
+			date: normalizeDate(''),
+			bodyText: '',
+			tallies: [],
+			isThumbUp: false,
+			isThumbDown: false,
+			entryNumber: 0
+		};
+	}
+
+	const tallies: TallyMark[] = [];
+	if (Array.isArray(raw.tallies)) {
+		for (const t of raw.tallies) {
+			if (t && typeof t === 'object' && typeof t.text === 'string' && t.text.trim()) {
+				const rawType = String(t.type || '').trim();
+				const capitalized = rawType.charAt(0).toUpperCase() + rawType.slice(1).toLowerCase();
+				const type: TallyCategory = TALLY_CATEGORIES.includes(capitalized as TallyCategory)
+					? (capitalized as TallyCategory)
+					: (TALLY_CATEGORIES.includes(rawType as TallyCategory) ? (rawType as TallyCategory) : 'Other');
+				tallies.push({ type, text: t.text.trim() });
+			}
+		}
+	}
+
+	return {
+		id: typeof raw.id === 'string' && raw.id.trim() ? raw.id.trim() : generateId(),
+		title: typeof raw.title === 'string' ? raw.title : (typeof raw.customTitle === 'string' ? raw.customTitle : ''),
+		date: normalizeDate(typeof raw.date === 'string' ? raw.date : ''),
+		bodyText: typeof raw.bodyText === 'string' ? raw.bodyText : '',
+		tallies,
+		isThumbUp: Boolean(raw.isThumbUp),
+		isThumbDown: Boolean(raw.isThumbDown),
+		entryNumber: typeof raw.entryNumber === 'number' && !isNaN(raw.entryNumber) ? raw.entryNumber : 0,
+		batchId: typeof raw.batchId === 'string' && raw.batchId.trim() ? raw.batchId.trim() : undefined,
+	};
+}
+
 /** Generate a unique ID for diary entries */
 export function generateId(): string {
 	return crypto.randomUUID();
@@ -60,7 +126,11 @@ export function generateId(): string {
  * Unparseable strings are returned unchanged.
  */
 export function normalizeDate(s: string): string {
-	if (!s || /^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+	if (!s) {
+		const now = new Date();
+		return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+	}
+	if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
 	if (/^\d{4}-\d{2}-\d{2}T/.test(s)) return s.slice(0, 10);
 	const d = new Date(s);
 	if (isNaN(d.getTime())) return s;
@@ -68,21 +138,25 @@ export function normalizeDate(s: string): string {
 }
 
 /** "Day N" counter: days between date of birth and the entry date, inclusive. */
-export function daysAlive(date: string, dob: string): number {
-	if (!dob) return 0;
-	const diff = new Date(date + 'T12:00:00').getTime() - new Date(dob + 'T12:00:00').getTime();
+export function daysAlive(date: string, dob?: string): number {
+	const birth = dob || defaultPreferences.dateOfBirth;
+	if (!birth || !date) return 1;
+	const diff = new Date(date + 'T12:00:00').getTime() - new Date(birth + 'T12:00:00').getTime();
+	if (isNaN(diff)) return 1;
 	return Math.round(diff / 86400000) + 1;
 }
 
 export function sortDiaryEntries(a: DiaryEntry, b: DiaryEntry): number {
-	const bTime = new Date(b.date).getTime();
-	const aTime = new Date(a.date).getTime();
+	const aDate = a?.date || '';
+	const bDate = b?.date || '';
+	const bTime = new Date(bDate).getTime();
+	const aTime = new Date(aDate).getTime();
 	const timeDiff = bTime - aTime;
 	if (timeDiff !== 0 && !isNaN(timeDiff)) return timeDiff;
 
-	if (b.entryNumber !== undefined && a.entryNumber !== undefined && b.entryNumber !== a.entryNumber) {
+	if (b?.entryNumber !== undefined && a?.entryNumber !== undefined && b.entryNumber !== a.entryNumber) {
 		return b.entryNumber - a.entryNumber;
 	}
-	if (b.id && a.id) return b.id.localeCompare(a.id);
+	if (b?.id && a?.id) return b.id.localeCompare(a.id);
 	return 0;
 }

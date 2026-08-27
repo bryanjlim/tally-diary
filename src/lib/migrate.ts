@@ -11,7 +11,7 @@
  */
 
 import * as drive from './driveHelper';
-import { TALLY_CATEGORIES, type DiaryEntry, type TallyMark, type TallyCategory, generateId, normalizeDate, sortDiaryEntries } from './types';
+import { TALLY_CATEGORIES, type DiaryEntry, type TallyMark, type TallyCategory, generateId, normalizeDate, sortDiaryEntries, sanitizeEntry, sanitizePreferences } from './types';
 import { store } from './stores.svelte';
 
 const MIGRATION_KEY = 'tally-diary-migration-batch-done';
@@ -31,24 +31,7 @@ function normalizeTally(raw: any): TallyMark | null {
 }
 
 function convertEntry(raw: any): DiaryEntry {
-	const tallies: TallyMark[] = [];
-	if (Array.isArray(raw.tallies)) {
-		for (const t of raw.tallies) {
-			const normalized = normalizeTally(t);
-			if (normalized) tallies.push(normalized);
-		}
-	}
-
-	return {
-		id: generateId(),
-		title: raw.title || raw.customTitle || '',
-		date: normalizeDate(raw.date || ''),
-		bodyText: raw.bodyText || '',
-		tallies,
-		isThumbUp: !!raw.isThumbUp,
-		isThumbDown: !!raw.isThumbDown,
-		entryNumber: raw.entryNumber || 0,
-	};
+	return sanitizeEntry(raw);
 }
 
 function getProgress(): number {

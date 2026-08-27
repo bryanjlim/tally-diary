@@ -19,7 +19,7 @@
 		if (!browser) return 'dark';
 		const hasExplicitPref = localStorage.getItem('tally-diary-theme-explicit');
 		if (hasExplicitPref) {
-			const stored = store.preferences.primaryTheme;
+			const stored = store.preferences?.primaryTheme;
 			if (stored === 'light' || stored === 'dark') return stored;
 		}
 		return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';

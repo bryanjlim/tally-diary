@@ -1,4 +1,4 @@
-import { daysAlive, type DiaryEntry, type TallyCategory } from './types';
+import { daysAlive, type DiaryEntry, type TallyCategory, TALLY_CATEGORIES } from './types';
 
 const DAY_MS = 86400000;
 
@@ -7,13 +7,17 @@ export function todayLocal(): string {
 	return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
-const time = (s: string) => new Date(s + 'T12:00:00').getTime();
-const daysBetween = (a: string, b: string) => Math.round((time(a) - time(b)) / DAY_MS);
+const time = (s: string) => new Date((s || todayLocal()) + 'T12:00:00').getTime();
+const daysBetween = (a: string, b: string) => {
+	const diff = time(a) - time(b);
+	return isNaN(diff) ? 0 : Math.round(diff / DAY_MS);
+};
 
 // ─── Streaks ───────────────────────────────────────────
 
 export function streaks(entries: DiaryEntry[]): { current: number; longest: number } {
-	const days = [...new Set(entries.map((e) => e.date))].sort();
+	if (!Array.isArray(entries) || !entries.length) return { current: 0, longest: 0 };
+	const days = [...new Set(entries.map((e) => e.date).filter(Boolean))].sort();
 	let longest = 0;
 	let run = 0;
 	for (let i = 0; i < days.length; i++) {
@@ -40,13 +44,15 @@ const monthLabel = (ym: string) =>
 	new Date(ym + '-15T12:00:00').toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
 
 export function goodDayStats(entries: DiaryEntry[]): GoodDayStats | null {
-	const rated = entries.filter((e) => e.isThumbUp || e.isThumbDown);
+	if (!Array.isArray(entries) || !entries.length) return null;
+	const rated = entries.filter((e) => e && (e.isThumbUp || e.isThumbDown));
 	if (!rated.length) return null;
 	const pctGood = Math.round((100 * rated.filter((e) => e.isThumbUp).length) / rated.length);
 
 	const byMonth = new Map<string, { up: number; total: number }>();
 	for (const e of rated) {
-		const key = e.date.slice(0, 7);
+		const dateStr = typeof e.date === 'string' ? e.date : '';
+		const key = dateStr.slice(0, 7);
 		if (!/^\d{4}-\d{2}$/.test(key)) continue; // unparseable legacy date — skip month grouping
 		const m = byMonth.get(key) ?? { up: 0, total: 0 };
 		m.total++;
@@ -74,17 +80,21 @@ export interface Correlation {
 
 /** Which tallies show up disproportionately on thumbs-up days. Correlation, not causation. */
 export function goodDayCorrelations(entries: DiaryEntry[]): Correlation[] {
-	const rated = entries.filter((e) => e.isThumbUp || e.isThumbDown);
+	if (!Array.isArray(entries)) return [];
+	const rated = entries.filter((e) => e && (e.isThumbUp || e.isThumbDown));
 	if (rated.length < 10) return [];
 	const baseline = Math.round((100 * rated.filter((e) => e.isThumbUp).length) / rated.length);
 
 	const byTally = new Map<string, { type: TallyCategory; up: number; total: number }>();
 	for (const e of rated) {
 		const seen = new Set<string>();
-		for (const t of e.tallies) {
+		const tallies = Array.isArray(e.tallies) ? e.tallies : [];
+		for (const t of tallies) {
+			if (!t || !t.text) continue;
 			if (seen.has(t.text)) continue;
 			seen.add(t.text);
-			const s = byTally.get(t.text) ?? { type: t.type, up: 0, total: 0 };
+			const validType = TALLY_CATEGORIES.includes(t.type) ? t.type : 'Other';
+			const s = byTally.get(t.text) ?? { type: validType, up: 0, total: 0 };
 			s.total++;
 			if (e.isThumbUp) s.up++;
 			byTally.set(t.text, s);
@@ -114,6 +124,7 @@ export interface Lapsed {
 }
 
 export function tallyTrends(entries: DiaryEntry[]): { movers: Mover[]; lapsed: Lapsed[] } {
+	if (!Array.isArray(entries)) return { movers: [], lapsed: [] };
 	const today = todayLocal();
 	const cur = new Map<string, number>();
 	const prev = new Map<string, number>();
@@ -121,9 +132,13 @@ export function tallyTrends(entries: DiaryEntry[]): { movers: Mover[]; lapsed: L
 	const lastSeen = new Map<string, number>();
 
 	for (const e of entries) {
-		const age = daysBetween(today, e.date);
-		for (const t of e.tallies) {
-			const total = totals.get(t.text) ?? { type: t.type, count: 0 };
+		if (!e) continue;
+		const age = daysBetween(today, e.date || '');
+		const tallies = Array.isArray(e.tallies) ? e.tallies : [];
+		for (const t of tallies) {
+			if (!t || !t.text) continue;
+			const validType = TALLY_CATEGORIES.includes(t.type) ? t.type : 'Other';
+			const total = totals.get(t.text) ?? { type: validType, count: 0 };
 			total.count++;
 			totals.set(t.text, total);
 			const seen = lastSeen.get(t.text);
@@ -162,18 +177,20 @@ export interface Anniversary {
 }
 
 export function onThisDay(entries: DiaryEntry[]): Anniversary[] {
+	if (!Array.isArray(entries)) return [];
 	const today = todayLocal();
 	const [ty, tm, td] = today.split('-');
 	const out: Anniversary[] = [];
 	entries.forEach((e, index) => {
+		if (!e) return;
 		const [y, m, d] = (e.date || '').split('-');
 		if (m === tm && d === td && y < ty) {
 			out.push({
 				index,
-				title: e.title || e.date,
-				preview: e.bodyText?.trim() ?? '',
+				title: e.title || e.date || '',
+				preview: typeof e.bodyText === 'string' ? e.bodyText.trim() : '',
 				yearsAgo: Number(ty) - Number(y),
-				date: e.date
+				date: e.date || ''
 			});
 		}
 	});
@@ -182,13 +199,14 @@ export function onThisDay(entries: DiaryEntry[]): Anniversary[] {
 
 // ─── Milestones ────────────────────────────────────────
 
-export function milestones(entries: DiaryEntry[], dob: string): string[] {
+export function milestones(entries: DiaryEntry[], dob?: string): string[] {
 	const out: string[] = [];
 	if (dob) {
 		const dayN = daysAlive(todayLocal(), dob);
 		const next = Math.ceil((dayN + 1) / 500) * 500;
 		out.push(`Day ${next.toLocaleString()} is in ${next - dayN} days`);
 	}
+	if (!Array.isArray(entries)) return out;
 	const n = entries.length;
 	if (n > 0) {
 		const next = Math.ceil((n + 1) / 100) * 100;
@@ -196,7 +214,13 @@ export function milestones(entries: DiaryEntry[], dob: string): string[] {
 	}
 	let top: { text: string; count: number } | null = null;
 	const counts = new Map<string, number>();
-	for (const e of entries) for (const t of e.tallies) counts.set(t.text, (counts.get(t.text) ?? 0) + 1);
+	for (const e of entries) {
+		if (!e) continue;
+		const tallies = Array.isArray(e.tallies) ? e.tallies : [];
+		for (const t of tallies) {
+			if (t && t.text) counts.set(t.text, (counts.get(t.text) ?? 0) + 1);
+		}
+	}
 	for (const [text, count] of counts) if (!top || count > top.count) top = { text, count };
 	if (top && top.count >= 10) {
 		const next = Math.ceil((top.count + 1) / 50) * 50;
@@ -208,12 +232,16 @@ export function milestones(entries: DiaryEntry[], dob: string): string[] {
 // ─── Writing stats ─────────────────────────────────────
 
 export function writingStats(entries: DiaryEntry[]): { total: number; avg: number; longest: number } {
+	if (!Array.isArray(entries) || !entries.length) return { total: 0, avg: 0, longest: 0 };
 	let total = 0;
 	let longest = 0;
 	for (const e of entries) {
-		const words = e.bodyText?.trim() ? e.bodyText.trim().split(/\s+/).length : 0;
+		if (!e) continue;
+		const text = typeof e.bodyText === 'string' ? e.bodyText.trim() : '';
+		const words = text ? text.split(/\s+/).length : 0;
 		total += words;
 		if (words > longest) longest = words;
 	}
 	return { total, avg: entries.length ? Math.round(total / entries.length) : 0, longest };
 }
+

@@ -2,7 +2,7 @@
 	import { store } from '$lib/stores.svelte';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
-	import { type TallyMark, daysAlive, categoryColors, categoryIcons } from '$lib/types';
+	import { type TallyMark, daysAlive, getCategoryColor, getCategoryIcon } from '$lib/types';
 	import TallyDialog from '$lib/TallyDialog.svelte';
 	import Toast from '$lib/Toast.svelte';
 	import { ThumbsUp, ThumbsDown, Save, ArrowLeft, ArrowRight, ChevronLeft, Tag, X } from 'lucide-svelte';
@@ -137,8 +137,8 @@
 						<h4 class="text-sm font-medium text-muted-foreground mb-2">Tally Marks</h4>
 						<div class="flex flex-wrap gap-2">
 							{#each tallies as tally, i}
-								{@const Icon = categoryIcons[tally.type]}
-								<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border {categoryColors[tally.type]}">
+								{@const Icon = getCategoryIcon(tally.type)}
+								<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border {getCategoryColor(tally.type)}">
 									<Icon class="w-3 h-3" />
 									{tally.text}
 									<button onclick={() => removeTally(i)} class="hover:brightness-125 cursor-pointer"><X class="w-3.5 h-3.5" /></button>

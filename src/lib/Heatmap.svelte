@@ -23,10 +23,13 @@
 
 	const byDate = $derived.by(() => {
 		const m = new Map<string, { mood: number; words: number }>();
-		for (const e of entries) {
+		const list = Array.isArray(entries) ? entries : [];
+		for (const e of list) {
+			if (!e || !e.date) continue;
 			const cur = m.get(e.date) ?? { mood: 0, words: 0 };
 			cur.mood = Math.max(cur.mood, e.isThumbUp ? 3 : e.isThumbDown ? 2 : 1);
-			if (e.bodyText?.trim()) cur.words += e.bodyText.trim().split(/\s+/).length;
+			const text = typeof e.bodyText === 'string' ? e.bodyText.trim() : '';
+			if (text) cur.words += text.split(/\s+/).length;
 			m.set(e.date, cur);
 		}
 		return m;

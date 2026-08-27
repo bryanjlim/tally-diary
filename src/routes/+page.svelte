@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { store } from "$lib/stores.svelte";
-	import { type TallyMark, generateId, daysAlive, categoryColors, categoryIcons } from "$lib/types";
+	import { type TallyMark, generateId, daysAlive, getCategoryColor, getCategoryIcon } from "$lib/types";
 	import TallyDialog from "$lib/TallyDialog.svelte";
 	import Toast from "$lib/Toast.svelte";
 	import { ThumbsUp, ThumbsDown, Save, X, Tag } from "lucide-svelte";
@@ -177,11 +177,11 @@
 					</h4>
 					<div class="flex flex-wrap gap-2">
 						{#each tallies as tally, i}
-							{@const Icon = categoryIcons[tally.type]}
+							{@const Icon = getCategoryIcon(tally.type)}
 							<span
-								class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border {categoryColors[
+								class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border {getCategoryColor(
 									tally.type
-								]} animate-scale-in"
+								)} animate-scale-in"
 							>
 								<Icon class="w-3 h-3" />
 								{tally.text}
